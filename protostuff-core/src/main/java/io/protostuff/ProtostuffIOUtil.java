@@ -152,9 +152,11 @@ public final class ProtostuffIOUtil {
 	 * @return the byte array containing the data.
 	 */
 	public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer) {
-		if (buffer.start != buffer.offset) {
+		if (buffer.start != buffer.offset)
 			throw new IllegalArgumentException("Buffer previously used and had not been reset.");
-		}
+
+		if (message == null)
+			throw new NullPointerException("Serialized object cannot be null.");
 
 		final ProtostuffOutput output = new ProtostuffOutput(buffer);
 		try {
