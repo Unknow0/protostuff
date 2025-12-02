@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,80 +18,71 @@ import java.io.Serializable;
 
 /**
  * Ser/deser test object that wraps a message {@link Bar}.
- * 
+ *
  * @author David Yu
  * @created Nov 12, 2009
  */
-public class HasBar implements Serializable
-{
+public class HasBar implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private int id;
-    private String name;
-    private Bar bar;
+	private int id;
+	private String name;
+	private Bar bar;
 
-    public HasBar()
-    {
+	public HasBar() {
 
-    }
+	}
 
-    public HasBar(int id, String name, Bar bar)
-    {
-        this.id = id;
-        this.name = name;
-        this.bar = bar;
-    }
+	public HasBar(int id, String name, Bar bar) {
+		this.id = id;
+		this.name = name;
+		this.bar = bar;
+	}
 
-    /**
-     * @return the id
-     */
-    public int getId()
-    {
-        return id;
-    }
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(int id)
-    {
-        this.id = id;
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the name
-     */
-    public String getName()
-    {
-        return name;
-    }
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @return the bar
-     */
-    public Bar getBar()
-    {
-        return bar;
-    }
+	/**
+	 * @return the bar
+	 */
+	public Bar getBar() {
+		return bar;
+	}
 
-    /**
-     * @param bar
-     *            the bar to set
-     */
-    public void setBar(Bar bar)
-    {
-        this.bar = bar;
-    }
+	/**
+	 * @param bar
+	 *            the bar to set
+	 */
+	public void setBar(Bar bar) {
+		this.bar = bar;
+	}
 
 }

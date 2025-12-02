@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,39 +20,30 @@ import java.io.OutputStream;
 
 /**
  * Delimiter tests for the protostuff format.
- * 
+ *
  * @author David Yu
  * @created Aug 29, 2012
  */
-public class ProtostuffDelimiterTest extends DelimiterTest
-{
+public class ProtostuffDelimiterTest extends DelimiterTest {
 
-    @Override
-    protected <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
-        return ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buffer);
-    }
+	@Override
+	protected <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
+		return ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buffer);
+	}
 
-    @Override
-    protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
-        ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema, buffer);
-    }
+	@Override
+	protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
+		ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema, buffer);
+	}
 
-    @Override
-    protected <T> int optWriteDelimitedTo(OutputStream out, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
-        return ProtostuffIOUtil.optWriteDelimitedTo(out, message, schema, buffer);
-    }
+	@Override
+	protected <T> int optWriteDelimitedTo(OutputStream out, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
+		return ProtostuffIOUtil.optWriteDelimitedTo(out, message, schema, buffer);
+	}
 
-    @Override
-    protected <T> boolean optMergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
-            LinkedBuffer buffer) throws IOException
-    {
-        return ProtostuffIOUtil.optMergeDelimitedFrom(in, message, schema, buffer);
-    }
+	@Override
+	protected <T> boolean optMergeDelimitedFrom(InputStream in, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
+		return ProtostuffIOUtil.optMergeDelimitedFrom(in, message, schema, buffer);
+	}
 
 }

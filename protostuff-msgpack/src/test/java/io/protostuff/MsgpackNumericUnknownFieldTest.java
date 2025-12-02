@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,10 @@ package io.protostuff;
 /**
  * Test for ignoring unknown fields during de-seralization
  */
-public class MsgpackNumericUnknownFieldTest extends MsgpackUnknownFieldTest
-{
+public class MsgpackNumericUnknownFieldTest extends MsgpackUnknownFieldTest {
 
-    static {
-        numeric = true;
-    }
-    
+	static {
+		numeric = true;
+	}
+
 }

@@ -34,7 +34,7 @@ public class AlwaysUseSunReflectionFactoryOptionTest {
 		private List<String> list;
 
 		public MyClass() {
-			list = new ArrayList<String>();
+			list = new ArrayList<>();
 			list.add("hello");
 		}
 

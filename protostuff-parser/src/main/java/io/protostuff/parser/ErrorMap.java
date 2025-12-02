@@ -34,90 +34,76 @@ import java.util.Set;
 
 /**
  * A sort of runtime error mechanism for st code generation to fail fast.
- * 
+ *
  * @author David Yu
  * @created Nov 1, 2011
  */
-public final class ErrorMap implements Map<String, Object>
-{
+public final class ErrorMap implements Map<String, Object> {
 
-    static final ErrorMap INSTANCE = new ErrorMap();
+	static final ErrorMap INSTANCE = new ErrorMap();
 
-    private ErrorMap()
-    {
-    }
+	private ErrorMap() {
+	}
 
-    @Override
-    public void clear()
-    {
+	@Override
+	public void clear() { // ok
 
-    }
+	}
 
-    @Override
-    public boolean containsKey(Object arg0)
-    {
-        // error mechanism called by stringtemplate
-        throw new IllegalStateException(String.valueOf(arg0));
-    }
+	@Override
+	public boolean containsKey(Object arg0) {
+		// error mechanism called by stringtemplate
+		throw new IllegalStateException(String.valueOf(arg0));
+	}
 
-    @Override
-    public Object get(Object arg0)
-    {
-        return containsKey(arg0);
-    }
+	@Override
+	public Object get(Object arg0) {
+		return containsKey(arg0);
+	}
 
-    @Override
-    public boolean containsValue(Object arg0)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public boolean containsValue(Object arg0) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Set<java.util.Map.Entry<String, Object>> entrySet()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public boolean isEmpty()
-    {
-        return false;
-    }
+	@Override
+	public boolean isEmpty() {
+		return false;
+	}
 
-    @Override
-    public Set<String> keySet()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Set<String> keySet() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Object put(String arg0, Object arg1)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Object put(String arg0, Object arg1) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public void putAll(Map<? extends String, ? extends Object> arg0)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public void putAll(Map<? extends String, ? extends Object> arg0) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Object remove(Object arg0)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Object remove(Object arg0) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public int size()
-    {
-        return 1;
-    }
+	@Override
+	public int size() {
+		return 1;
+	}
 
-    @Override
-    public Collection<Object> values()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Collection<Object> values() {
+		throw new UnsupportedOperationException();
+	}
 
 }

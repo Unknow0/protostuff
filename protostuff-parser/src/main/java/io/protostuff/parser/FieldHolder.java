@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,20 @@ package io.protostuff.parser;
 
 /**
  * Holds a reference to a {@link Field}.
- * 
+ *
  * @author David Yu
  * @created Dec 21, 2009
  */
-public class FieldHolder
-{
+public class FieldHolder {
 
-    Field<?> field;
+	Field<?> field;
 
-    void setField(Field<?> field)
-    {
-        this.field = field;
-    }
+	void setField(Field<?> field) {
+		this.field = field;
+	}
 
-    public Field<?> getField()
-    {
-        return field;
-    }
+	public Field<?> getField() {
+		return field;
+	}
 
 }

@@ -33,11 +33,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface Service
-{
+public @interface Service {
 
-    /**
-     * Service namespace.
-     */
-    String value();
+	/**
+	 * Service namespace.
+	 */
+	String value();
 }

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,36 +19,35 @@ import java.util.Map;
 
 /**
  * An entity that containts annotations.
- * 
+ *
  * @author David Yu
  * @created Dec 30, 2010
  */
-public interface HasAnnotations
-{
+public interface HasAnnotations {
 
-    /**
-     * Adds the annoation.
-     */
-    public void add(Annotation annotation);
+	/**
+	 * Adds the annoation.
+	 */
+	public void add(Annotation annotation);
 
-    /**
-     * Adds all the annotations to this container. If {@code clearSource} is true, the {@code source} arg is cleared.
-     */
-    public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource);
+	/**
+	 * Adds all the annotations to this container. If {@code clearSource} is true, the {@code source} arg is cleared.
+	 */
+	public boolean addAnnotations(Map<String, Annotation> source, boolean clearSource);
 
-    /**
-     * Gets the annotation map.
-     */
-    public Map<String, Annotation> getAnnotationMap();
+	/**
+	 * Gets the annotation map.
+	 */
+	public Map<String, Annotation> getAnnotationMap();
 
-    /**
-     * Gets the annotations.
-     */
-    public Collection<Annotation> getAnnotations();
+	/**
+	 * Gets the annotations.
+	 */
+	public Collection<Annotation> getAnnotations();
 
-    /**
-     * Gets the annotation by key/name.
-     */
-    public Annotation getAnnotation(String name);
+	/**
+	 * Gets the annotation by key/name.
+	 */
+	public Annotation getAnnotation(String name);
 
 }

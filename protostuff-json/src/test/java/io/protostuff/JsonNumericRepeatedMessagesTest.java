@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,24 +21,20 @@ import java.util.List;
 
 /**
  * Testcase for ser/deser of multiple messages using json (numeric).
- * 
+ *
  * @author David Yu
  * @created Oct 8, 2010
  */
-public class JsonNumericRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class JsonNumericRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return JsonIOUtil.parseListFrom(in, schema, true);
-    }
+	@Override
+	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
+		return JsonIOUtil.parseListFrom(in, schema, true);
+	}
 
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        JsonIOUtil.writeListTo(out, messages, schema, true);
-    }
+	@Override
+	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
+		JsonIOUtil.writeListTo(out, messages, schema, true);
+	}
 
 }

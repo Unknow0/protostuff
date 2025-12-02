@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,25 +19,20 @@ import java.util.Map;
 
 /**
  * Tests for the {@link StringMapSchema} via protobuf.
- * 
+ *
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class StringMapSchemaProtobufTest extends StringMapSchemaTest
-{
+public class StringMapSchemaProtobufTest extends StringMapSchemaTest {
 
-    @Override
-    public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length,
-            T message, Schema<T> schema) throws IOException
-    {
-        ProtobufIOUtil.mergeFrom(data, offset, length, message, schema);
-    }
+	@Override
+	public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		ProtobufIOUtil.mergeFrom(data, offset, length, message, schema);
+	}
 
-    @Override
-    public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema)
-            throws IOException
-    {
-        return ProtobufIOUtil.toByteArray(message, schema, buf());
-    }
+	@Override
+	public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException {
+		return ProtobufIOUtil.toByteArray(message, schema, buf());
+	}
 
 }

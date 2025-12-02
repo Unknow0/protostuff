@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,166 +21,146 @@ import java.util.ArrayList;
 
 /**
  * A CodedInput w/c can handle cyclic dependencies when deserializing objects with graph transformations.
- * 
+ *
  * @author David Yu
  * @created Jan 17, 2011
  */
-public final class GraphCodedInput extends FilterInput<CodedInput>
-        implements GraphInput, Schema<Object>
-{
+public final class GraphCodedInput extends FilterInput<CodedInput> implements GraphInput, Schema<Object> {
 
-    private final ArrayList<Object> references;
-    private int lastRef = -1;
+	private final ArrayList<Object> references;
+	private int lastRef = -1;
 
-    private Schema<Object> lastSchema;
-    private boolean messageReference = false;
+	private Schema<Object> lastSchema;
+	private boolean messageReference = false;
 
-    public GraphCodedInput(CodedInput input)
-    {
-        super(input);
+	public GraphCodedInput(CodedInput input) {
+		super(input);
 
-        // protostuff format only.
-        assert input.decodeNestedMessageAsGroup;
+		// protostuff format only.
+		assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<Object>();
-    }
+		references = new ArrayList<>();
+	}
 
-    public GraphCodedInput(CodedInput input, int initialCapacity)
-    {
-        super(input);
+	public GraphCodedInput(CodedInput input, int initialCapacity) {
+		super(input);
 
-        // protostuff format only.
-        assert input.decodeNestedMessageAsGroup;
+		// protostuff format only.
+		assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<Object>(initialCapacity);
-    }
+		references = new ArrayList<>(initialCapacity);
+	}
 
-    @Override
-    public void updateLast(Object morphedMessage, Object lastMessage)
-    {
-        final int last = references.size() - 1;
-        if (lastMessage != null && lastMessage == references.get(last))
-        {
-            // update the reference
-            references.set(last, morphedMessage);
-        }
-    }
+	@Override
+	public void updateLast(Object morphedMessage, Object lastMessage) {
+		final int last = references.size() - 1;
+		if (lastMessage != null && lastMessage == references.get(last)) {
+			// update the reference
+			references.set(last, morphedMessage);
+		}
+	}
 
-    @Override
-    public boolean isCurrentMessageReference()
-    {
-        return messageReference;
-    }
+	@Override
+	public boolean isCurrentMessageReference() {
+		return messageReference;
+	}
 
-    @Override
-    public <T> int readFieldNumber(Schema<T> schema) throws IOException
-    {
-        final int fieldNumber = input.readFieldNumber(schema);
-        if (WireFormat.getTagWireType(input.getLastTag()) == WIRETYPE_REFERENCE)
-        {
-            // a reference.
-            lastRef = input.readUInt32();
-            messageReference = true;
-        }
-        else
-        {
-            // always unset.
-            messageReference = false;
-        }
+	@Override
+	public <T> int readFieldNumber(Schema<T> schema) throws IOException {
+		final int fieldNumber = input.readFieldNumber(schema);
+		if (WireFormat.getTagWireType(input.getLastTag()) == WIRETYPE_REFERENCE) {
+			// a reference.
+			lastRef = input.readUInt32();
+			messageReference = true;
+		} else {
+			// always unset.
+			messageReference = false;
+		}
 
-        return fieldNumber;
-    }
+		return fieldNumber;
+	}
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T mergeObject(T value, Schema<T> schema) throws IOException
-    {
-        if (messageReference)
-        {
-            // a reference.
-            return (T) references.get(lastRef);
-        }
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
+		if (messageReference) {
+			// a reference.
+			return (T) references.get(lastRef);
+		}
 
-        lastSchema = (Schema<Object>) schema;
+		lastSchema = (Schema<Object>) schema;
 
-        if (value == null)
-            value = schema.newMessage();
+		if (value == null) {
+			value = schema.newMessage();
+		}
 
-        references.add(value);
+		references.add(value);
 
-        input.mergeObject(value, this);
+		input.mergeObject(value, this);
 
-        return value;
-    }
-    
-    @Override
-    public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
-    {
-        if (!messageReference)
-            input.skipField(input.getLastTag());
-    }
+		return value;
+	}
 
-    @Override
-    public String getFieldName(int number)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException {
+		if (!messageReference) {
+			input.skipField(input.getLastTag());
+		}
+	}
 
-    @Override
-    public int getFieldNumber(String name)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public String getFieldName(int number) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public boolean isInitialized(Object owner)
-    {
-        return true;
-    }
+	@Override
+	public int getFieldNumber(String name) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public String messageFullName()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public boolean isInitialized(Object owner) {
+		return true;
+	}
 
-    @Override
-    public String messageName()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public String messageFullName() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Object newMessage()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public String messageName() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Class<? super Object> typeClass()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Object newMessage() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public void mergeFrom(Input input, final Object message) throws IOException
-    {
-        final Schema<Object> schema = lastSchema;
+	@Override
+	public Class<? super Object> typeClass() {
+		throw new UnsupportedOperationException();
+	}
 
-        // merge using this input.
-        schema.mergeFrom(this, message);
-        if (!schema.isInitialized(message))
-            throw new UninitializedMessageException(message, schema);
+	@Override
+	public void mergeFrom(Input input, final Object message) throws IOException {
+		final Schema<Object> schema = lastSchema;
 
-        // restore
-        lastSchema = schema;
-    }
+		// merge using this input.
+		schema.mergeFrom(this, message);
+		if (!schema.isInitialized(message)) {
+			throw new UninitializedMessageException(message, schema);
+		}
 
-    @Override
-    public void writeTo(Output output, Object message) throws IOException
-    {
-        // only using mergeFrom.
-        throw new UnsupportedOperationException();
-    }
+		// restore
+		lastSchema = schema;
+	}
+
+	@Override
+	public void writeTo(Output output, Object message) throws IOException {
+		// only using mergeFrom.
+		throw new UnsupportedOperationException();
+	}
 
 }

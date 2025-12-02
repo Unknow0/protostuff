@@ -20,12 +20,11 @@ package io.protostuff;
  * @author David Yu
  * @created Nov 9, 2009
  */
-public interface Message<T>
-{
+public interface Message<T> {
 
-    /**
-     * Gets the cached schema of this message.
-     */
-    public Schema<T> cachedSchema();
+	/**
+	 * Gets the cached schema of this message.
+	 */
+	public Schema<T> cachedSchema();
 
 }

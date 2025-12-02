@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,76 +51,63 @@ import java.io.InputStream;
 /**
  * An InputStream implementations which reads from some other InputStream but is limited to a particular number of
  * bytes.
- * 
+ *
  * @author David Yu
  * @created Jan 14, 2010
  */
-public final class LimitedInputStream extends FilterInputStream
-{
-    private int limit;
+public final class LimitedInputStream extends FilterInputStream {
+	private int limit;
 
-    public LimitedInputStream(InputStream in)
-    {
-        super(in);
-    }
+	public LimitedInputStream(InputStream in) {
+		super(in);
+	}
 
-    public LimitedInputStream(InputStream in, int limit)
-    {
-        super(in);
-        this.limit = limit;
-    }
+	public LimitedInputStream(InputStream in, int limit) {
+		super(in);
+		this.limit = limit;
+	}
 
-    LimitedInputStream limit(int limit)
-    {
-        this.limit = limit;
-        return this;
-    }
+	LimitedInputStream limit(int limit) {
+		this.limit = limit;
+		return this;
+	}
 
-    @Override
-    public int available() throws IOException
-    {
-        return Math.min(super.available(), limit);
-    }
+	@Override
+	public int available() throws IOException {
+		return Math.min(super.available(), limit);
+	}
 
-    @Override
-    public int read() throws IOException
-    {
-        if (limit <= 0)
-        {
-            return -1;
-        }
-        final int result = super.read();
-        if (result >= 0)
-        {
-            --limit;
-        }
-        return result;
-    }
+	@Override
+	public int read() throws IOException {
+		if (limit <= 0) {
+			return -1;
+		}
+		final int result = super.read();
+		if (result >= 0) {
+			--limit;
+		}
+		return result;
+	}
 
-    @Override
-    public int read(final byte[] b, final int off, int len) throws IOException
-    {
-        if (limit <= 0)
-        {
-            return -1;
-        }
-        len = Math.min(len, limit);
-        final int result = super.read(b, off, len);
-        if (result >= 0)
-        {
-            limit -= result;
-        }
-        return result;
-    }
+	@Override
+	public int read(final byte[] b, final int off, int len) throws IOException {
+		if (limit <= 0) {
+			return -1;
+		}
+		len = Math.min(len, limit);
+		final int result = super.read(b, off, len);
+		if (result >= 0) {
+			limit -= result;
+		}
+		return result;
+	}
 
-    @Override
-    public long skip(final long n) throws IOException
-    {
-        final long result = super.skip(Math.min(n, limit));
-        if (result >= 0)
-        {
-            limit -= result;
-        }
-        return result;
-    }
+	@Override
+	public long skip(final long n) throws IOException {
+		final long result = super.skip(Math.min(n, limit));
+		if (result >= 0) {
+			limit -= result;
+		}
+		return result;
+	}
 }

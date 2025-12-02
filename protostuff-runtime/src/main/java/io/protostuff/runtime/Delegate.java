@@ -38,37 +38,34 @@ import io.protostuff.WireFormat.FieldType;
 /**
  * Controls how certain types are serialized and can even override the existing serializers because this has higher
  * priority when the fields are being built.
- * 
+ *
  * @author David Yu
  * @created Apr 20, 2012
  */
-public interface Delegate<V>
-{
+public interface Delegate<V> {
 
-    /**
-     * The field type (for possible reflective operations in future releases).
-     */
-    public FieldType getFieldType();
+	/**
+	 * The field type (for possible reflective operations in future releases).
+	 */
+	public FieldType getFieldType();
 
-    /**
-     * Reads the value from the input.
-     */
-    public V readFrom(Input input) throws IOException;
+	/**
+	 * Reads the value from the input.
+	 */
+	public V readFrom(Input input) throws IOException;
 
-    /**
-     * Writes the {@code value} to the output.
-     */
-    public void writeTo(Output output, int number, V value, boolean repeated)
-            throws IOException;
+	/**
+	 * Writes the {@code value} to the output.
+	 */
+	public void writeTo(Output output, int number, V value, boolean repeated) throws IOException;
 
-    /**
-     * Transfers the type from the input to the output.
-     */
-    public void transfer(Pipe pipe, Input input, Output output, int number,
-            boolean repeated) throws IOException;
+	/**
+	 * Transfers the type from the input to the output.
+	 */
+	public void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated) throws IOException;
 
-    /**
-     * The class of the target value.
-     */
-    public Class<?> typeClass();
+	/**
+	 * The class of the target value.
+	 */
+	public Class<?> typeClass();
 }

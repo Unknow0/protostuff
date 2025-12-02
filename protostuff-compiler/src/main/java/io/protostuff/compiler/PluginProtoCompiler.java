@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,383 +36,314 @@ import io.protostuff.parser.Service;
 /**
  * A plugin proto compiler whose output relies on the 'output' param configured in {@link ProtoModule}. The output param
  * should point to a StringTemplate resource (file, url, or from classpath).
- * 
+ *
  * @author David Yu
  * @created May 25, 2010
  */
-public class PluginProtoCompiler extends STCodeGenerator
-{
+public class PluginProtoCompiler extends STCodeGenerator {
 
-    /**
-     * To enable, specify -Dppc.check_filename_placeholder=true
-     */
-    protected static final boolean CHECK_FILENAME_PLACEHOLDER =
-            Boolean.getBoolean("ppc.check_filename_placeholder");
+	/**
+	 * To enable, specify -Dppc.check_filename_placeholder=true
+	 */
+	protected static final boolean CHECK_FILENAME_PLACEHOLDER = Boolean.getBoolean("ppc.check_filename_placeholder");
 
-    /**
-     * Resolve the stg from the module.
-     */
-    public interface GroupResolver
-    {
+	/**
+	 * Resolve the stg from the module.
+	 */
+	public interface GroupResolver {
 
-        /**
-         * Resolve the stg.
-         */
-        StringTemplateGroup resolveSTG(String stgLocation);
+		/**
+		 * Resolve the stg.
+		 */
+		StringTemplateGroup resolveSTG(String stgLocation);
 
-    }
+	}
 
-    public static final GroupResolver GROUP_RESOLVER = new GroupResolver()
-    {
+	public static final GroupResolver GROUP_RESOLVER = new GroupResolver() {
 
-        @Override
-        public StringTemplateGroup resolveSTG(String stgLocation)
-        {
-            try
-            {
-                File file = new File(stgLocation);
-                if (file.exists())
-                    return new StringTemplateGroup(new BufferedReader(new FileReader(file)));
+		@Override
+		public StringTemplateGroup resolveSTG(String stgLocation) {
+			try {
+				File file = new File(stgLocation);
+				if (file.exists()) {
+					try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+						return new StringTemplateGroup(r);
+					}
+				}
 
-                URL url = DefaultProtoLoader.getResource(stgLocation,
-                        PluginProtoCompiler.class);
-                if (url != null)
-                {
-                    return new StringTemplateGroup(new BufferedReader(
-                            new InputStreamReader(url.openStream(), "UTF-8")));
-                }
-                if (stgLocation.startsWith("http://"))
-                {
-                    return new StringTemplateGroup(new BufferedReader(
-                            new InputStreamReader(new URL(stgLocation).openStream(), "UTF-8")));
-                }
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException(e);
-            }
-            throw new IllegalStateException("Could not find " + stgLocation);
-        }
-    };
+				URL url = DefaultProtoLoader.getResource(stgLocation, PluginProtoCompiler.class);
+				if (url != null) {
+					try (BufferedReader r = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
+						return new StringTemplateGroup(r);
+					}
+				}
+				if (stgLocation.startsWith("http://")) {
+					try (BufferedReader r = new BufferedReader(new InputStreamReader(new URL(stgLocation).openStream(), "UTF-8"))) {
 
-    public static void setGroupResolver(GroupResolver resolver)
-    {
-        if (resolver != null)
-            __resolver = resolver;
-    }
+						return new StringTemplateGroup(r);
+					}
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			throw new IllegalStateException("Could not find " + stgLocation);
+		}
+	};
 
-    /**
-     * Returns null if template is not found.
-     */
-    public static StringTemplate getTemplateFrom(StringTemplateGroup group,
-            String template)
-    {
-        try
-        {
-            return group.lookupTemplate(template);
-        }
-        catch (IllegalArgumentException e)
-        {
-            return null;
-        }
-    }
+	public static void setGroupResolver(GroupResolver resolver) {
+		if (resolver != null) {
+			__resolver = resolver;
+		}
+	}
 
-    private static GroupResolver __resolver = GROUP_RESOLVER;
+	/**
+	 * Returns null if template is not found.
+	 */
+	public static StringTemplate getTemplateFrom(StringTemplateGroup group, String template) {
+		try {
+			return group.lookupTemplate(template);
+		} catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+			return null;
+		}
+	}
 
-    public final ProtoModule module;
+	private static GroupResolver __resolver = GROUP_RESOLVER;
 
-    public final StringTemplateGroup group;
-    public final StringTemplate enumBlockTemplate;
-    public final StringTemplate messageBlockTemplate;
-    public final StringTemplate protoBlockTemplate;
-    public final StringTemplate serviceBlockTemplate;
-    public final boolean javaOutput;
-    public final String fileExtension;
-    public final String outputName;
-    public final String outputPrefix;
-    public final String outputSuffix;
+	public final ProtoModule module;
 
-    public PluginProtoCompiler(ProtoModule module, String stgLocation)
-    {
-        this(module, stgLocation, CHECK_FILENAME_PLACEHOLDER);
-    }
+	public final StringTemplateGroup group;
+	public final StringTemplate enumBlockTemplate;
+	public final StringTemplate messageBlockTemplate;
+	public final StringTemplate protoBlockTemplate;
+	public final StringTemplate serviceBlockTemplate;
+	public final boolean javaOutput;
+	public final String fileExtension;
+	public final String outputName;
+	public final String outputPrefix;
+	public final String outputSuffix;
 
-    public PluginProtoCompiler(ProtoModule module, String stgLocation, boolean checkFilenamePlaceHolder)
-    {
-        this(module, checkFilenamePlaceHolder, resolveSTG(stgLocation));
-    }
+	public PluginProtoCompiler(ProtoModule module, String stgLocation) {
+		this(module, stgLocation, CHECK_FILENAME_PLACEHOLDER);
+	}
 
-    public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder,
-            StringTemplateGroup group)
-    {
-        super(module.getOutput());
+	public PluginProtoCompiler(ProtoModule module, String stgLocation, boolean checkFilenamePlaceHolder) {
+		this(module, checkFilenamePlaceHolder, resolveSTG(stgLocation));
+	}
 
-        this.module = module;
-        this.group = group;
+	public PluginProtoCompiler(ProtoModule module, boolean checkFilenamePlaceHolder, StringTemplateGroup group) {
+		super(module.getOutput());
 
-        protoBlockTemplate = getTemplateFrom(group, "proto_block");
-        if (protoBlockTemplate == null)
-        {
-            // validate that at least enum_block or message_block is present.
-            enumBlockTemplate = getTemplateFrom(group, "enum_block");
-            messageBlockTemplate = getTemplateFrom(group, "message_block");
-            serviceBlockTemplate = getTemplateFrom(group, "service_block");
+		this.module = module;
+		this.group = group;
 
-            if (enumBlockTemplate == null && messageBlockTemplate == null && serviceBlockTemplate == null)
-            {
-                throw new IllegalStateException("At least one of these templates " +
-                        "(proto_block|service_block|message_block|enum_block) " +
-                        "need to be declared in " + module.getOutput());
-            }
-        }
-        else
-        {
-            enumBlockTemplate = null;
-            messageBlockTemplate = null;
-            serviceBlockTemplate = null;
-        }
+		protoBlockTemplate = getTemplateFrom(group, "proto_block");
+		if (protoBlockTemplate == null) {
+			// validate that at least enum_block or message_block is present.
+			enumBlockTemplate = getTemplateFrom(group, "enum_block");
+			messageBlockTemplate = getTemplateFrom(group, "message_block");
+			serviceBlockTemplate = getTemplateFrom(group, "service_block");
 
-        fileExtension = getFileExtension(module.getOutput());
-        javaOutput = ".java".equalsIgnoreCase(fileExtension);
+			if (enumBlockTemplate == null && messageBlockTemplate == null && serviceBlockTemplate == null) {
+				throw new IllegalStateException(
+						"At least one of these templates " + "(proto_block|service_block|message_block|enum_block) " + "need to be declared in " + module.getOutput());
+			}
+		} else {
+			enumBlockTemplate = null;
+			messageBlockTemplate = null;
+			serviceBlockTemplate = null;
+		}
 
-        outputName = getOutputName(module.getOutput());
+		fileExtension = getFileExtension(module.getOutput());
+		javaOutput = ".java".equalsIgnoreCase(fileExtension);
 
-        final int placeHolder = checkFilenamePlaceHolder ? outputName.indexOf('$') : -1;
-        if (placeHolder == -1)
-        {
-            // no placeholder
-            outputPrefix = "";
-            outputSuffix = "";
-        }
-        else if (placeHolder == 0)
-        {
-            // suffix only
-            outputPrefix = "";
-            // check if provided text is only 1 char "$"
-            outputSuffix = outputName.length() == 1 ? "" : outputName.substring(1);
-        }
-        else if (placeHolder == outputName.length() - 1)
-        {
-            // prefix only
-            outputPrefix = outputName.substring(0, outputName.length() - 1);
-            outputSuffix = "";
-        }
-        else
-        {
-            // has both prefix and suffix
-            outputPrefix = outputName.substring(0, placeHolder);
-            outputSuffix = outputName.substring(placeHolder + 1);
-        }
-    }
+		outputName = getOutputName(module.getOutput());
 
-    /**
-     * Returns "foo" from "path/to/foo.java.stg"
-     */
-    static String getOutputName(String resource)
-    {
-        String filename = FilenameUtil.getFileName(resource);
-        int secondToTheLastDot = filename.lastIndexOf('.', filename.length() - 5);
-        return filename.substring(0, secondToTheLastDot);
-    }
+		final int placeHolder = checkFilenamePlaceHolder ? outputName.indexOf('$') : -1;
+		if (placeHolder == -1) {
+			// no placeholder
+			outputPrefix = "";
+			outputSuffix = "";
+		} else if (placeHolder == 0) {
+			// suffix only
+			outputPrefix = "";
+			// check if provided text is only 1 char "$"
+			outputSuffix = outputName.length() == 1 ? "" : outputName.substring(1);
+		} else if (placeHolder == outputName.length() - 1) {
+			// prefix only
+			outputPrefix = outputName.substring(0, outputName.length() - 1);
+			outputSuffix = "";
+		} else {
+			// has both prefix and suffix
+			outputPrefix = outputName.substring(0, placeHolder);
+			outputSuffix = outputName.substring(placeHolder + 1);
+		}
+	}
 
-    /**
-     * Get the file extension of the provided stg resource.
-     */
-    public static String getFileExtension(String resource)
-    {
-        // E.g uf foo.bar.java.stg, it is the . before "java"
-        int secondToTheLastDot = resource.lastIndexOf('.', resource.length() - 5);
-        if (secondToTheLastDot == -1)
-        {
-            throw new IllegalArgumentException("The resource must be named like: 'foo.type.stg' " +
-                    "where '.type' will be the file extension of the output files.");
-        }
-        String extension = resource.substring(secondToTheLastDot, resource.length() - 4);
-        // to protected against resources like "foo..stg"
-        if (extension.length() < 2)
-        {
-            throw new IllegalArgumentException("The resource must be named like: 'foo.type.stg' " +
-                    "where '.type' will be the file extension of the output files.");
-        }
+	/**
+	 * Returns "foo" from "path/to/foo.java.stg"
+	 */
+	static String getOutputName(String resource) {
+		String filename = FilenameUtil.getFileName(resource);
+		int secondToTheLastDot = filename.lastIndexOf('.', filename.length() - 5);
+		return filename.substring(0, secondToTheLastDot);
+	}
 
-        return extension;
-    }
+	/**
+	 * Get the file extension of the provided stg resource.
+	 */
+	public static String getFileExtension(String resource) {
+		// E.g uf foo.bar.java.stg, it is the . before "java"
+		int secondToTheLastDot = resource.lastIndexOf('.', resource.length() - 5);
+		if (secondToTheLastDot == -1) {
+			throw new IllegalArgumentException("The resource must be named like: 'foo.type.stg' " + "where '.type' will be the file extension of the output files.");
+		}
+		String extension = resource.substring(secondToTheLastDot, resource.length() - 4);
+		// to protected against resources like "foo..stg"
+		if (extension.length() < 2) {
+			throw new IllegalArgumentException("The resource must be named like: 'foo.type.stg' " + "where '.type' will be the file extension of the output files.");
+		}
 
-    /**
-     * Finds the stg resource.
-     */
-    public static StringTemplateGroup resolveSTG(String stgLocation)
-    {
-        return __resolver.resolveSTG(stgLocation);
-    }
+		return extension;
+	}
 
-    public String resolveFileName(String name)
-    {
-        return outputPrefix + name + outputSuffix + fileExtension;
-    }
+	/**
+	 * Finds the stg resource.
+	 */
+	public static StringTemplateGroup resolveSTG(String stgLocation) {
+		return __resolver.resolveSTG(stgLocation);
+	}
 
-    @Override
-    public void compile(ProtoModule module, Proto proto) throws IOException
-    {
-        if (!this.module.getOutput().startsWith(module.getOutput()))
-        {
-            throw new IllegalArgumentException("Wrong module: " +
-                    this.module.getOutput() + " != " + module.getOutput());
-        }
+	public String resolveFileName(String name) {
+		return outputPrefix + name + outputSuffix + fileExtension;
+	}
 
-        final String packageName = javaOutput ? proto.getJavaPackageName() :
-                proto.getPackageName();
+	@Override
+	public void compile(ProtoModule module, Proto proto) throws IOException {
+		if (!this.module.getOutput().startsWith(module.getOutput())) {
+			throw new IllegalArgumentException("Wrong module: " + this.module.getOutput() + " != " + module.getOutput());
+		}
 
-        if (protoBlockTemplate != null)
-        {
-            compileProtoBlock(module, proto, packageName, protoBlockTemplate);
-            return;
-        }
+		final String packageName = javaOutput ? proto.getJavaPackageName() : proto.getPackageName();
 
-        if (serviceBlockTemplate != null)
-        {
-            for (Service service : proto.getServices())
-            {
-                compileServiceBlock(module, service, packageName,
-                        resolveFileName(service.getName()), serviceBlockTemplate);
-            }
-        }
+		if (protoBlockTemplate != null) {
+			compileProtoBlock(module, proto, packageName, protoBlockTemplate);
+			return;
+		}
 
-        if (enumBlockTemplate != null)
-        {
-            for (EnumGroup eg : proto.getEnumGroups())
-            {
-                compileEnumBlock(module, eg, packageName,
-                        resolveFileName(eg.getName()), enumBlockTemplate);
-            }
-        }
+		if (serviceBlockTemplate != null) {
+			for (Service service : proto.getServices()) {
+				compileServiceBlock(module, service, packageName, resolveFileName(service.getName()), serviceBlockTemplate);
+			}
+		}
 
-        if (messageBlockTemplate != null)
-        {
-            for (Message message : proto.getMessages())
-            {
-                compileMessageBlock(module, message, packageName,
-                        resolveFileName(message.getName()), messageBlockTemplate);
-            }
-        }
-    }
+		if (enumBlockTemplate != null) {
+			for (EnumGroup eg : proto.getEnumGroups()) {
+				compileEnumBlock(module, eg, packageName, resolveFileName(eg.getName()), enumBlockTemplate);
+			}
+		}
 
-    private void compileServiceBlock(ProtoModule module, Service service, String packageName, String fileName,
-            StringTemplate serviceBlockTemplate) throws IOException
-    {
-        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
-        compileServiceBlockTo(writer, module, service, serviceBlockTemplate);
-        writer.close();
-    }
+		if (messageBlockTemplate != null) {
+			for (Message message : proto.getMessages()) {
+				compileMessageBlock(module, message, packageName, resolveFileName(message.getName()), messageBlockTemplate);
+			}
+		}
+	}
 
-    public static void compileServiceBlockTo(Writer writer,
-            ProtoModule module, Service service,
-            StringTemplate serviceBlockTemplate) throws IOException
-    {
-        AutoIndentWriter out = new AutoIndentWriter(writer);
+	private void compileServiceBlock(ProtoModule module, Service service, String packageName, String fileName, StringTemplate serviceBlockTemplate) throws IOException {
+		Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+		compileServiceBlockTo(writer, module, service, serviceBlockTemplate);
+		writer.close();
+	}
 
-        StringTemplate messageBlock = serviceBlockTemplate.getInstanceOf();
-        messageBlock.setAttribute("service", service);
-        messageBlock.setAttribute("module", module);
-        messageBlock.setAttribute("options", module.getOptions());
+	public static void compileServiceBlockTo(Writer writer, ProtoModule module, Service service, StringTemplate serviceBlockTemplate) throws IOException {
+		AutoIndentWriter out = new AutoIndentWriter(writer);
 
-        messageBlock.write(out);
-    }
+		StringTemplate messageBlock = serviceBlockTemplate.getInstanceOf();
+		messageBlock.setAttribute("service", service);
+		messageBlock.setAttribute("module", module);
+		messageBlock.setAttribute("options", module.getOptions());
 
-    public static void compileEnumBlock(ProtoModule module, EnumGroup eg,
-            String packageName, String fileName,
-            StringTemplate enumBlockTemplate) throws IOException
-    {
-        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+		messageBlock.write(out);
+	}
 
-        compileEnumBlockTo(writer, module, eg, enumBlockTemplate);
+	public static void compileEnumBlock(ProtoModule module, EnumGroup eg, String packageName, String fileName, StringTemplate enumBlockTemplate) throws IOException {
+		Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
 
-        writer.close();
-    }
+		compileEnumBlockTo(writer, module, eg, enumBlockTemplate);
 
-    public static void compileEnumBlockTo(Writer writer,
-            ProtoModule module, EnumGroup eg,
-            StringTemplate enumBlockTemplate) throws IOException
-    {
-        AutoIndentWriter out = new AutoIndentWriter(writer);
+		writer.close();
+	}
 
-        StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
-        enumBlock.setAttribute("eg", eg);
-        enumBlock.setAttribute("module", module);
-        enumBlock.setAttribute("options", module.getOptions());
+	public static void compileEnumBlockTo(Writer writer, ProtoModule module, EnumGroup eg, StringTemplate enumBlockTemplate) throws IOException {
+		AutoIndentWriter out = new AutoIndentWriter(writer);
 
-        enumBlock.write(out);
-    }
+		StringTemplate enumBlock = enumBlockTemplate.getInstanceOf();
+		enumBlock.setAttribute("eg", eg);
+		enumBlock.setAttribute("module", module);
+		enumBlock.setAttribute("options", module.getOptions());
 
-    public static void compileMessageBlock(ProtoModule module, Message message,
-            String packageName, String fileName,
-            StringTemplate messageBlockTemplate) throws IOException
-    {
-        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+		enumBlock.write(out);
+	}
 
-        compileMessageBlockTo(writer, module, message, messageBlockTemplate);
+	public static void compileMessageBlock(ProtoModule module, Message message, String packageName, String fileName, StringTemplate messageBlockTemplate) throws IOException {
+		Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
 
-        writer.close();
-    }
+		compileMessageBlockTo(writer, module, message, messageBlockTemplate);
 
-    public static void compileMessageBlockTo(Writer writer,
-            ProtoModule module, Message message,
-            StringTemplate messageBlockTemplate) throws IOException
-    {
-        AutoIndentWriter out = new AutoIndentWriter(writer);
+		writer.close();
+	}
 
-        StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
-        messageBlock.setAttribute("message", message);
-        messageBlock.setAttribute("module", module);
-        messageBlock.setAttribute("options", module.getOptions());
+	public static void compileMessageBlockTo(Writer writer, ProtoModule module, Message message, StringTemplate messageBlockTemplate) throws IOException {
+		AutoIndentWriter out = new AutoIndentWriter(writer);
 
-        messageBlock.write(out);
-    }
+		StringTemplate messageBlock = messageBlockTemplate.getInstanceOf();
+		messageBlock.setAttribute("message", message);
+		messageBlock.setAttribute("module", module);
+		messageBlock.setAttribute("options", module.getOptions());
 
-    public void compileProtoBlock(ProtoModule module, Proto proto,
-            String packageName, StringTemplate protoBlockTemplate) throws IOException
-    {
-        String name = ProtoUtil.toPascalCase(proto.getFile().getName().replace(
-                ".proto", "")).toString();
+		messageBlock.write(out);
+	}
 
-        if (javaOutput)
-        {
-            String outerClassname = proto.getExtraOption("java_outer_classname");
-            if (outerClassname != null)
-                name = outerClassname;
-        }
+	public void compileProtoBlock(ProtoModule module, Proto proto, String packageName, StringTemplate protoBlockTemplate) throws IOException {
+		String name = ProtoUtil.toPascalCase(proto.getFile().getName().replace(".proto", "")).toString();
 
-        final String fileName;
-        if (outputPrefix.isEmpty() && outputSuffix.isEmpty())
-        {
-            // resolve the prefix/suffix from module option
-            String outerFilePrefix = module.getOption("outer_file_prefix");
-            if (outerFilePrefix != null)
-                name = outerFilePrefix + name;
+		if (javaOutput) {
+			String outerClassname = proto.getExtraOption("java_outer_classname");
+			if (outerClassname != null) {
+				name = outerClassname;
+			}
+		}
 
-            String outerFileSuffix = module.getOption("outer_file_suffix");
-            if (outerFileSuffix != null)
-                name += outerFileSuffix;
+		final String fileName;
+		if (outputPrefix.isEmpty() && outputSuffix.isEmpty()) {
+			// resolve the prefix/suffix from module option
+			String outerFilePrefix = module.getOption("outer_file_prefix");
+			if (outerFilePrefix != null) {
+				name = outerFilePrefix + name;
+			}
 
-            fileName = name + fileExtension;
-        }
-        else
-        {
-            // use the placeholder in the output name
-            fileName = resolveFileName(name);
-        }
+			String outerFileSuffix = module.getOption("outer_file_suffix");
+			if (outerFileSuffix != null) {
+				name += outerFileSuffix;
+			}
 
-        Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
+			fileName = name + fileExtension;
+		} else {
+			// use the placeholder in the output name
+			fileName = resolveFileName(name);
+		}
 
-        AutoIndentWriter out = new AutoIndentWriter(writer);
+		Writer writer = CompilerUtil.newWriter(module, packageName, fileName);
 
-        StringTemplate protoBlock = protoBlockTemplate.getInstanceOf();
-        protoBlock.setAttribute("proto", proto);
-        protoBlock.setAttribute("module", module);
-        protoBlock.setAttribute("options", module.getOptions());
+		AutoIndentWriter out = new AutoIndentWriter(writer);
 
-        protoBlock.write(out);
-        writer.close();
-    }
+		StringTemplate protoBlock = protoBlockTemplate.getInstanceOf();
+		protoBlock.setAttribute("proto", proto);
+		protoBlock.setAttribute("module", module);
+		protoBlock.setAttribute("options", module.getOptions());
+
+		protoBlock.write(out);
+		writer.close();
+	}
 
 }

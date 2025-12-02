@@ -50,7 +50,6 @@ package io.protostuff;
  * @author David Yu
  * @created Jan 8, 2010
  */
-public interface EnumLite<E extends Enum<E>>
-{
-    public int getNumber();
+public interface EnumLite<E extends Enum<E>> {
+	public int getNumber();
 }

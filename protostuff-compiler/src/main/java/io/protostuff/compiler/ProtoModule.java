@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,201 +21,177 @@ import java.util.Properties;
 
 /**
  * Configuration for the proto w/c ontains the compile options and arguments.
- * 
+ *
  * @author David Yu
  * @created Jan 5, 2010
  */
-public class ProtoModule implements Serializable
-{
+public class ProtoModule implements Serializable {
 
-    public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
-    
-    /**
-     * {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
-     */
-    public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0").startsWith("1.");
+	public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
 
-    private static final long serialVersionUID = 6231036933426077777L;
+	/**
+	 * {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
+	 */
+	public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0").startsWith("1.");
 
-    private File source;
-    private String output;
-    private String encoding;
-    private File outputDir;
-    private String generator;
+	private static final long serialVersionUID = 6231036933426077777L;
 
-    private Properties options = new Properties();
-    Properties config;
+	private File source;
+	private String output;
+	private String encoding;
+	private File outputDir;
+	private String generator;
 
-    private CachingProtoLoader protoLoader;
+	private Properties options = new Properties();
+	Properties config;
 
-    private HashMap<String, Object> attributes = new HashMap<String, Object>();
+	private CachingProtoLoader protoLoader;
 
-    public ProtoModule()
-    {
+	private HashMap<String, Object> attributes = new HashMap<>();
 
-    }
+	public ProtoModule() {
 
-    public ProtoModule(File source, String output, String encoding, File outputDir)
-    {
-        super();
-        this.source = source;
-        this.output = output;
-        this.encoding = encoding;
-        this.outputDir = outputDir;
-    }
+	}
 
-    /**
-     * @return the source
-     */
-    public File getSource()
-    {
-        return source;
-    }
+	public ProtoModule(File source, String output, String encoding, File outputDir) {
+		super();
+		this.source = source;
+		this.output = output;
+		this.encoding = encoding;
+		this.outputDir = outputDir;
+	}
 
-    /**
-     * @param source
-     *            the source to set
-     */
-    public void setSource(File source)
-    {
-        this.source = source;
-    }
+	/**
+	 * @return the source
+	 */
+	public File getSource() {
+		return source;
+	}
 
-    /**
-     * @return the output
-     */
-    public String getOutput()
-    {
-        return output;
-    }
+	/**
+	 * @param source
+	 *            the source to set
+	 */
+	public void setSource(File source) {
+		this.source = source;
+	}
 
-    /**
-     * @param output
-     *            the output to set
-     */
-    public void setOutput(String output)
-    {
-        this.output = output;
-    }
+	/**
+	 * @return the output
+	 */
+	public String getOutput() {
+		return output;
+	}
 
-    /**
-     * Determines if current runtime environment is JDK version 9 or above.
-     */
-    public boolean isJavaVersion9()
-    {
-        return JAVA_9_AND_ABOVE;
-    }
+	/**
+	 * @param output
+	 *            the output to set
+	 */
+	public void setOutput(String output) {
+		this.output = output;
+	}
 
-    /**
-     *
-     * @return the current generator name that can be used generated code for identification
-     */
-    public String getGenerator()
-    {
-        return generator == null ? DEFAULT_GENERATOR_NAME : generator;
-    }
+	/**
+	 * Determines if current runtime environment is JDK version 9 or above.
+	 */
+	public boolean isJavaVersion9() {
+		return JAVA_9_AND_ABOVE;
+	}
 
-    /**
-     * Set current generator name
-     *
-     * @param generator
-     *            the generator name
-     */
-    public void setGenerator(String generator)
-    {
-        this.generator = generator;
-    }
+	/**
+	 *
+	 * @return the current generator name that can be used generated code for identification
+	 */
+	public String getGenerator() {
+		return generator == null ? DEFAULT_GENERATOR_NAME : generator;
+	}
 
-    /**
-     * @return the encoding
-     */
-    public String getEncoding()
-    {
-        return encoding;
-    }
+	/**
+	 * Set current generator name
+	 *
+	 * @param generator
+	 *            the generator name
+	 */
+	public void setGenerator(String generator) {
+		this.generator = generator;
+	}
 
-    /**
-     * @param encoding
-     *            the encoding to set
-     */
-    public void setEncoding(String encoding)
-    {
-        this.encoding = encoding;
-    }
+	/**
+	 * @return the encoding
+	 */
+	public String getEncoding() {
+		return encoding;
+	}
 
-    /**
-     * @return the outputDir
-     */
-    public File getOutputDir()
-    {
-        return outputDir;
-    }
+	/**
+	 * @param encoding
+	 *            the encoding to set
+	 */
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
 
-    /**
-     * @param outputDir
-     *            the outputDir to set
-     */
-    public void setOutputDir(File outputDir)
-    {
-        this.outputDir = outputDir;
-    }
+	/**
+	 * @return the outputDir
+	 */
+	public File getOutputDir() {
+		return outputDir;
+	}
 
-    /**
-     * @return the options
-     */
-    public Properties getOptions()
-    {
-        return options;
-    }
+	/**
+	 * @param outputDir
+	 *            the outputDir to set
+	 */
+	public void setOutputDir(File outputDir) {
+		this.outputDir = outputDir;
+	}
 
-    /**
-     * @param options
-     */
-    public void setOptions(Properties options)
-    {
-        this.options.putAll(options);
-    }
+	/**
+	 * @return the options
+	 */
+	public Properties getOptions() {
+		return options;
+	}
 
-    public String getOption(String key)
-    {
-        return options.getProperty(key);
-    }
+	/**
+	 * @param options
+	 */
+	public void setOptions(Properties options) {
+		this.options.putAll(options);
+	}
 
-    public void setOption(String key, String value)
-    {
-        options.setProperty(key, value);
-    }
+	public String getOption(String key) {
+		return options.getProperty(key);
+	}
 
-    public CachingProtoLoader getCachingProtoLoader()
-    {
-        return protoLoader;
-    }
+	public void setOption(String key, String value) {
+		options.setProperty(key, value);
+	}
 
-    public void setCachingProtoLoader(CachingProtoLoader protoLoader)
-    {
-        this.protoLoader = protoLoader;
-    }
+	public CachingProtoLoader getCachingProtoLoader() {
+		return protoLoader;
+	}
 
-    public Properties getConfig()
-    {
-        return config;
-    }
+	public void setCachingProtoLoader(CachingProtoLoader protoLoader) {
+		this.protoLoader = protoLoader;
+	}
 
-    public void setAttribute(String key, Object value)
-    {
-        attributes.put(key, value);
-    }
+	public Properties getConfig() {
+		return config;
+	}
 
-    /**
-     * Alias for {@link #getAttributes()}.
-     */
-    public HashMap<String, Object> getAttrs()
-    {
-        return attributes;
-    }
+	public void setAttribute(String key, Object value) {
+		attributes.put(key, value);
+	}
 
-    public HashMap<String, Object> getAttributes()
-    {
-        return attributes;
-    }
+	/**
+	 * Alias for {@link #getAttributes()}.
+	 */
+	public HashMap<String, Object> getAttrs() {
+		return attributes;
+	}
+
+	public HashMap<String, Object> getAttributes() {
+		return attributes;
+	}
 }

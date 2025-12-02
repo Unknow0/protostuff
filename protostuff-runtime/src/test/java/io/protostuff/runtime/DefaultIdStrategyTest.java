@@ -8,31 +8,27 @@ import org.mockito.Mockito;
 import io.protostuff.Message;
 import io.protostuff.Schema;
 
-public class DefaultIdStrategyTest
-{
+public class DefaultIdStrategyTest {
 
-    private final IdStrategy strategy = new DefaultIdStrategy();
+	private final IdStrategy strategy = new DefaultIdStrategy();
 
-    @Test
-    public void privateConstructors()
-    {
-        HasSchema<TestMessage> schema = strategy.getSchemaWrapper(TestMessage.class, true);
-        assertEquals(TestMessage.SCHEMA, schema.getSchema());
-    }
+	@Test
+	public void privateConstructors() {
+		HasSchema<TestMessage> schema = strategy.getSchemaWrapper(TestMessage.class, true);
+		assertEquals(TestMessage.SCHEMA, schema.getSchema());
+	}
 
-    public static class TestMessage implements Message<TestMessage>
-    {
+	public static class TestMessage implements Message<TestMessage> {
 
-        private static final Schema<TestMessage> SCHEMA = Mockito.mock(Schema.class);
+		@SuppressWarnings("unchecked")
+		private static final Schema<TestMessage> SCHEMA = Mockito.mock(Schema.class);
 
-        private TestMessage()
-        {
-        }
+		private TestMessage() {
+		}
 
-        @Override
-        public Schema<TestMessage> cachedSchema()
-        {
-            return SCHEMA;
-        }
-    }
+		@Override
+		public Schema<TestMessage> cachedSchema() {
+			return SCHEMA;
+		}
+	}
 }
