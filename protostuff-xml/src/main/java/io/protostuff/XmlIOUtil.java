@@ -119,7 +119,7 @@ public final class XmlIOUtil {
 				if (cleanupOnly) {
 					try {
 						parser.close();
-					} catch (XMLStreamException e) {
+					} catch (@SuppressWarnings("unused") XMLStreamException e) {
 						// ignore
 					}
 					return;
@@ -132,7 +132,7 @@ public final class XmlIOUtil {
 
 				try {
 					parser.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// end of pipe transfer ... ignore
 				}
 
@@ -191,7 +191,7 @@ public final class XmlIOUtil {
 			if (parser != null) {
 				try {
 					parser.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// ignore
 				}
 			}
@@ -219,7 +219,7 @@ public final class XmlIOUtil {
 			if (parser != null) {
 				try {
 					parser.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// ignore
 				}
 			}
@@ -296,7 +296,7 @@ public final class XmlIOUtil {
 			if (writer != null) {
 				try {
 					writer.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// ignore
 				}
 			}
@@ -329,7 +329,7 @@ public final class XmlIOUtil {
 			if (writer != null) {
 				try {
 					writer.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// ignore
 				}
 			}
@@ -373,7 +373,7 @@ public final class XmlIOUtil {
 			if (writer != null) {
 				try {
 					writer.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// ignore
 				}
 			}
@@ -423,7 +423,7 @@ public final class XmlIOUtil {
 			if (parser != null) {
 				try {
 					parser.close();
-				} catch (XMLStreamException e) {
+				} catch (@SuppressWarnings("unused") XMLStreamException e) {
 					// ignore
 				}
 			}

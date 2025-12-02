@@ -823,7 +823,7 @@ public abstract class AbstractRuntimeCollectionSchemaTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidCollectionElement() throws IOException {
+	public void testInvalidCollectionElement() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		List decals = new ArrayList();

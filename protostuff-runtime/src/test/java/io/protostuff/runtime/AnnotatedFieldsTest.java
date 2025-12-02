@@ -44,6 +44,7 @@ import io.protostuff.Tag;
  * @author David Yu
  * @created Mar 30, 2012
  */
+@SuppressWarnings("deprecation")
 public class AnnotatedFieldsTest {
 
 	public static class EntityFullyAnnotated {
@@ -129,7 +130,7 @@ public class AnnotatedFieldsTest {
 		try {
 			RuntimeSchema.getSchema(EntityPartlyAnnotated1.class);
 			fail();
-		} catch (RuntimeException e) {
+		} catch (@SuppressWarnings("unused") RuntimeException e) {
 			// expected
 		}
 	}
@@ -139,7 +140,7 @@ public class AnnotatedFieldsTest {
 		try {
 			RuntimeSchema.getSchema(EntityPartlyAnnotated2.class);
 			fail();
-		} catch (RuntimeException e) {
+		} catch (@SuppressWarnings("unused") RuntimeException e) {
 			// expected
 		}
 	}
@@ -149,7 +150,7 @@ public class AnnotatedFieldsTest {
 		try {
 			RuntimeSchema.getSchema(EntityInvalidAnnotated1.class);
 			fail();
-		} catch (RuntimeException e) {
+		} catch (@SuppressWarnings("unused") RuntimeException e) {
 			// expected
 		}
 	}
@@ -159,7 +160,7 @@ public class AnnotatedFieldsTest {
 		try {
 			RuntimeSchema.getSchema(EntityInvalidAnnotated1.class);
 			fail();
-		} catch (RuntimeException e) {
+		} catch (@SuppressWarnings("unused") RuntimeException e) {
 			// expected
 		}
 	}
@@ -169,7 +170,7 @@ public class AnnotatedFieldsTest {
 		try {
 			RuntimeSchema.getSchema(EntityInvalidTagNumber.class);
 			fail();
-		} catch (RuntimeException e) {
+		} catch (@SuppressWarnings("unused") RuntimeException e) {
 			// expected
 		}
 	}

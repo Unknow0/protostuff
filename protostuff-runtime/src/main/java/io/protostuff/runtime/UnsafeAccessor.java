@@ -22,6 +22,7 @@ import static io.protostuff.runtime.RuntimeUnsafeFieldFactory.us;
  * @author David Yu
  * @created Oct 11, 2016
  */
+@SuppressWarnings("restriction")
 public final class UnsafeAccessor extends Accessor {
 	static final Accessor.Factory FACTORY = new Factory() {
 		@Override

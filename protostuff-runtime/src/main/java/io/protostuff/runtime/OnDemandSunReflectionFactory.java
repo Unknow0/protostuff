@@ -31,7 +31,7 @@ final class OnDemandSunReflectionFactory {
 	private OnDemandSunReflectionFactory() {
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "restriction" })
 	static <T> Constructor<T> getConstructor(Class<T> clazz, Constructor<Object> constructor) {
 		return (Constructor<T>) sun.reflect.ReflectionFactory.getReflectionFactory().newConstructorForSerialization(clazz, constructor);
 	}

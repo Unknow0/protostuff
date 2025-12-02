@@ -304,7 +304,7 @@ public final class DefaultIdStrategy extends IdStrategy {
 
 	@Override
 	protected void writeMapIdTo(Output output, int fieldNumber, Class<?> clazz) throws IOException {
-		final MapSchema.MessageFactory factory = mapMapping.get(clazz);
+		final MapSchema.MessageFactory factory = mapMapping.get(clazz.getName());
 		if (factory == null && clazz.getName().startsWith("java.util") && MapSchema.MessageFactories.accept(clazz.getSimpleName())) {
 			// jdk map
 			// better not to register the jdk map if using this strategy

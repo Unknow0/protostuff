@@ -213,7 +213,7 @@ public class LazyRegisterTest extends AbstractTest {
 		assertTrue(objParsed.omap != null && objParsed.omap.size() == 1 && objParsed.omap.get("obj") instanceof MainData);
 		verifyEquals(testdata, (MainData) objParsed.omap.get("obj"));
 
-		assertTrue(objParsed.map != null && objParsed.map.size() == 1 && objParsed.map.get("obj") instanceof MainData);
+		assertTrue(objParsed.map != null && objParsed.map.size() == 1 && objParsed.map.get("obj") != null);
 		verifyEquals(testdata, objParsed.map.get("obj"));
 	}
 }

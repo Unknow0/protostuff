@@ -33,7 +33,6 @@ import io.protostuff.Schema;
  */
 public class FieldExclusionTest {
 
-	@SuppressWarnings("unused")
 	public static class EmptyFieldsPojo {
 
 		transient int someInt;
@@ -42,7 +41,6 @@ public class FieldExclusionTest {
 		boolean g;
 	}
 
-	@SuppressWarnings("unused")
 	public static class ComplexFieldsPojo {
 
 		Collection<String[]> someCollectionValueArray;

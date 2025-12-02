@@ -30,69 +30,54 @@ import java.util.List;
  * @author David Yu
  * @created Jan 5, 2010
  */
-public final class CompilerUtil
-{
+public final class CompilerUtil {
 
-    public static Writer newWriter(ProtoModule module, String packageName, String fileName)
-            throws IOException
-    {
-        String encoding = module.getEncoding();
-        if (encoding == null || encoding.isEmpty())
-        {
-            encoding = "UTF-8";
-        }
+	public static Writer newWriter(ProtoModule module, String packageName, String fileName) throws IOException {
+		String encoding = module.getEncoding();
+		if (encoding == null || encoding.isEmpty()) {
+			encoding = "UTF-8";
+		}
 
-        File packageDir = new File(module.getOutputDir(), packageName.replace('.', '/'));
-        if (!packageDir.exists())
-        {
-            packageDir.mkdirs();
-        }
+		File packageDir = new File(module.getOutputDir(), packageName.replace('.', '/'));
+		if (!packageDir.exists()) {
+			packageDir.mkdirs();
+		}
 
-        File outputFile = new File(packageDir, fileName);
-        FileOutputStream out = new FileOutputStream(outputFile);
-        return new BufferedWriter(new OutputStreamWriter(out, encoding));
-    }
+		File outputFile = new File(packageDir, fileName);
+		FileOutputStream out = new FileOutputStream(outputFile);
+		return new BufferedWriter(new OutputStreamWriter(out, encoding));
+	}
 
-    public static List<File> getProtoFiles(File dir)
-    {
-        return getFilesByExtension(dir, new String[] { ".proto" });
-    }
+	public static List<File> getProtoFiles(File dir) {
+		return getFilesByExtension(dir, new String[] { ".proto" });
+	}
 
-    /**
-     * Returns a list of file filtered by their file types/extensions; (E.g ".proto")
-     */
-    public static List<File> getFilesByExtension(File dir, String[] extensions)
-    {
-        if (!dir.isDirectory() || extensions == null)
-        {
-            return Collections.emptyList();
-        }
-        List<File> files = new ArrayList<>();
-        addFilesByExtension(files, dir, extensions);
-        return files;
-    }
+	/**
+	 * Returns a list of file filtered by their file types/extensions; (E.g ".proto")
+	 */
+	public static List<File> getFilesByExtension(File dir, String[] extensions) {
+		if (!dir.isDirectory() || extensions == null) {
+			return Collections.emptyList();
+		}
+		List<File> files = new ArrayList<>();
+		addFilesByExtension(files, dir, extensions);
+		return files;
+	}
 
-    static void addFilesByExtension(List<File> list, File dir, String[] extensions)
-    {
-        File[] files = dir.listFiles();
-        for (File f : files)
-        {
-            if (f.isDirectory())
-            {
-                addFilesByExtension(list, f, extensions);
-            }
-            else
-            {
-                for (String s : extensions)
-                {
-                    if (f.getName().endsWith(s))
-                    {
-                        list.add(f);
-                        break;
-                    }
-                }
-            }
-        }
-    }
+	static void addFilesByExtension(List<File> list, File dir, String[] extensions) {
+		File[] files = dir.listFiles();
+		for (File f : files) {
+			if (f.isDirectory()) {
+				addFilesByExtension(list, f, extensions);
+			} else {
+				for (String s : extensions) {
+					if (f.getName().endsWith(s)) {
+						list.add(f);
+						break;
+					}
+				}
+			}
+		}
+	}
 
 }

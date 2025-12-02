@@ -118,10 +118,10 @@ public abstract class PolymorphicPojoSchema extends PolymorphicSchema {
 			throw new ProtostuffException("Corrupt input.");
 		}
 
-		return readObjectFrom(input, schema, owner, strategy, number);
+		return readObjectFrom(input, owner, strategy, number);
 	}
 
-	static Object readObjectFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, int number) throws IOException {
+	static Object readObjectFrom(Input input, Object owner, IdStrategy strategy, int number) throws IOException {
 		final Schema<Object> derivedSchema = strategy.resolvePojoFrom(input, number).getSchema();
 
 		final Object pojo = derivedSchema.newMessage();

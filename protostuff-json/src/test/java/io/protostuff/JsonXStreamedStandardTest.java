@@ -23,29 +23,22 @@ import java.io.IOException;
  * @author David Yu
  * @created Oct 11, 2010
  */
-public class JsonXStreamedStandardTest extends StandardTest
-{
+public class JsonXStreamedStandardTest extends StandardTest {
 
-    @Override
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
-            Schema<T> schema) throws IOException
-    {
-        JsonXIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
-    }
+	@Override
+	protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		JsonXIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
+	}
 
-    @Override
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try
-        {
-            JsonXIOUtil.writeTo(out, message, schema, false, buf());
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-        return out.toByteArray();
-    }
+	@Override
+	protected <T> byte[] toByteArray(T message, Schema<T> schema) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			JsonXIOUtil.writeTo(out, message, schema, false, buf());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return out.toByteArray();
+	}
 
 }

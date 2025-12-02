@@ -25,198 +25,173 @@ import java.util.Properties;
  * @author David Yu
  * @created Jan 5, 2010
  */
-public class ProtoModule implements Serializable
-{
+public class ProtoModule implements Serializable {
 
-    public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
+	public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
 
-    /**
-     * {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
-     */
-    public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0")
-            .startsWith("1.");
+	/**
+	 * {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
+	 */
+	public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0").startsWith("1.");
 
-    private static final long serialVersionUID = 6231036933426077777L;
+	private static final long serialVersionUID = 6231036933426077777L;
 
-    private File source;
-    private String output;
-    private String encoding;
-    private File outputDir;
-    private String generator;
+	private File source;
+	private String output;
+	private String encoding;
+	private File outputDir;
+	private String generator;
 
-    private Properties options = new Properties();
-    Properties config;
+	private Properties options = new Properties();
+	Properties config;
 
-    private CachingProtoLoader protoLoader;
+	private CachingProtoLoader protoLoader;
 
-    private HashMap<String, Object> attributes = new HashMap<>();
+	private HashMap<String, Object> attributes = new HashMap<>();
 
-    public ProtoModule()
-    {
+	public ProtoModule() {
 
-    }
+	}
 
-    public ProtoModule(File source, String output, String encoding, File outputDir)
-    {
-        super();
-        this.source = source;
-        this.output = output;
-        this.encoding = encoding;
-        this.outputDir = outputDir;
-    }
+	public ProtoModule(File source, String output, String encoding, File outputDir) {
+		super();
+		this.source = source;
+		this.output = output;
+		this.encoding = encoding;
+		this.outputDir = outputDir;
+	}
 
-    /**
-     * @return the source
-     */
-    public File getSource()
-    {
-        return source;
-    }
+	/**
+	 * @return the source
+	 */
+	public File getSource() {
+		return source;
+	}
 
-    /**
-     * @param source
-     *            the source to set
-     */
-    public void setSource(File source)
-    {
-        this.source = source;
-    }
+	/**
+	 * @param source
+	 *            the source to set
+	 */
+	public void setSource(File source) {
+		this.source = source;
+	}
 
-    /**
-     * @return the output
-     */
-    public String getOutput()
-    {
-        return output;
-    }
+	/**
+	 * @return the output
+	 */
+	public String getOutput() {
+		return output;
+	}
 
-    /**
-     * @param output
-     *            the output to set
-     */
-    public void setOutput(String output)
-    {
-        this.output = output;
-    }
+	/**
+	 * @param output
+	 *            the output to set
+	 */
+	public void setOutput(String output) {
+		this.output = output;
+	}
 
-    /**
-     * Determines if current runtime environment is JDK version 9 or above.
-     */
-    public boolean isJavaVersion9()
-    {
-        return JAVA_9_AND_ABOVE;
-    }
+	/**
+	 * Determines if current runtime environment is JDK version 9 or above.
+	 */
+	public boolean isJavaVersion9() {
+		return JAVA_9_AND_ABOVE;
+	}
 
-    /**
-     *
-     * @return the current generator name that can be used generated code for identification
-     */
-    public String getGenerator()
-    {
-        return generator == null ? DEFAULT_GENERATOR_NAME : generator;
-    }
+	/**
+	 *
+	 * @return the current generator name that can be used generated code for identification
+	 */
+	public String getGenerator() {
+		return generator == null ? DEFAULT_GENERATOR_NAME : generator;
+	}
 
-    /**
-     * Set current generator name
-     *
-     * @param generator
-     *            the generator name
-     */
-    public void setGenerator(String generator)
-    {
-        this.generator = generator;
-    }
+	/**
+	 * Set current generator name
+	 *
+	 * @param generator
+	 *            the generator name
+	 */
+	public void setGenerator(String generator) {
+		this.generator = generator;
+	}
 
-    /**
-     * @return the encoding
-     */
-    public String getEncoding()
-    {
-        return encoding;
-    }
+	/**
+	 * @return the encoding
+	 */
+	public String getEncoding() {
+		return encoding;
+	}
 
-    /**
-     * @param encoding
-     *            the encoding to set
-     */
-    public void setEncoding(String encoding)
-    {
-        this.encoding = encoding;
-    }
+	/**
+	 * @param encoding
+	 *            the encoding to set
+	 */
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
 
-    /**
-     * @return the outputDir
-     */
-    public File getOutputDir()
-    {
-        return outputDir;
-    }
+	/**
+	 * @return the outputDir
+	 */
+	public File getOutputDir() {
+		return outputDir;
+	}
 
-    /**
-     * @param outputDir
-     *            the outputDir to set
-     */
-    public void setOutputDir(File outputDir)
-    {
-        this.outputDir = outputDir;
-    }
+	/**
+	 * @param outputDir
+	 *            the outputDir to set
+	 */
+	public void setOutputDir(File outputDir) {
+		this.outputDir = outputDir;
+	}
 
-    /**
-     * @return the options
-     */
-    public Properties getOptions()
-    {
-        return options;
-    }
+	/**
+	 * @return the options
+	 */
+	public Properties getOptions() {
+		return options;
+	}
 
-    /**
-     * @param options
-     */
-    public void setOptions(Properties options)
-    {
-        this.options.putAll(options);
-    }
+	/**
+	 * @param options
+	 */
+	public void setOptions(Properties options) {
+		this.options.putAll(options);
+	}
 
-    public String getOption(String key)
-    {
-        return options.getProperty(key);
-    }
+	public String getOption(String key) {
+		return options.getProperty(key);
+	}
 
-    public void setOption(String key, String value)
-    {
-        options.setProperty(key, value);
-    }
+	public void setOption(String key, String value) {
+		options.setProperty(key, value);
+	}
 
-    public CachingProtoLoader getCachingProtoLoader()
-    {
-        return protoLoader;
-    }
+	public CachingProtoLoader getCachingProtoLoader() {
+		return protoLoader;
+	}
 
-    public void setCachingProtoLoader(CachingProtoLoader protoLoader)
-    {
-        this.protoLoader = protoLoader;
-    }
+	public void setCachingProtoLoader(CachingProtoLoader protoLoader) {
+		this.protoLoader = protoLoader;
+	}
 
-    public Properties getConfig()
-    {
-        return config;
-    }
+	public Properties getConfig() {
+		return config;
+	}
 
-    public void setAttribute(String key, Object value)
-    {
-        attributes.put(key, value);
-    }
+	public void setAttribute(String key, Object value) {
+		attributes.put(key, value);
+	}
 
-    /**
-     * Alias for {@link #getAttributes()}.
-     */
-    public HashMap<String, Object> getAttrs()
-    {
-        return attributes;
-    }
+	/**
+	 * Alias for {@link #getAttributes()}.
+	 */
+	public HashMap<String, Object> getAttrs() {
+		return attributes;
+	}
 
-    public HashMap<String, Object> getAttributes()
-    {
-        return attributes;
-    }
+	public HashMap<String, Object> getAttributes() {
+		return attributes;
+	}
 }

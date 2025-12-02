@@ -116,7 +116,7 @@ public class ExcludeFieldTest {
 		assertNull(schema.getFieldByName("timestamp"));
 	}
 
-	static final class Empty {
+	static final class Empty { // ok
 
 	}
 

@@ -36,7 +36,7 @@ public abstract class Field<T> {
 	/**
 	 * No copy by default.
 	 */
-	protected Field<T> copy(IdStrategy strategy) {
+	protected Field<T> copy(@SuppressWarnings("unused") IdStrategy strategy) {
 		return this;
 	}
 

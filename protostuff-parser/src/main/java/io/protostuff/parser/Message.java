@@ -193,7 +193,7 @@ public class Message extends AnnotationContainer implements HasName, HasFields {
 		return name.equals(parentMessage.name) ? parentMessage : parentMessage.getDescendant(name);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	public <T extends Field<?>> T getField(String name, Class<T> typeClass) {
 		return (T) fields.get(name);
 	}

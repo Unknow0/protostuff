@@ -52,7 +52,7 @@ public abstract class EnumIO<E extends Enum<E>> implements PolymorphicSchema.Fac
 			valueTypeFromSet = EnumSet.class.getDeclaredField("elementType");
 			valueTypeFromSet.setAccessible(true);
 			success = true;
-		} catch (Exception e) {
+		} catch (@SuppressWarnings("unused") Exception e) {
 			// ignore
 		}
 
@@ -113,7 +113,7 @@ public abstract class EnumIO<E extends Enum<E>> implements PolymorphicSchema.Fac
 	/**
 	 * Transfers the {@link Enum} from the input to the output.
 	 */
-	public static void transfer(Pipe pipe, Input input, Output output, int number, boolean repeated, IdStrategy strategy) throws IOException {
+	public static void transfer(@SuppressWarnings("unused") Pipe pipe, Input input, Output output, int number, boolean repeated, IdStrategy strategy) throws IOException {
 		if (0 == (IdStrategy.ENUMS_BY_NAME & strategy.flags)) {
 			output.writeEnum(number, input.readEnum(), repeated);
 		} else {

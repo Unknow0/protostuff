@@ -252,7 +252,7 @@ final class RuntimeCollectionFieldFactory {
 	}
 
 	private static <T> Field<T> createCollectionObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
-			boolean allowNullElement, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy) {
+			boolean allowNullElement, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema) {
 		final Accessor accessor = AF.create(f);
 		return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
 			@Override
@@ -294,8 +294,7 @@ final class RuntimeCollectionFieldFactory {
 
 			@Override
 			protected Field<T> copy(IdStrategy strategy) {
-				return createCollectionObjectV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), valueSchema, valuePipeSchema,
-						strategy);
+				return createCollectionObjectV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), valueSchema, valuePipeSchema);
 			}
 		};
 	}
@@ -349,7 +348,7 @@ final class RuntimeCollectionFieldFactory {
 			if (genericType == null || ((Map.class.isAssignableFrom(genericType) || Collection.class.isAssignableFrom(genericType)) && !strategy.isRegistered(genericType))) {
 				// the value is not a simple parameterized type.
 				return createCollectionObjectV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), strategy.OBJECT_ELEMENT_SCHEMA,
-						strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+						strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 			}
 
 			final Delegate<Object> inline = getDelegateOrInline(genericType, strategy);
@@ -367,7 +366,7 @@ final class RuntimeCollectionFieldFactory {
 
 			final PolymorphicSchema ps = PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(genericType, strategy);
 			if (ps != null) {
-				return createCollectionObjectV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), ps, ps.getPipeSchema(), strategy);
+				return createCollectionObjectV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), ps, ps.getPipeSchema());
 			}
 
 			if (pojo(genericType, morph, strategy)) {
@@ -376,7 +375,7 @@ final class RuntimeCollectionFieldFactory {
 
 			if (genericType.isInterface()) {
 				return createCollectionObjectV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), strategy.OBJECT_ELEMENT_SCHEMA,
-						strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+						strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 			}
 
 			return createCollectionPolymorphicV(number, name, f, messageFactory, 0 != (strategy.flags & IdStrategy.PRESERVE_NULL_ELEMENTS), genericType, strategy);

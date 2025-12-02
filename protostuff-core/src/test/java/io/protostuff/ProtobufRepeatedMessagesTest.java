@@ -25,20 +25,16 @@ import java.util.List;
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return ProtobufIOUtil.parseListFrom(in, schema);
-    }
+	@Override
+	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
+		return ProtobufIOUtil.parseListFrom(in, schema);
+	}
 
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        ProtobufIOUtil.writeListTo(out, messages, schema, buf());
-    }
+	@Override
+	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
+		ProtobufIOUtil.writeListTo(out, messages, schema, buf());
+	}
 
 }

@@ -26,6 +26,7 @@ import junit.framework.Assert;
  * @author David Yu
  * @created Nov 13, 2009
  */
+@SuppressWarnings("deprecation")
 public final class SerializableObjects {
 
 	public static final Baz negativeBaz = new Baz(-567, "negativeBaz", -202020202);
@@ -51,7 +52,7 @@ public final class SerializableObjects {
 		Assert.assertEquals(m1, m2);
 	}
 
-	/*
+	/*²
 	 * public static void assertEquals(Baz baz1, Baz baz2) { // true if both are null if(baz1 == baz2) return;
 	 *
 	 * Assert.assertTrue(baz1.getId() == baz2.getId()); Assert.assertEquals(baz1.getName(), baz2.getName());

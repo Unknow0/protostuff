@@ -80,7 +80,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Enum<?>> existing = accessor.get(message);
 
@@ -138,7 +137,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -198,7 +196,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -266,7 +263,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -335,7 +331,7 @@ final class RuntimeMapFieldFactory {
 	}
 
 	private static <T> Field<T> createMapInlineKObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
-			final Delegate<Object> inlineK, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy) {
+			final Delegate<Object> inlineK, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema) {
 		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
@@ -347,7 +343,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -406,7 +401,7 @@ final class RuntimeMapFieldFactory {
 
 			@Override
 			protected Field<T> copy(IdStrategy strategy) {
-				return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, valueSchema, valuePipeSchema, strategy);
+				return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, valueSchema, valuePipeSchema);
 			}
 		};
 	}
@@ -426,7 +421,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Enum<?>, Enum<?>> existing = accessor.get(message);
 
@@ -486,7 +480,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Enum<?>, Object> existing = accessor.get(message);
 
@@ -547,7 +540,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Enum<?>, Object> existing = accessor.get(message);
 
@@ -617,7 +609,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Enum<?>, Object> existing = accessor.get(message);
 
@@ -700,7 +691,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Enum<?>, Object> existing = accessor.get(message);
 
@@ -779,7 +769,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Enum<?>> existing = accessor.get(message);
 
@@ -848,7 +837,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -918,7 +906,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -992,7 +979,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -1079,7 +1065,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -1148,8 +1133,7 @@ final class RuntimeMapFieldFactory {
 	}
 
 	private static <T> Field<T> createMapObjectKObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
-			final Schema<Object> keySchema, final Pipe.Schema<Object> keyPipeSchema, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema,
-			final IdStrategy strategy) {
+			final Schema<Object> keySchema, final Pipe.Schema<Object> keyPipeSchema, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema) {
 		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
@@ -1161,7 +1145,6 @@ final class RuntimeMapFieldFactory {
 			}
 
 			@Override
-			@SuppressWarnings("unchecked")
 			protected void writeTo(Output output, T message) throws IOException {
 				final Map<Object, Object> existing = accessor.get(message);
 
@@ -1228,7 +1211,7 @@ final class RuntimeMapFieldFactory {
 
 			@Override
 			protected Field<T> copy(IdStrategy strategy) {
-				return createMapObjectKObjectV(number, name, f, messageFactory, keySchema, keyPipeSchema, valueSchema, valuePipeSchema, strategy);
+				return createMapObjectKObjectV(number, name, f, messageFactory, keySchema, keyPipeSchema, valueSchema, valuePipeSchema);
 			}
 		};
 	}
@@ -1283,7 +1266,7 @@ final class RuntimeMapFieldFactory {
 					|| ((Map.class.isAssignableFrom(clazzK) || Collection.class.isAssignableFrom(clazzK)) && !strategy.isRegistered(clazzK))) {
 				// the key is not a simple parameterized type.
 				return createMapObjectKObjectV(number, name, f, messageFactory, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-						strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+						strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 			}
 
 			final Class<Object> clazzV = (Class<Object>) getGenericType(f, 1);
@@ -1291,8 +1274,7 @@ final class RuntimeMapFieldFactory {
 				// the value is not a simple parameterized type.
 				final Delegate<Object> inlineK = getDelegateOrInline(clazzK, strategy);
 				if (inlineK != null) {
-					return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-							strategy);
+					return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 				}
 
 				if (Message.class.isAssignableFrom(clazzK)) {
@@ -1307,7 +1289,7 @@ final class RuntimeMapFieldFactory {
 
 				if (psK != null) {
 					return createMapObjectKObjectV(number, name, f, messageFactory, psK, psK.getPipeSchema(), strategy.OBJECT_ELEMENT_SCHEMA,
-							strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+							strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 				}
 
 				if (pojo(clazzK, morph, strategy)) {
@@ -1323,7 +1305,7 @@ final class RuntimeMapFieldFactory {
 				 * // TODO add createMapPolymorphicKObjectV?
 				 */
 				return createMapObjectKObjectV(number, name, f, messageFactory, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-						strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+						strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 			}
 
 			final Delegate<Object> inlineK = getDelegateOrInline(clazzK, strategy);
@@ -1344,7 +1326,7 @@ final class RuntimeMapFieldFactory {
 
 				final PolymorphicSchema psV = PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(clazzV, strategy);
 				if (psV != null) {
-					return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, psV, psV.getPipeSchema(), strategy);
+					return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, psV, psV.getPipeSchema());
 				}
 
 				if (pojo(clazzV, f.getAnnotation(Morph.class), strategy)) {
@@ -1352,8 +1334,7 @@ final class RuntimeMapFieldFactory {
 				}
 
 				if (clazzV.isInterface()) {
-					return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-							strategy);
+					return createMapInlineKObjectV(number, name, f, messageFactory, inlineK, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 				}
 
 				return createMapInlineKPolymorphicV(number, name, f, messageFactory, inlineK, clazzV, strategy);
@@ -1392,7 +1373,7 @@ final class RuntimeMapFieldFactory {
 			final PolymorphicSchema psK = PolymorphicSchemaFactories.getSchemaFromCollectionOrMapGenericType(clazzK, strategy);
 			if (psK != null) {
 				return createMapObjectKObjectV(number, name, f, messageFactory, psK, psK.getPipeSchema(), strategy.OBJECT_ELEMENT_SCHEMA,
-						strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+						strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 			}
 
 			if (pojo(clazzK, f.getAnnotation(Morph.class), strategy)) {
@@ -1426,7 +1407,7 @@ final class RuntimeMapFieldFactory {
 			}
 
 			return createMapObjectKObjectV(number, name, f, messageFactory, strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema,
-					strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema, strategy);
+					strategy.OBJECT_ELEMENT_SCHEMA, strategy.OBJECT_ELEMENT_SCHEMA.pipeSchema);
 		}
 
 		@Override

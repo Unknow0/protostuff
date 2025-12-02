@@ -17,6 +17,7 @@ import io.protostuff.Tag;
 @SuppressWarnings("unused")
 public class RuntimeSchemaTagTest {
 
+	@SuppressWarnings("deprecation")
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 

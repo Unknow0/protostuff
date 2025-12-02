@@ -162,7 +162,7 @@ public final class RuntimeEnv {
 		try {
 			c = Object.class.getConstructor((Class[]) null);
 			reflectionFactoryClass = Thread.currentThread().getContextClassLoader().loadClass("sun.reflect.ReflectionFactory");
-		} catch (Exception e) {
+		} catch (@SuppressWarnings("unused") Exception e) {
 			// ignore
 		}
 
@@ -221,7 +221,7 @@ public final class RuntimeEnv {
 	private static Method getMethodNewInstanceFromObjectInputStream() {
 		try {
 			return java.io.ObjectInputStream.class.getDeclaredMethod("newInstance", Class.class, Class.class);
-		} catch (Exception e) {
+		} catch (@SuppressWarnings("unused") Exception e) {
 			return null;
 		}
 	}
@@ -233,7 +233,7 @@ public final class RuntimeEnv {
 		} catch (ClassNotFoundException e) {
 			try {
 				return (Class<T>) Class.forName(className);
-			} catch (ClassNotFoundException e1) {
+			} catch (@SuppressWarnings("unused") ClassNotFoundException e1) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -263,12 +263,12 @@ public final class RuntimeEnv {
 
 		try {
 			return clazz.getDeclaredConstructor((Class[]) null);
-		} catch (SecurityException e) {
+		} catch (@SuppressWarnings("unused") SecurityException e) {
 			if (NEVER_USE_SUN_REFLECTION_FACTORY) {
 				return null;
 			}
 			return OBJECT_CONSTRUCTOR == null ? null : OnDemandSunReflectionFactory.getConstructor(clazz, OBJECT_CONSTRUCTOR);
-		} catch (NoSuchMethodException e) {
+		} catch (@SuppressWarnings("unused") NoSuchMethodException e) {
 			if (NEVER_USE_SUN_REFLECTION_FACTORY) {
 				return null;
 			}

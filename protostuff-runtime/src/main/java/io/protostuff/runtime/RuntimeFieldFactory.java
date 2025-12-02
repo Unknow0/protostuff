@@ -312,6 +312,7 @@ public abstract class RuntimeFieldFactory<V> implements Delegate<V> {
 		return 0 == (IdStrategy.MORPH_NON_FINAL_POJOS & strategy.flags);
 	}
 
+	@SuppressWarnings("unused")
 	static Class<?> getGenericType(java.lang.reflect.Field f, int index) {
 		try {
 			Type type = ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[index];

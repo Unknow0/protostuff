@@ -42,6 +42,7 @@ public class ProtoParserTest extends TestCase {
 		return new File(resource.toURI());
 	}
 
+	@SuppressWarnings("null")
 	public void testSimple() throws Exception {
 		File f = getFile("TestModel.proto");
 		assertTrue(f.exists());
@@ -131,6 +132,7 @@ public class ProtoParserTest extends TestCase {
 		assertTrue((data[1] & 0xFF) == 0xCE);
 	}
 
+	@SuppressWarnings("null")
 	public void testImport() throws Exception {
 		File f = getFile("unittest.proto");
 		assertTrue(f.exists());

@@ -22,13 +22,11 @@ import java.util.Map;
  * @author David Yu
  * @created Jan 22, 2011
  */
-public class JsonCoreRuntimeMapTest extends AbstractJsonRuntimeMapTest
-{
+public class JsonCoreRuntimeMapTest extends AbstractJsonRuntimeMapTest {
 
-    @Override
-    protected boolean isNumeric()
-    {
-        return false;
-    }
+	@Override
+	protected boolean isNumeric() {
+		return false;
+	}
 
 }

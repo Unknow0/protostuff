@@ -20,6 +20,7 @@ public class DefaultIdStrategyTest {
 
 	public static class TestMessage implements Message<TestMessage> {
 
+		@SuppressWarnings("unchecked")
 		private static final Schema<TestMessage> SCHEMA = Mockito.mock(Schema.class);
 
 		private TestMessage() {

@@ -57,7 +57,7 @@ public class RuntimeGraphUnknownFieldTest extends AbstractTest {
 			ClassA() {
 			}
 
-			public ClassA(ClassB a2) {
+			public ClassA(@SuppressWarnings("unused") ClassB a2) { // ok
 			}
 		}
 	}

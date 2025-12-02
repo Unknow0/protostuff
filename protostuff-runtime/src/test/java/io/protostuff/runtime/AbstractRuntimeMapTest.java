@@ -1940,7 +1940,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 		roundTrip(p, schema, pipeSchema);
 	}
 
-	public interface IntObjectMap<V> extends Map<Integer, V> {
+	public interface IntObjectMap<V> extends Map<Integer, V> { // ok
 	}
 
 	public static class IntObjectHashMap<V> extends HashMap<Integer, V> implements IntObjectMap<V> {
@@ -2071,7 +2071,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidStrKPojoV() throws IOException {
+	public void testInvalidStrKPojoV() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		Map map = new HashMap();
@@ -2090,7 +2090,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidEnumKPojoV() throws IOException {
+	public void testInvalidEnumKPojoV() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		Map map = new HashMap();
@@ -2109,7 +2109,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidPojoKPojoV() throws IOException {
+	public void testInvalidPojoKPojoV() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		Map map = new HashMap();
@@ -2128,7 +2128,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidPojoKStringV() throws IOException {
+	public void testInvalidPojoKStringV() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		Map map = new HashMap();
@@ -2147,7 +2147,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidPojoKEnumV() throws IOException {
+	public void testInvalidPojoKEnumV() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		Map map = new HashMap();
@@ -2166,7 +2166,7 @@ public abstract class AbstractRuntimeMapTest extends AbstractTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testInvalidPojoKObjectV() throws IOException {
+	public void testInvalidPojoKObjectV() {
 		TestMsg testMsg = new TestMsg();
 		@SuppressWarnings("rawtypes")
 		Map map = new HashMap();

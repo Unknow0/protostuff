@@ -31,50 +31,43 @@ import io.protostuff.parser.Proto;
  * @author David Yu
  * @created Jan 4, 2010
  */
-public class ProtoToJavaBeanMeCompiler extends STCodeGenerator
-{
+public class ProtoToJavaBeanMeCompiler extends STCodeGenerator {
 
-    public ProtoToJavaBeanMeCompiler()
-    {
-        super("java_bean_me");
-    }
+	public ProtoToJavaBeanMeCompiler() {
+		super("java_bean_me");
+	}
 
-    @Override
-    public void compile(ProtoModule module, Proto proto) throws IOException
-    {
-        String javaPackageName = proto.getJavaPackageName();
-        String template = "java_bean_me";
-        StringTemplateGroup group = getSTG(template);
+	@Override
+	public void compile(ProtoModule module, Proto proto) throws IOException {
+		String javaPackageName = proto.getJavaPackageName();
+		String template = "java_bean_me";
+		StringTemplateGroup group = getSTG(template);
 
-        for (EnumGroup eg : proto.getEnumGroups())
-        {
-            Writer writer = CompilerUtil.newWriter(module,
-                    javaPackageName, eg.getName() + ".java");
-            AutoIndentWriter out = new AutoIndentWriter(writer);
+		for (EnumGroup eg : proto.getEnumGroups()) {
+			Writer writer = CompilerUtil.newWriter(module, javaPackageName, eg.getName() + ".java");
+			AutoIndentWriter out = new AutoIndentWriter(writer);
 
-            StringTemplate enumBlock = group.getInstanceOf("enum_block");
-            enumBlock.setAttribute("eg", eg);
-            enumBlock.setAttribute("module", module);
-            enumBlock.setAttribute("options", module.getOptions());
+			StringTemplate enumBlock = group.getInstanceOf("enum_block");
+			enumBlock.setAttribute("eg", eg);
+			enumBlock.setAttribute("module", module);
+			enumBlock.setAttribute("options", module.getOptions());
 
-            enumBlock.write(out);
-            writer.close();
-        }
+			enumBlock.write(out);
+			writer.close();
+		}
 
-        for (Message m : proto.getMessages())
-        {
-            Writer writer = CompilerUtil.newWriter(module,
-                    javaPackageName, m.getName() + ".java");
-            AutoIndentWriter out = new AutoIndentWriter(writer);
+		for (Message m : proto.getMessages()) {
+			Writer writer = CompilerUtil.newWriter(module, javaPackageName, m.getName() + ".java");
+			AutoIndentWriter out = new AutoIndentWriter(writer);
 
-            StringTemplate messageBlock = group.getInstanceOf("message_block");
-            messageBlock.setAttribute("message", m);
-            messageBlock.setAttribute("module", module);
-            messageBlock.setAttribute("options", module.getOptions());
+			StringTemplate messageBlock = group.getInstanceOf("message_block");
+			messageBlock.setAttribute("message", m);
+			messageBlock.setAttribute("module", module);
+			messageBlock.setAttribute("options", module.getOptions());
 
-            messageBlock.write(out);
-            writer.close();
-        }
-    }
+			messageBlock.write(out);
+			writer.close();
+		}
+	}
 
 }

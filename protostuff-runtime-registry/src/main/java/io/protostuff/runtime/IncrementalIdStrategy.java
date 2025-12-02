@@ -74,7 +74,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy {
 		}
 
 		@Override
-		public void postCreate() {
+		public void postCreate() { // ok
 
 		}
 	}
@@ -100,7 +100,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy {
 		 * Collection ids start at 1.
 		 */
 		@Override
-		public <T extends Collection<?>> Registry registerCollection(CollectionSchema.MessageFactory factory, int id) {
+		public Registry registerCollection(CollectionSchema.MessageFactory factory, int id) {
 			if (id < 1) {
 				throw new IllegalArgumentException("collection ids start at 1.");
 			}
@@ -127,7 +127,7 @@ public final class IncrementalIdStrategy extends NumericIdStrategy {
 		 * Map ids start at 1.
 		 */
 		@Override
-		public <T extends Map<?, ?>> Registry registerMap(MapSchema.MessageFactory factory, int id) {
+		public Registry registerMap(MapSchema.MessageFactory factory, int id) {
 			if (id < 1) {
 				throw new IllegalArgumentException("map ids start at 1.");
 			}

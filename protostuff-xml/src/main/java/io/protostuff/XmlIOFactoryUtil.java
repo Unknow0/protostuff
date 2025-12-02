@@ -73,7 +73,7 @@ public final class XmlIOFactoryUtil {
 			if (c != null) {
 				try {
 					return (XMLInputFactory) c.newInstance();
-				} catch (Exception e) {
+				} catch (@SuppressWarnings("unused") Exception e) {
 					// print stacktrace?
 					// e.printStackTrace();
 					continue;
@@ -103,7 +103,7 @@ public final class XmlIOFactoryUtil {
 			if (c != null) {
 				try {
 					return (XMLOutputFactory) c.newInstance();
-				} catch (Exception e) {
+				} catch (@SuppressWarnings("unused") Exception e) {
 					// print stacktrace?
 					// e.printStackTrace();
 					continue;
@@ -122,14 +122,14 @@ public final class XmlIOFactoryUtil {
 		Class<?> clazz = null;
 		try {
 			clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-		} catch (ClassNotFoundException e) {
+		} catch (@SuppressWarnings("unused") ClassNotFoundException e) {
 			if (context != null) {
 				ClassLoader loader = context.getClassLoader();
 				while (loader != null) {
 					try {
 						clazz = loader.loadClass(className);
 						return clazz;
-					} catch (ClassNotFoundException e1) {
+					} catch (@SuppressWarnings("unused") ClassNotFoundException e1) {
 						loader = checkParent ? loader.getParent() : null;
 					}
 				}

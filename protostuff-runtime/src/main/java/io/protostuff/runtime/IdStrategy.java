@@ -861,14 +861,14 @@ public abstract class IdStrategy {
 
 			@Override
 			public void writeTo(Output output, Object message) throws IOException {
-				ClassSchema.writeObjectTo(output, message, this, IdStrategy.this);
+				ClassSchema.writeObjectTo(output, message, IdStrategy.this);
 			}
 		};
 
 		CLASS_PIPE_SCHEMA = new Pipe.Schema<Object>(CLASS_SCHEMA) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				ClassSchema.transferObject(this, pipe, input, output, IdStrategy.this);
+				ClassSchema.transferObject(this, input, output, IdStrategy.this);
 			}
 		};
 
@@ -1566,7 +1566,7 @@ public abstract class IdStrategy {
 	protected static <T> T createMessageInstance(Class<T> clazz) {
 		try {
 			return clazz.newInstance();
-		} catch (IllegalAccessException e) {
+		} catch (@SuppressWarnings("unused") IllegalAccessException e) {
 			try {
 				Constructor<T> constructor = clazz.getDeclaredConstructor();
 				constructor.setAccessible(true);

@@ -25,20 +25,16 @@ import java.util.List;
  * @author David Yu
  * @created Feb 11, 2011
  */
-public class SmileRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class SmileRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return SmileIOUtil.parseListFrom(in, schema, false);
-    }
+	@Override
+	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
+		return SmileIOUtil.parseListFrom(in, schema, false);
+	}
 
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        SmileIOUtil.writeListTo(out, messages, schema, false);
-    }
+	@Override
+	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
+		SmileIOUtil.writeListTo(out, messages, schema, false);
+	}
 
 }

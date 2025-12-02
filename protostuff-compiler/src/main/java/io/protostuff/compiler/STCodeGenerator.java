@@ -37,293 +37,242 @@ import io.protostuff.parser.ProtoUtil;
  * @author David Yu
  * @created Jan 5, 2010
  */
-public abstract class STCodeGenerator implements ProtoCompiler
-{
+public abstract class STCodeGenerator implements ProtoCompiler {
 
-    public static final String TEMPLATE_BASE = "io/protostuff/compiler";
+	public static final String TEMPLATE_BASE = "io/protostuff/compiler";
 
-    public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
+	public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
 
-    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = new ConcurrentHashMap<>();
+	static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = new ConcurrentHashMap<>();
 
-    static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = new ConcurrentHashMap<>();
+	static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = new ConcurrentHashMap<>();
 
-    public static int errorCount = 0;
+	public static int errorCount = 0;
 
-    public static final StringTemplateErrorListener ERROR_LISTENER = new StringTemplateErrorListener()
-    {
-        @Override
-        public void error(String msg, Throwable e)
-        {
-            errorCount += 1;
-            System.err.println("error: " + msg);
-        }
+	public static final StringTemplateErrorListener ERROR_LISTENER = new StringTemplateErrorListener() {
+		@Override
+		public void error(String msg, Throwable e) {
+			errorCount += 1;
+			System.err.println("error: " + msg);
+		}
 
-        @Override
-        public void warning(String msg)
-        {
-            System.err.println("warning: " + msg);
-        }
-    };
+		@Override
+		public void warning(String msg) {
+			System.err.println("warning: " + msg);
+		}
+	};
 
-    public static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
+	public static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
 
-    public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER = new AttributeRenderer()
-    {
-        @Override
-        public String toString(Object o)
-        {
-            return (String) o;
-        }
+	public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER = new AttributeRenderer() {
+		@Override
+		public String toString(Object o) {
+			return (String) o;
+		}
 
-        @Override
-        public String toString(Object o, String formatName)
-        {
-            String str = (String) o;
-            if (formatName == null)
-            {
-                return str;
-            }
+		@Override
+		public String toString(Object o, String formatName) {
+			String str = (String) o;
+			if (formatName == null) {
+				return str;
+			}
 
-            String[] formats = FORMAT_DELIM.split(formatName);
+			String[] formats = FORMAT_DELIM.split(formatName);
 
-            return formats.length == 0 ? format(str, formatName) : chainedFormat(str, formats);
-        }
-    };
+			return formats.length == 0 ? format(str, formatName) : chainedFormat(str, formats);
+		}
+	};
 
-    static
-    {
-        StringTemplateGroup.registerGroupLoader(GROUP_LOADER);
+	static {
+		StringTemplateGroup.registerGroupLoader(GROUP_LOADER);
 
-        // attribute renderers
+		// attribute renderers
 
-        setAttributeRenderer(String.class, STRING_ATTRIBUTE_RENDERER);
+		setAttributeRenderer(String.class, STRING_ATTRIBUTE_RENDERER);
 
-        GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
+		GROUP_LOADER.loadGroup("base").setAttributeRenderers(DEFAULT_RENDERERS);
 
-        Formatter.BUILTIN.addAllTo(DEFAULT_FORMATTERS);
-    }
+		Formatter.BUILTIN.addAllTo(DEFAULT_FORMATTERS);
+	}
 
-    /**
-     * Formats the string n times.
-     * <p>
-     *
-     * <pre>
-     * For example:
-     * input = "some_foo"
-     * formatters = ["PCS", "UPPER"]
-     *
-     * Output:
-     * 1st pass: "Some Foo"
-     * 2nd pass: "SOME FOO"
-     * </pre>
-     */
-    public static String chainedFormat(String str, String[] formats)
-    {
-        // chained formatting
-        String formatted = str;
-        for (String f : formats)
-        {
-            formatted = format(formatted, f);
-        }
+	/**
+	 * Formats the string n times.
+	 * <p>
+	 *
+	 * <pre>
+	 * For example:
+	 * input = "some_foo"
+	 * formatters = ["PCS", "UPPER"]
+	 *
+	 * Output:
+	 * 1st pass: "Some Foo"
+	 * 2nd pass: "SOME FOO"
+	 * </pre>
+	 */
+	public static String chainedFormat(String str, String[] formats) {
+		// chained formatting
+		String formatted = str;
+		for (String f : formats) {
+			formatted = format(formatted, f);
+		}
 
-        return formatted;
-    }
+		return formatted;
+	}
 
-    /**
-     * Formats the string {@code str} using the format {@code formatName}.
-     * <p>
-     * If the formatter with the name does not exist, the input string will be appended with the formatName.
-     */
-    public static String format(String str, String formatName)
-    {
-        final Formatter formatter = DEFAULT_FORMATTERS.get(formatName);
-        if (formatter != null)
-        {
-            return formatter.format(str);
-        }
+	/**
+	 * Formats the string {@code str} using the format {@code formatName}.
+	 * <p>
+	 * If the formatter with the name does not exist, the input string will be appended with the formatName.
+	 */
+	public static String format(String str, String formatName) {
+		final Formatter formatter = DEFAULT_FORMATTERS.get(formatName);
+		if (formatter != null) {
+			return formatter.format(str);
+		}
 
-        // regex replace
-        int eq = formatName.indexOf("==");
-        if (eq > 0)
-        {
-            String toReplace = formatName.substring(0, eq);
-            String replacement = formatName.substring(eq + 2);
+		// regex replace
+		int eq = formatName.indexOf("==");
+		if (eq > 0) {
+			String toReplace = formatName.substring(0, eq);
+			String replacement = formatName.substring(eq + 2);
 
-            if (toReplace.length() == 1 && replacement.length() == 1)
-            {
-                return str.replace(toReplace.charAt(0), replacement.charAt(0));
-            }
+			if (toReplace.length() == 1 && replacement.length() == 1) {
+				return str.replace(toReplace.charAt(0), replacement.charAt(0));
+			}
 
-            return str.replaceAll(toReplace, replacement);
-        }
+			return str.replaceAll(toReplace, replacement);
+		}
 
-        return str + formatName;
-    }
+		return str + formatName;
+	}
 
-    /**
-     * Returns true if there was no previous attribute renderer with the same class.
-     */
-    public static boolean setAttributeRenderer(Class<?> typeClass, AttributeRenderer ar)
-    {
-        return null == DEFAULT_RENDERERS.put(typeClass, ar);
-    }
+	/**
+	 * Returns true if there was no previous attribute renderer with the same class.
+	 */
+	public static boolean setAttributeRenderer(Class<?> typeClass, AttributeRenderer ar) {
+		return null == DEFAULT_RENDERERS.put(typeClass, ar);
+	}
 
-    /**
-     * Returns true if there was no previous formatter with the same name.
-     */
-    public static boolean setFormatter(String name, Formatter f)
-    {
-        return null == DEFAULT_FORMATTERS.put(name, f);
-    }
+	/**
+	 * Returns true if there was no previous formatter with the same name.
+	 */
+	public static boolean setFormatter(String name, Formatter f) {
+		return null == DEFAULT_FORMATTERS.put(name, f);
+	}
 
-    public static StringTemplateGroup getSTG(String groupName)
-    {
-        return __loader.loadGroup(groupName);
-    }
+	public static StringTemplateGroup getSTG(String groupName) {
+		return __loader.loadGroup(groupName);
+	}
 
-    public static StringTemplate getST(String groupName, String name)
-    {
-        return getSTG(groupName).getInstanceOf(name);
-    }
+	public static StringTemplate getST(String groupName, String name) {
+		return getSTG(groupName).getInstanceOf(name);
+	}
 
-    public static void setGroupLoader(StringTemplateGroupLoader loader)
-    {
-        if (loader != null)
-        {
-            __loader = loader;
-            StringTemplateGroup.registerGroupLoader(loader);
-        }
-    }
+	public static void setGroupLoader(StringTemplateGroupLoader loader) {
+		if (loader != null) {
+			__loader = loader;
+			StringTemplateGroup.registerGroupLoader(loader);
+		}
+	}
 
-    private static StringTemplateGroupLoader __loader = GROUP_LOADER;
+	private static StringTemplateGroupLoader __loader = GROUP_LOADER;
 
-    protected final String id;
+	protected final String id;
 
-    public STCodeGenerator(String id)
-    {
-        this.id = id;
-    }
+	public STCodeGenerator(String id) {
+		this.id = id;
+	}
 
-    @Override
-    public String getOutputId()
-    {
-        return id;
-    }
+	@Override
+	public String getOutputId() {
+		return id;
+	}
 
-    @Override
-    public void compile(ProtoModule module) throws IOException
-    {
-        String ci = module.getOption("compile_imports");
-        boolean compileImports = ci != null && !"false".equalsIgnoreCase(ci);
-        boolean recursive = "recursive".equalsIgnoreCase(ci);
+	@Override
+	public void compile(ProtoModule module) throws IOException {
+		String ci = module.getOption("compile_imports");
+		boolean compileImports = ci != null && !"false".equalsIgnoreCase(ci);
+		boolean recursive = "recursive".equalsIgnoreCase(ci);
 
-        File source = module.getSource();
-        if (source.isDirectory())
-        {
-            for (File f : CompilerUtil.getProtoFiles(source))
-            {
-                compile(module, parseProto(f, module), compileImports, recursive);
-            }
-        }
-        else
-        {
-            compile(module, parseProto(source, module), compileImports, recursive);
-        }
-    }
+		File source = module.getSource();
+		if (source.isDirectory()) {
+			for (File f : CompilerUtil.getProtoFiles(source)) {
+				compile(module, parseProto(f, module), compileImports, recursive);
+			}
+		} else {
+			compile(module, parseProto(source, module), compileImports, recursive);
+		}
+	}
 
-    protected static Proto parseProto(File file, ProtoModule module)
-    {
-        CachingProtoLoader loader = module.getCachingProtoLoader();
-        if (loader == null)
-        {
-            return ProtoUtil.parseProto(file);
-        }
+	protected static Proto parseProto(File file, ProtoModule module) {
+		CachingProtoLoader loader = module.getCachingProtoLoader();
+		if (loader == null) {
+			return ProtoUtil.parseProto(file);
+		}
 
-        try
-        {
-            return loader.loadFrom(file, null);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
+		try {
+			return loader.loadFrom(file, null);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    protected void compile(ProtoModule module, Proto proto, boolean compileImports,
-            boolean recursive) throws IOException
-    {
-        final List<Proto> overridden = new ArrayList<>();
-        try
-        {
-            collect(module, proto, overridden, recursive);
+	protected void compile(ProtoModule module, Proto proto, boolean compileImports, boolean recursive) throws IOException {
+		final List<Proto> overridden = new ArrayList<>();
+		try {
+			collect(module, proto, overridden, recursive);
 
-            if (!recursive)
-            {
-                compile(module, proto);
-                if (compileImports)
-                {
-                    for (Proto p : proto.getImportedProtos())
-                    {
-                        compile(module, p);
-                    }
-                }
-            }
-        }
-        finally
-        {
-            for (Proto p : overridden)
-            {
-                postCompile(p);
-            }
-        }
-    }
+			if (!recursive) {
+				compile(module, proto);
+				if (compileImports) {
+					for (Proto p : proto.getImportedProtos()) {
+						compile(module, p);
+					}
+				}
+			}
+		} finally {
+			for (Proto p : overridden) {
+				postCompile(p);
+			}
+		}
+	}
 
-    protected void collect(ProtoModule module, Proto proto,
-            List<Proto> overridden, boolean compile) throws IOException
-    {
-        for (Proto p : proto.getImportedProtos())
-        {
-            collect(module, p, overridden, compile);
-        }
+	protected void collect(ProtoModule module, Proto proto, List<Proto> overridden, boolean compile) throws IOException {
+		for (Proto p : proto.getImportedProtos()) {
+			collect(module, p, overridden, compile);
+		}
 
-        if (override(module, proto))
-        {
-            overridden.add(proto);
-        }
+		if (override(module, proto)) {
+			overridden.add(proto);
+		}
 
-        if (compile)
-        {
-            compile(module, proto);
-        }
-    }
+		if (compile) {
+			compile(module, proto);
+		}
+	}
 
-    protected static boolean override(ProtoModule module, Proto proto)
-    {
-        String pkg = proto.getPackageName();
-        String jpkg = proto.getJavaPackageName();
-        String opkg = module.getOption(pkg);
-        String ojpkg = module.getOption(jpkg);
-        boolean override = false;
-        if (opkg != null && opkg.length() != 0)
-        {
-            proto.getMutablePackageName().override(opkg);
-            override = true;
-        }
-        if (ojpkg != null && ojpkg.length() != 0)
-        {
-            proto.getMutableJavaPackageName().override(ojpkg);
-            override = true;
-        }
-        return override;
-    }
+	protected static boolean override(ProtoModule module, Proto proto) {
+		String pkg = proto.getPackageName();
+		String jpkg = proto.getJavaPackageName();
+		String opkg = module.getOption(pkg);
+		String ojpkg = module.getOption(jpkg);
+		boolean override = false;
+		if (opkg != null && opkg.length() != 0) {
+			proto.getMutablePackageName().override(opkg);
+			override = true;
+		}
+		if (ojpkg != null && ojpkg.length() != 0) {
+			proto.getMutableJavaPackageName().override(ojpkg);
+			override = true;
+		}
+		return override;
+	}
 
-    protected static void postCompile(Proto proto)
-    {
-        proto.getMutableJavaPackageName().reset();
-        proto.getMutablePackageName().reset();
-    }
+	protected static void postCompile(Proto proto) {
+		proto.getMutableJavaPackageName().reset();
+		proto.getMutablePackageName().reset();
+	}
 
-    protected abstract void compile(ProtoModule module, Proto proto) throws IOException;
+	protected abstract void compile(ProtoModule module, Proto proto) throws IOException;
 
 }

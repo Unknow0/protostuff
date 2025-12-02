@@ -20,13 +20,11 @@ package io.protostuff;
  * @author David Yu
  * @created Feb 4, 2011
  */
-public class JsonNumericRuntimeObjectSchemaTest extends AbstractJsonRuntimeObjectSchemaTest
-{
+public class JsonNumericRuntimeObjectSchemaTest extends AbstractJsonRuntimeObjectSchemaTest {
 
-    @Override
-    public boolean isNumeric()
-    {
-        return true;
-    }
+	@Override
+	public boolean isNumeric() {
+		return true;
+	}
 
 }

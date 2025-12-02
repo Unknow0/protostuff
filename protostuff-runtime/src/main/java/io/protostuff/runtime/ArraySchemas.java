@@ -167,7 +167,7 @@ public final class ArraySchemas {
 		}
 	}
 
-	static Base newSchema(int id, Class<?> compontentType, Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+	static Base newSchema(int id, Class<?> compontentType, IdStrategy strategy, final Handler handler) {
 		switch (id) {
 			case ID_BOOL:
 				return new BoolArray(strategy, handler, compontentType.isPrimitive());
@@ -230,7 +230,7 @@ public final class ArraySchemas {
 		}
 	}
 
-	static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output, IdStrategy strategy, Delegate<?> delegate) throws IOException {
+	static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output, Delegate<?> delegate) throws IOException {
 		if (ID_ARRAY_LEN != input.readFieldNumber(pipeSchema.wrappedSchema)) {
 			throw new ProtostuffException("Corrupt input.");
 		}
@@ -315,7 +315,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.BOOL);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.BOOL);
 			}
 		};
 
@@ -390,7 +390,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -439,7 +439,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.CHAR);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.CHAR);
 			}
 		};
 
@@ -514,7 +514,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -563,7 +563,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.SHORT);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.SHORT);
 			}
 		};
 
@@ -638,7 +638,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -687,7 +687,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.INT32);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.INT32);
 			}
 		};
 
@@ -762,7 +762,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -811,7 +811,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.INT64);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.INT64);
 			}
 		};
 
@@ -886,7 +886,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -935,7 +935,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.FLOAT);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.FLOAT);
 			}
 		};
 
@@ -1010,7 +1010,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -1059,7 +1059,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.DOUBLE);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.DOUBLE);
 			}
 		};
 
@@ -1134,7 +1134,7 @@ public final class ArraySchemas {
 			return primitive ? readPrimitiveFrom(input, owner, len) : readBoxedFrom(input, owner, len);
 		}
 
-		protected void writeLengthTo(Output output, int len, boolean primitive) throws IOException {
+		protected void writeLengthTo(Output output, int len, @SuppressWarnings("unused") boolean primitive) throws IOException {
 			output.writeInt32(ID_ARRAY_LEN, len, false);
 		}
 
@@ -1183,7 +1183,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.STRING);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.STRING);
 			}
 		};
 
@@ -1260,7 +1260,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.BYTES);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.BYTES);
 			}
 		};
 
@@ -1337,7 +1337,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.BYTE_ARRAY);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.BYTE_ARRAY);
 			}
 		};
 
@@ -1414,7 +1414,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.BIGDECIMAL);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.BIGDECIMAL);
 			}
 		};
 
@@ -1491,7 +1491,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.BIGINTEGER);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.BIGINTEGER);
 			}
 		};
 
@@ -1568,7 +1568,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, RuntimeFieldFactory.DATE);
+				transferObject(this, pipe, input, output, RuntimeFieldFactory.DATE);
 			}
 		};
 
@@ -1645,7 +1645,7 @@ public final class ArraySchemas {
 		protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 			@Override
 			protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-				transferObject(this, pipe, input, output, strategy, delegate);
+				transferObject(this, pipe, input, output, delegate);
 			}
 		};
 

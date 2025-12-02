@@ -25,20 +25,16 @@ import java.util.List;
  * @author David Yu
  * @created Oct 11, 2010
  */
-public class JsonXRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class JsonXRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return JsonXIOUtil.parseListFrom(in, schema, false);
-    }
+	@Override
+	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
+		return JsonXIOUtil.parseListFrom(in, schema, false);
+	}
 
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        JsonXIOUtil.writeListTo(out, messages, schema, false, buf());
-    }
+	@Override
+	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
+		JsonXIOUtil.writeListTo(out, messages, schema, false, buf());
+	}
 
 }

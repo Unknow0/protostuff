@@ -23,21 +23,16 @@ import java.util.Map;
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class StringMapSchemaProtobufTest extends StringMapSchemaTest
-{
+public class StringMapSchemaProtobufTest extends StringMapSchemaTest {
 
-    @Override
-    public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length,
-            T message, Schema<T> schema) throws IOException
-    {
-        ProtobufIOUtil.mergeFrom(data, offset, length, message, schema);
-    }
+	@Override
+	public <T extends Map<String, String>> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		ProtobufIOUtil.mergeFrom(data, offset, length, message, schema);
+	}
 
-    @Override
-    public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema)
-            throws IOException
-    {
-        return ProtobufIOUtil.toByteArray(message, schema, buf());
-    }
+	@Override
+	public <T extends Map<String, String>> byte[] toByteArray(T message, Schema<T> schema) throws IOException {
+		return ProtobufIOUtil.toByteArray(message, schema, buf());
+	}
 
 }

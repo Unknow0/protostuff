@@ -17,7 +17,6 @@ package io.protostuff.runtime;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -473,11 +472,11 @@ public class CollectionTest {
 		assertEquals(p, p2);
 	}
 
-	interface IFoo {
+	interface IFoo { // ok
 
 	}
 
-	static abstract class AbstractFoo {
+	static abstract class AbstractFoo { // ok
 
 	}
 
@@ -489,12 +488,13 @@ public class CollectionTest {
 		AbstractFoo afoo;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testPojoWithMappedAbstractTypes() {
 		RuntimeSchema<PojoWithMappedAbstractTypes> schema = (RuntimeSchema<PojoWithMappedAbstractTypes>) RuntimeSchema.getSchema(PojoWithMappedAbstractTypes.class,
 				RuntimeEnv.ID_STRATEGY);
 
-		assertTrue(schema.getFields().size() == 4);
+		assertEquals(4, schema.getFields().size());
 
 		assertTrue(schema.getFields().get(0) instanceof RuntimeMessageField);
 		assertTrue(schema.getFields().get(1) instanceof RuntimeMessageField);
@@ -556,7 +556,7 @@ public class CollectionTest {
 		}
 	}
 
-	public void testAA() throws IOException {
+	public void testAA() {
 		AA aa = new AA();
 		aa.map = new HashMap<>();
 		aa.map.put("o1", new BB[] { new BB(1, 2), new BB(3, 4), new BB(5, 6) });

@@ -20,7 +20,6 @@ package io.protostuff;
  * @author nethibernate
  * @created Jan 4, 2019
  **/
-public interface Builder<T extends Message<T>>
-{
-    T build();
+public interface Builder<T extends Message<T>> {
+	T build();
 }

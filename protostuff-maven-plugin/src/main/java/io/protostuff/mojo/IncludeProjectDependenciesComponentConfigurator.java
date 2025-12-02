@@ -38,6 +38,7 @@ public class IncludeProjectDependenciesComponentConfigurator extends AbstractCom
 		converter.processConfiguration(converterLookup, component, containerRealm.getClassLoader(), configuration, expressionEvaluator, listener);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void addProjectDependenciesToClassRealm(ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm) throws ComponentConfigurationException {
 		List<String> runtimeClasspathElements;
 		try {

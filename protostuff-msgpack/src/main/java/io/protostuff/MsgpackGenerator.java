@@ -265,6 +265,7 @@ public final class MsgpackGenerator {
 			return new ImmutableArrayValueImpl(list.toArray(new Value[list.size()]));
 		}
 
+		@SuppressWarnings("resource")
 		@Override
 		public void writeTo(MessagePacker packer) throws IOException {
 			int size = list.size();
@@ -420,6 +421,7 @@ public final class MsgpackGenerator {
 			return value;
 		}
 
+		@SuppressWarnings("resource")
 		@Override
 		public void writeTo(MessagePacker pk) throws IOException {
 			pk.packFloat(value);
@@ -449,11 +451,9 @@ public final class MsgpackGenerator {
 
 		@Override
 		public String toJson() {
-			if (Float.isNaN(value) || Float.isInfinite(value)) {
+			if (Float.isNaN(value) || Float.isInfinite(value))
 				return "null";
-			} else {
-				return Float.toString(value);
-			}
+			return Float.toString(value);
 		}
 
 		@Override

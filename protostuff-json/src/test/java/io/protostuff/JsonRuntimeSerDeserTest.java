@@ -33,47 +33,41 @@ import junit.framework.TestCase;
  * @author David Yu
  * @created Nov 20, 2009
  */
-public class JsonRuntimeSerDeserTest extends TestCase
-{
+public class JsonRuntimeSerDeserTest extends TestCase {
 
-    public void testFoo() throws Exception
-    {
-        Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
+	public void testFoo() throws Exception {
+		Schema<Foo> schema = RuntimeSchema.getSchema(Foo.class);
 
-        Foo fooCompare = foo;
-        Foo dfoo = new Foo();
+		Foo fooCompare = foo;
+		Foo dfoo = new Foo();
 
-        byte[] data = JsonIOUtil.toByteArray(fooCompare, schema, false);
-        JsonIOUtil.mergeFrom(data, dfoo, schema, false);
-        SerializableObjects.assertEquals(fooCompare, dfoo);
-    }
+		byte[] data = JsonIOUtil.toByteArray(fooCompare, schema, false);
+		JsonIOUtil.mergeFrom(data, dfoo, schema, false);
+		SerializableObjects.assertEquals(fooCompare, dfoo);
+	}
 
-    public void testBar() throws Exception
-    {
-        Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
+	public void testBar() throws Exception {
+		Schema<Bar> schema = RuntimeSchema.getSchema(Bar.class);
 
-        for (Bar barCompare : new Bar[] { bar, negativeBar })
-        {
-            Bar dbar = new Bar();
+		for (Bar barCompare : new Bar[] { bar, negativeBar }) {
+			Bar dbar = new Bar();
 
-            byte[] data = JsonIOUtil.toByteArray(barCompare, schema, false);
-            JsonIOUtil.mergeFrom(data, dbar, schema, false);
-            SerializableObjects.assertEquals(barCompare, dbar);
-        }
-    }
+			byte[] data = JsonIOUtil.toByteArray(barCompare, schema, false);
+			JsonIOUtil.mergeFrom(data, dbar, schema, false);
+			SerializableObjects.assertEquals(barCompare, dbar);
+		}
+	}
 
-    public void testBaz() throws Exception
-    {
-        Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
+	public void testBaz() throws Exception {
+		Schema<Baz> schema = RuntimeSchema.getSchema(Baz.class);
 
-        for (Baz bazCompare : new Baz[] { baz, negativeBaz })
-        {
-            Baz dbaz = new Baz();
+		for (Baz bazCompare : new Baz[] { baz, negativeBaz }) {
+			Baz dbaz = new Baz();
 
-            byte[] data = JsonIOUtil.toByteArray(bazCompare, schema, false);
-            JsonIOUtil.mergeFrom(data, dbaz, schema, false);
-            SerializableObjects.assertEquals(bazCompare, dbaz);
-        }
-    }
+			byte[] data = JsonIOUtil.toByteArray(bazCompare, schema, false);
+			JsonIOUtil.mergeFrom(data, dbaz, schema, false);
+			SerializableObjects.assertEquals(bazCompare, dbaz);
+		}
+	}
 
 }

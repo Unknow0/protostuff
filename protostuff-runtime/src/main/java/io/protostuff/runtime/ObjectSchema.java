@@ -388,7 +388,7 @@ public abstract class ObjectSchema extends PolymorphicSchema {
 		Pipe.transferDirect(strategy.ARRAY_PIPE_SCHEMA, pipe, input, output);
 	}
 
-	static void transferClass(Pipe pipe, Input input, Output output, int number, Pipe.Schema<?> pipeSchema, boolean mapped, boolean array, IdStrategy strategy)
+	static void transferClass(Input input, Output output, int number, Pipe.Schema<?> pipeSchema, boolean mapped, boolean array, IdStrategy strategy)
 			throws IOException {
 		strategy.transferClassId(input, output, number, mapped, array);
 
@@ -408,7 +408,7 @@ public abstract class ObjectSchema extends PolymorphicSchema {
 		final int dimensions = input.readUInt32();
 
 		// TODO is there another way (reflection) to obtain an array class?
-
+		
 		if (dimensions == 1) {
 			return Array.newInstance(componentType, 0).getClass();
 		}
@@ -756,7 +756,7 @@ public abstract class ObjectSchema extends PolymorphicSchema {
 					((StatefulOutput) output).updateLast(strategy.POLYMORPHIC_MAP_SCHEMA, currentSchema);
 				}
 
-				PolymorphicMapSchema.writeNonPublicMapTo(output, value, strategy.POLYMORPHIC_MAP_SCHEMA, strategy);
+				PolymorphicMapSchema.writeNonPublicMapTo(output, value, strategy);
 				return;
 			}
 
@@ -784,7 +784,7 @@ public abstract class ObjectSchema extends PolymorphicSchema {
 					((StatefulOutput) output).updateLast(strategy.POLYMORPHIC_COLLECTION_SCHEMA, currentSchema);
 				}
 
-				PolymorphicCollectionSchema.writeNonPublicCollectionTo(output, value, strategy.POLYMORPHIC_COLLECTION_SCHEMA, strategy);
+				PolymorphicCollectionSchema.writeNonPublicCollectionTo(output, value, strategy);
 				return;
 			}
 
@@ -984,16 +984,16 @@ public abstract class ObjectSchema extends PolymorphicSchema {
 				transferArray(pipe, input, output, number, pipeSchema, true, strategy);
 				return;
 			case ID_CLASS:
-				transferClass(pipe, input, output, number, pipeSchema, false, false, strategy);
+				transferClass(input, output, number, pipeSchema, false, false, strategy);
 				break;
 			case ID_CLASS_MAPPED:
-				transferClass(pipe, input, output, number, pipeSchema, true, false, strategy);
+				transferClass(input, output, number, pipeSchema, true, false, strategy);
 				break;
 			case ID_CLASS_ARRAY:
-				transferClass(pipe, input, output, number, pipeSchema, false, true, strategy);
+				transferClass(input, output, number, pipeSchema, false, true, strategy);
 				break;
 			case ID_CLASS_ARRAY_MAPPED:
-				transferClass(pipe, input, output, number, pipeSchema, true, true, strategy);
+				transferClass(input, output, number, pipeSchema, true, true, strategy);
 				break;
 
 			case ID_ENUM: {

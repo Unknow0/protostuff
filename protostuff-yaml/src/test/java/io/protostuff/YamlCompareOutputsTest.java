@@ -88,6 +88,7 @@ public class YamlCompareOutputsTest extends TestCase {
 
 		String dir = System.getProperty("benchmark.output_dir");
 
+		@SuppressWarnings("resource")
 		PrintStream out = dir == null ? System.out
 				: new PrintStream(new FileOutputStream(new File(new File(dir), "protostuff-yaml-" + System.currentTimeMillis() + ".txt"), true));
 
@@ -108,6 +109,7 @@ public class YamlCompareOutputsTest extends TestCase {
 	public static void main(String[] args) throws Exception {
 		String dir = System.getProperty("benchmark.output_dir");
 
+		@SuppressWarnings("resource")
 		PrintStream out = dir == null ? System.out
 				: new PrintStream(new FileOutputStream(new File(new File(dir), "protostuff-yaml-" + System.currentTimeMillis() + ".txt"), true));
 

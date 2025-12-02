@@ -168,7 +168,7 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
 	public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, int offset, int length, boolean repeated) throws IOException {
 		if (!utf8String) {
 			// B64 encode
-			writeB64(schema.getFieldName(fieldNumber), value, offset, length, repeated);
+			writeB64(schema.getFieldName(fieldNumber), value, offset, length);
 			return;
 		}
 
@@ -178,7 +178,7 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
 				sink.writeByteArray(value, offset, length, this, sink.writeByte(END_TAG, this, sink.writeStrAscii(name, this, sink.writeByte(START_TAG, this, tail)))))));
 	}
 
-	private void writeB64(String name, byte[] value, int offset, int length, boolean repeated) throws IOException {
+	private void writeB64(String name, byte[] value, int offset, int length) throws IOException {
 		tail = sink.writeByte(END_TAG, this, sink.writeStrAscii(name, this, sink.writeByteArray(START_SLASH_TAG, this,
 				sink.writeByteArrayB64(value, offset, length, this, sink.writeByte(END_TAG, this, sink.writeStrAscii(name, this, sink.writeByte(START_TAG, this, tail)))))));
 	}
@@ -190,7 +190,7 @@ public final class XmlXOutput extends WriteSession implements Output, StatefulOu
 
 	@Override
 	public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException {
-		writeB64(schema.getFieldName(fieldNumber), value, 0, value.length, repeated);
+		writeB64(schema.getFieldName(fieldNumber), value, 0, value.length);
 	}
 
 	@Override

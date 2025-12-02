@@ -81,61 +81,41 @@ public final class MsgpackWriteSink {
 	}
 
 	public LinkedBuffer packInt(final int r, WriteSession session, LinkedBuffer lb) throws IOException {
-		if (r < -(1 << 5)) {
-			if (r < -(1 << 15)) {
-				return writeByteAndInt(INT32, r, session, lb);
-			} else if (r < -(1 << 7)) {
-				return writeByteAndShort(INT16, (short) r, session, lb);
-			} else {
-				return writeByteAndByte(INT8, (byte) r, session, lb);
-			}
-		} else if (r < (1 << 7)) {
+		if (r < -(1 << 15))
+			return writeByteAndInt(INT32, r, session, lb);
+		if (r < -(1 << 7))
+			return writeByteAndShort(INT16, (short) r, session, lb);
+		if (r < -(1 << 5))
+			return writeByteAndByte(INT8, (byte) r, session, lb);
+
+		if (r < (1 << 7))
 			return sink.writeByte((byte) r, session, lb);
-		} else {
-			if (r < (1 << 8)) {
-				return writeByteAndByte(UINT8, (byte) r, session, lb);
-			} else if (r < (1 << 16)) {
-				return writeByteAndShort(UINT16, (short) r, session, lb);
-			} else {
-				// unsigned 32
-				return writeByteAndInt(UINT32, r, session, lb);
-			}
-		}
+		if (r < (1 << 8))
+			return writeByteAndByte(UINT8, (byte) r, session, lb);
+		if (r < (1 << 16))
+			return writeByteAndShort(UINT16, (short) r, session, lb);
+		// unsigned 32
+		return writeByteAndInt(UINT32, r, session, lb);
 	}
 
 	public LinkedBuffer packLong(long v, WriteSession session, LinkedBuffer lb) throws IOException {
-		if (v < -(1L << 5)) {
-			if (v < -(1L << 15)) {
-				if (v < -(1L << 31)) {
-					return writeByteAndLong(INT64, v, session, lb);
-				} else {
-					return writeByteAndInt(INT32, (int) v, session, lb);
-				}
-			} else {
-				if (v < -(1 << 7)) {
-					return writeByteAndShort(INT16, (short) v, session, lb);
-				} else {
-					return writeByteAndByte(INT8, (byte) v, session, lb);
-				}
-			}
-		} else if (v < (1 << 7)) {
-			// fixnum
+		if (v < -(1L << 31))
+			return writeByteAndLong(INT64, v, session, lb);
+		if (v < -(1L << 15))
+			return writeByteAndInt(INT32, (int) v, session, lb);
+		if (v < -(1 << 7))
+			return writeByteAndShort(INT16, (short) v, session, lb);
+		if (v < -(1L << 5))
+			return writeByteAndByte(INT8, (byte) v, session, lb);
+		if (v < (1 << 7)) // fixnum
 			return sink.writeByte((byte) v, session, lb);
-		} else {
-			if (v < (1L << 16)) {
-				if (v < (1 << 8)) {
-					return writeByteAndByte(UINT8, (byte) v, session, lb);
-				} else {
-					return writeByteAndShort(UINT16, (short) v, session, lb);
-				}
-			} else {
-				if (v < (1L << 32)) {
-					return writeByteAndInt(UINT32, (int) v, session, lb);
-				} else {
-					return writeByteAndLong(UINT64, v, session, lb);
-				}
-			}
-		}
+		if (v < (1 << 8))
+			return writeByteAndByte(UINT8, (byte) v, session, lb);
+		if (v < (1L << 16))
+			return writeByteAndShort(UINT16, (short) v, session, lb);
+		if (v < (1L << 32))
+			return writeByteAndInt(UINT32, (int) v, session, lb);
+		return writeByteAndLong(UINT64, v, session, lb);
 	}
 
 	public LinkedBuffer packFloat(float v, WriteSession session, LinkedBuffer lb) throws IOException {

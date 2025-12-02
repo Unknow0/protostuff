@@ -196,17 +196,17 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
 
 	@Override
 	public void writeBytes(int fieldNumber, ByteString value, boolean repeated) throws IOException {
-		writeBytes(fieldNumber, value.getBytes(), 0, value.size(), repeated, false);
+		writeBytes(fieldNumber, value.getBytes(), 0, value.size(), repeated);
 	}
 
 	@Override
 	public void writeByteArray(int fieldNumber, byte[] value, boolean repeated) throws IOException {
-		writeBytes(fieldNumber, value, 0, value.length, repeated, false);
+		writeBytes(fieldNumber, value, 0, value.length, repeated);
 	}
 
 	@Override
 	public void writeByteRange(boolean utf8String, int fieldNumber, byte[] value, int offset, int length, boolean repeated) throws IOException {
-		writeBytes(fieldNumber, value, offset, length, repeated, utf8String);
+		writeBytes(fieldNumber, value, offset, length, repeated);
 	}
 
 	@Override
@@ -268,7 +268,7 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
 
 	@Override
 	public void writeBytes(int fieldNumber, ByteBuffer value, boolean repeated) throws IOException {
-		writeBytes(fieldNumber, value.array(), value.arrayOffset() + value.position(), value.remaining(), repeated, false);
+		writeBytes(fieldNumber, value.array(), value.arrayOffset() + value.position(), value.remaining(), repeated);
 	}
 
 	private void writeInt(int fieldNumber, int value, boolean repeated) throws IOException {
@@ -430,7 +430,7 @@ public class MsgpackXOutput extends WriteSession implements Output, StatefulOutp
 
 	}
 
-	private void writeBytes(int fieldNumber, byte[] src, int offset, int length, boolean repeated, boolean utf8) throws IOException {
+	private void writeBytes(int fieldNumber, byte[] src, int offset, int length, boolean repeated) throws IOException {
 
 		if (lastNumber == fieldNumber && lastRepeated) {
 			// repeated field

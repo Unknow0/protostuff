@@ -460,7 +460,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 	@SuppressWarnings("unchecked")
 	static void writeObjectTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
 		if (Collections.class == value.getClass().getDeclaringClass()) {
-			writeNonPublicCollectionTo(output, value, currentSchema, strategy);
+			writeNonPublicCollectionTo(output, value, strategy);
 			return;
 		}
 
@@ -480,7 +480,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 		strategy.COLLECTION_SCHEMA.writeTo(output, (Collection<Object>) value);
 	}
 
-	static void writeNonPublicCollectionTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
+	static void writeNonPublicCollectionTo(Output output, Object value, IdStrategy strategy) throws IOException {
 		final Integer num = __nonPublicCollections.get(value.getClass());
 		if (num == null) {
 			throw new RuntimeException("Unknown collection: " + value.getClass());
@@ -564,51 +564,51 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 				break;
 			}
 			case ID_UNMODIFIABLE_COLLECTION:
-				writeUnmodifiableCollectionTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableCollectionTo(output, value, strategy, id);
 				break;
 			case ID_UNMODIFIABLE_SET:
-				writeUnmodifiableCollectionTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableCollectionTo(output, value, strategy, id);
 				break;
 			case ID_UNMODIFIABLE_SORTED_SET:
-				writeUnmodifiableCollectionTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableCollectionTo(output, value, strategy, id);
 				break;
 			case ID_UNMODIFIABLE_LIST:
-				writeUnmodifiableCollectionTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableCollectionTo(output, value, strategy, id);
 				break;
 			case ID_UNMODIFIABLE_RANDOM_ACCESS_LIST:
-				writeUnmodifiableCollectionTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableCollectionTo(output, value, strategy, id);
 				break;
 
 			case ID_SYNCHRONIZED_COLLECTION:
-				writeSynchronizedCollectionTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_SYNCHRONIZED_SET:
-				writeSynchronizedCollectionTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_SYNCHRONIZED_SORTED_SET:
-				writeSynchronizedCollectionTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_SYNCHRONIZED_LIST:
-				writeSynchronizedCollectionTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_SYNCHRONIZED_RANDOM_ACCESS_LIST:
-				writeSynchronizedCollectionTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedCollectionTo(output, value, strategy, id);
 				break;
 
 			case ID_CHECKED_COLLECTION:
-				writeCheckedCollectionTo(output, value, currentSchema, strategy, id);
+				writeCheckedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_CHECKED_SET:
-				writeCheckedCollectionTo(output, value, currentSchema, strategy, id);
+				writeCheckedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_CHECKED_SORTED_SET:
-				writeCheckedCollectionTo(output, value, currentSchema, strategy, id);
+				writeCheckedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_CHECKED_LIST:
-				writeCheckedCollectionTo(output, value, currentSchema, strategy, id);
+				writeCheckedCollectionTo(output, value, strategy, id);
 				break;
 			case ID_CHECKED_RANDOM_ACCESS_LIST:
-				writeCheckedCollectionTo(output, value, currentSchema, strategy, id);
+				writeCheckedCollectionTo(output, value, strategy, id);
 				break;
 
 			default:
@@ -616,7 +616,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 		}
 	}
 
-	private static void writeUnmodifiableCollectionTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy, int id) throws IOException {
+	private static void writeUnmodifiableCollectionTo(Output output, Object value, IdStrategy strategy, int id) throws IOException {
 		final Object c;
 		try {
 			c = fUnmodifiableCollection_c.get(value);
@@ -629,7 +629,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 		output.writeObject(id, c, strategy.POLYMORPHIC_COLLECTION_SCHEMA, false);
 	}
 
-	private static void writeSynchronizedCollectionTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy, int id) throws IOException {
+	private static void writeSynchronizedCollectionTo(Output output, Object value, IdStrategy strategy, int id) throws IOException {
 		final Object c, mutex;
 		try {
 			c = fSynchronizedCollection_c.get(value);
@@ -651,7 +651,7 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 		output.writeObject(id, c, strategy.POLYMORPHIC_COLLECTION_SCHEMA, false);
 	}
 
-	private static void writeCheckedCollectionTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy, int id) throws IOException {
+	private static void writeCheckedCollectionTo(Output output, Object value, IdStrategy strategy, int id) throws IOException {
 		final Object c, type;
 		try {
 			c = fCheckedCollection_c.get(value);
@@ -859,35 +859,35 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 			}
 
 			case ID_UNMODIFIABLE_COLLECTION:
-				ret = readUnmodifiableCollectionFrom(input, schema, owner, strategy, graph, iUnmodifiableCollection.newInstance(), false, false);
+				ret = readUnmodifiableCollectionFrom(input, owner, strategy, graph, iUnmodifiableCollection.newInstance(), false, false);
 				break;
 			case ID_UNMODIFIABLE_SET:
-				ret = readUnmodifiableCollectionFrom(input, schema, owner, strategy, graph, iUnmodifiableSet.newInstance(), false, false);
+				ret = readUnmodifiableCollectionFrom(input, owner, strategy, graph, iUnmodifiableSet.newInstance(), false, false);
 				break;
 			case ID_UNMODIFIABLE_SORTED_SET:
-				ret = readUnmodifiableCollectionFrom(input, schema, owner, strategy, graph, iUnmodifiableSortedSet.newInstance(), true, false);
+				ret = readUnmodifiableCollectionFrom(input, owner, strategy, graph, iUnmodifiableSortedSet.newInstance(), true, false);
 				break;
 			case ID_UNMODIFIABLE_LIST:
-				ret = readUnmodifiableCollectionFrom(input, schema, owner, strategy, graph, iUnmodifiableList.newInstance(), false, true);
+				ret = readUnmodifiableCollectionFrom(input, owner, strategy, graph, iUnmodifiableList.newInstance(), false, true);
 				break;
 			case ID_UNMODIFIABLE_RANDOM_ACCESS_LIST:
-				ret = readUnmodifiableCollectionFrom(input, schema, owner, strategy, graph, iUnmodifiableRandomAccessList.newInstance(), false, true);
+				ret = readUnmodifiableCollectionFrom(input, owner, strategy, graph, iUnmodifiableRandomAccessList.newInstance(), false, true);
 				break;
 
 			case ID_SYNCHRONIZED_COLLECTION:
-				ret = readSynchronizedCollectionFrom(input, schema, owner, strategy, graph, iSynchronizedCollection.newInstance(), false, false);
+				ret = readSynchronizedCollectionFrom(input, owner, strategy, graph, iSynchronizedCollection.newInstance(), false, false);
 				break;
 			case ID_SYNCHRONIZED_SET:
-				ret = readSynchronizedCollectionFrom(input, schema, owner, strategy, graph, iSynchronizedSet.newInstance(), false, false);
+				ret = readSynchronizedCollectionFrom(input, owner, strategy, graph, iSynchronizedSet.newInstance(), false, false);
 				break;
 			case ID_SYNCHRONIZED_SORTED_SET:
-				ret = readSynchronizedCollectionFrom(input, schema, owner, strategy, graph, iSynchronizedSortedSet.newInstance(), true, false);
+				ret = readSynchronizedCollectionFrom(input, owner, strategy, graph, iSynchronizedSortedSet.newInstance(), true, false);
 				break;
 			case ID_SYNCHRONIZED_LIST:
-				ret = readSynchronizedCollectionFrom(input, schema, owner, strategy, graph, iSynchronizedList.newInstance(), false, true);
+				ret = readSynchronizedCollectionFrom(input, owner, strategy, graph, iSynchronizedList.newInstance(), false, true);
 				break;
 			case ID_SYNCHRONIZED_RANDOM_ACCESS_LIST:
-				ret = readSynchronizedCollectionFrom(input, schema, owner, strategy, graph, iSynchronizedRandomAccessList.newInstance(), false, true);
+				ret = readSynchronizedCollectionFrom(input, owner, strategy, graph, iSynchronizedRandomAccessList.newInstance(), false, true);
 				break;
 
 			case ID_CHECKED_COLLECTION:
@@ -943,8 +943,8 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 		return ret;
 	}
 
-	private static Object readUnmodifiableCollectionFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, boolean graph, Object collection, boolean ss,
-			boolean list) throws IOException {
+	private static Object readUnmodifiableCollectionFrom(Input input, Object owner, IdStrategy strategy, boolean graph, Object collection, boolean ss, boolean list)
+			throws IOException {
 		if (graph) {
 			// update the actual reference.
 			((GraphInput) input).updateLast(collection, owner);
@@ -974,8 +974,8 @@ public abstract class PolymorphicCollectionSchema extends PolymorphicSchema {
 		return collection;
 	}
 
-	private static Object readSynchronizedCollectionFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, boolean graph, Object collection, boolean ss,
-			boolean list) throws IOException {
+	private static Object readSynchronizedCollectionFrom(Input input, Object owner, IdStrategy strategy, boolean graph, Object collection, boolean ss, boolean list)
+			throws IOException {
 		if (graph) {
 			// update the actual reference.
 			((GraphInput) input).updateLast(collection, owner);

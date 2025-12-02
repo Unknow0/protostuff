@@ -31,67 +31,55 @@ import io.protostuff.parser.Proto;
  * @author David Yu
  * @created Jan 4, 2010
  */
-public class ProtoToJavaBeanCompiler extends STCodeGenerator
-{
+public class ProtoToJavaBeanCompiler extends STCodeGenerator {
 
-    public ProtoToJavaBeanCompiler()
-    {
-        this("java_bean");
-    }
+	public ProtoToJavaBeanCompiler() {
+		this("java_bean");
+	}
 
-    public ProtoToJavaBeanCompiler(String id)
-    {
-        super(id);
-    }
+	public ProtoToJavaBeanCompiler(String id) {
+		super(id);
+	}
 
-    @Override
-    public void compile(ProtoModule module, Proto proto) throws IOException
-    {
-        String javaPackageName = proto.getJavaPackageName();
-        String template = module.getOption("separate_schema") == null ? "java_bean" : "java_bean_separate_schema";
-        StringTemplateGroup group = getSTG(template);
+	@Override
+	public void compile(ProtoModule module, Proto proto) throws IOException {
+		String javaPackageName = proto.getJavaPackageName();
+		String template = module.getOption("separate_schema") == null ? "java_bean" : "java_bean_separate_schema";
+		StringTemplateGroup group = getSTG(template);
 
-        writeEnums(module, proto, javaPackageName, group);
+		writeEnums(module, proto, javaPackageName, group);
 
-        writeMessages(module, proto, javaPackageName, group);
-    }
+		writeMessages(module, proto, javaPackageName, group);
+	}
 
-    protected void writeMessages(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group)
-            throws IOException
-    {
-        for (Message m : proto.getMessages())
-        {
-            Writer writer = CompilerUtil.newWriter(module,
-                    javaPackageName, m.getName() + ".java");
-            AutoIndentWriter out = new AutoIndentWriter(writer);
+	protected void writeMessages(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group) throws IOException {
+		for (Message m : proto.getMessages()) {
+			Writer writer = CompilerUtil.newWriter(module, javaPackageName, m.getName() + ".java");
+			AutoIndentWriter out = new AutoIndentWriter(writer);
 
-            StringTemplate messageBlock = group.getInstanceOf("message_block");
-            messageBlock.setAttribute("message", m);
-            messageBlock.setAttribute("module", module);
-            messageBlock.setAttribute("options", module.getOptions());
+			StringTemplate messageBlock = group.getInstanceOf("message_block");
+			messageBlock.setAttribute("message", m);
+			messageBlock.setAttribute("module", module);
+			messageBlock.setAttribute("options", module.getOptions());
 
-            messageBlock.write(out);
-            writer.close();
-        }
-    }
+			messageBlock.write(out);
+			writer.close();
+		}
+	}
 
-    protected void writeEnums(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group)
-            throws IOException
-    {
-        for (EnumGroup eg : proto.getEnumGroups())
-        {
-            Writer writer = CompilerUtil.newWriter(module,
-                    javaPackageName, eg.getName() + ".java");
-            AutoIndentWriter out = new AutoIndentWriter(writer);
+	protected void writeEnums(ProtoModule module, Proto proto, String javaPackageName, StringTemplateGroup group) throws IOException {
+		for (EnumGroup eg : proto.getEnumGroups()) {
+			Writer writer = CompilerUtil.newWriter(module, javaPackageName, eg.getName() + ".java");
+			AutoIndentWriter out = new AutoIndentWriter(writer);
 
-            StringTemplate enumBlock = group.getInstanceOf("enum_block");
-            enumBlock.setAttribute("eg", eg);
-            enumBlock.setAttribute("module", module);
-            enumBlock.setAttribute("options", module.getOptions());
+			StringTemplate enumBlock = group.getInstanceOf("enum_block");
+			enumBlock.setAttribute("eg", eg);
+			enumBlock.setAttribute("module", module);
+			enumBlock.setAttribute("options", module.getOptions());
 
-            enumBlock.write(out);
-            writer.close();
-        }
-    }
+			enumBlock.write(out);
+			writer.close();
+		}
+	}
 
 }

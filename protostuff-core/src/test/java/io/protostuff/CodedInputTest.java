@@ -23,31 +23,28 @@ import java.io.ByteArrayOutputStream;
  * @author Max Lanin
  * @created Dec 22, 2012
  */
-public class CodedInputTest extends AbstractTest
-{
+public class CodedInputTest extends AbstractTest {
 
-    public void testSkipFieldOverTheBufferBoundary() throws Exception
-    {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int tag = WireFormat.makeTag(1, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-        int anotherTag = WireFormat.makeTag(2, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-        int msgLength = 10;
+	public void testSkipFieldOverTheBufferBoundary() throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int tag = WireFormat.makeTag(1, WireFormat.WIRETYPE_LENGTH_DELIMITED);
+		int anotherTag = WireFormat.makeTag(2, WireFormat.WIRETYPE_LENGTH_DELIMITED);
+		int msgLength = 10;
 
-        ProtobufOutput.writeRawVarInt32Bytes(out, tag);
-        ProtobufOutput.writeRawVarInt32Bytes(out, msgLength);
-        for (int i = 1; i <= msgLength; i++)
-        {
-            ProtobufOutput.writeRawVarInt32Bytes(out, i);
-        }
-        ProtobufOutput.writeRawVarInt32Bytes(out, anotherTag);
+		ProtobufOutput.writeRawVarInt32Bytes(out, tag);
+		ProtobufOutput.writeRawVarInt32Bytes(out, msgLength);
+		for (int i = 1; i <= msgLength; i++) {
+			ProtobufOutput.writeRawVarInt32Bytes(out, i);
+		}
+		ProtobufOutput.writeRawVarInt32Bytes(out, anotherTag);
 
-        byte[] data = out.toByteArray();
+		byte[] data = out.toByteArray();
 
-        CodedInput ci = new CodedInput(new ByteArrayInputStream(data), new byte[10], false);
-        ci.pushLimit(msgLength + 2); // +2 for tag and length
-        assertEquals(tag, ci.readTag());
-        ci.skipField(tag);
-        assertEquals(0, ci.readTag());
-    }
+		CodedInput ci = new CodedInput(new ByteArrayInputStream(data), new byte[10], false);
+		ci.pushLimit(msgLength + 2); // +2 for tag and length
+		assertEquals(tag, ci.readTag());
+		ci.skipField(tag);
+		assertEquals(0, ci.readTag());
+	}
 
 }

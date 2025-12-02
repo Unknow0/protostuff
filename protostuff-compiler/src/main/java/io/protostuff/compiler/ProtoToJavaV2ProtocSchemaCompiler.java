@@ -30,40 +30,34 @@ import io.protostuff.parser.ProtoUtil;
  * @author David Yu
  * @created May 14, 2010
  */
-public class ProtoToJavaV2ProtocSchemaCompiler extends STCodeGenerator
-{
+public class ProtoToJavaV2ProtocSchemaCompiler extends STCodeGenerator {
 
-    public ProtoToJavaV2ProtocSchemaCompiler()
-    {
-        super("java_v2protoc_schema");
-    }
+	public ProtoToJavaV2ProtocSchemaCompiler() {
+		super("java_v2protoc_schema");
+	}
 
-    static String resolveFileName(Proto proto)
-    {
-        String outerClassname = proto.getExtraOption("java_outer_classname");
-        return outerClassname == null ? ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(
-                ".proto", "")).toString() : outerClassname;
-    }
+	static String resolveFileName(Proto proto) {
+		String outerClassname = proto.getExtraOption("java_outer_classname");
+		return outerClassname == null ? ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(".proto", "")).toString() : outerClassname;
+	}
 
-    @Override
-    protected void compile(ProtoModule module, Proto proto) throws IOException
-    {
-        String javaPackageName = proto.getJavaPackageName();
-        StringTemplateGroup group = getSTG(getOutputId());
+	@Override
+	protected void compile(ProtoModule module, Proto proto) throws IOException {
+		String javaPackageName = proto.getJavaPackageName();
+		StringTemplateGroup group = getSTG(getOutputId());
 
-        String fileName = resolveFileName(proto);
-        Writer writer = CompilerUtil.newWriter(module, javaPackageName,
-                "Schema" + fileName + ".java");
+		String fileName = resolveFileName(proto);
+		Writer writer = CompilerUtil.newWriter(module, javaPackageName, "Schema" + fileName + ".java");
 
-        AutoIndentWriter out = new AutoIndentWriter(writer);
-        StringTemplate protoOuterBlock = group.getInstanceOf("proto_block");
+		AutoIndentWriter out = new AutoIndentWriter(writer);
+		StringTemplate protoOuterBlock = group.getInstanceOf("proto_block");
 
-        protoOuterBlock.setAttribute("proto", proto);
-        protoOuterBlock.setAttribute("module", module);
-        protoOuterBlock.setAttribute("options", module.getOptions());
+		protoOuterBlock.setAttribute("proto", proto);
+		protoOuterBlock.setAttribute("module", module);
+		protoOuterBlock.setAttribute("options", module.getOptions());
 
-        protoOuterBlock.write(out);
-        writer.close();
-    }
+		protoOuterBlock.write(out);
+		writer.close();
+	}
 
 }

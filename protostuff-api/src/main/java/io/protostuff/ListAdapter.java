@@ -38,34 +38,29 @@ import java.util.List;
  *
  * Internal class - used in generated code only.
  */
-public final class ListAdapter<F, T> extends AbstractList<T>
-{
-    private final List<F> fromList;
-    private final Converter<F, T> converter;
+public final class ListAdapter<F, T> extends AbstractList<T> {
+	private final List<F> fromList;
+	private final Converter<F, T> converter;
 
-    public ListAdapter(List<F> fromList, Converter<F, T> converter)
-    {
-        this.fromList = fromList;
-        this.converter = converter;
-    }
+	public ListAdapter(List<F> fromList, Converter<F, T> converter) {
+		this.fromList = fromList;
+		this.converter = converter;
+	}
 
-    @Override
-    public T get(int index)
-    {
-        return converter.convert(fromList.get(index));
-    }
+	@Override
+	public T get(int index) {
+		return converter.convert(fromList.get(index));
+	}
 
-    @Override
-    public int size()
-    {
-        return fromList.size();
-    }
+	@Override
+	public int size() {
+		return fromList.size();
+	}
 
-    /**
-     * Convert individual elements of the List from F to T.
-     */
-    public interface Converter<F, T>
-    {
-        T convert(F from);
-    }
+	/**
+	 * Convert individual elements of the List from F to T.
+	 */
+	public interface Converter<F, T> {
+		T convert(F from);
+	}
 }

@@ -191,8 +191,7 @@ public final class RuntimeView {
 			public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory factory, String[] args)
 
 		{
-				final HashMap<String, Field<T>> fieldsByName = factory == null ? copyAndExclude(ms.typeClass(), ms.getFields(), args)
-						: copyAndExclude(ms.typeClass(), ms.getFields(), factory.create(args));
+				final HashMap<String, Field<T>> fieldsByName = factory == null ? copyAndExclude(ms.getFields(), args) : copyAndExclude(ms.getFields(), factory.create(args));
 
 				@SuppressWarnings("unchecked")
 				Field<T>[] fields = (Field<T>[]) new Field<?>[fieldsByName.size()];
@@ -259,7 +258,7 @@ public final class RuntimeView {
 			public <T> Schema<T> create(final RuntimeSchema<T> ms, Instantiator<T> instantiator, Predicate.Factory factory, String[] args) {
 				final HashMap<String, Field<T>> fieldsByName = new HashMap<>();
 
-				int maxFieldNumber = includeAndAddTo(fieldsByName, ms.typeClass(), ms.getFields(), args);
+				includeAndAddTo(fieldsByName, ms.getFields(), args);
 
 				@SuppressWarnings("unchecked")
 				Field<T>[] fields = new Field[fieldsByName.size()];
@@ -317,7 +316,7 @@ public final class RuntimeView {
 		};
 	}
 
-	static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass, List<Field<T>> fields, final Predicate predicate) {
+	static <T> HashMap<String, Field<T>> copyAndExclude(List<Field<T>> fields, final Predicate predicate) {
 		final HashMap<String, Field<T>> map = new HashMap<>();
 		for (Field<T> field : fields) {
 			if (!predicate.apply(field)) {
@@ -328,7 +327,7 @@ public final class RuntimeView {
 		return map;
 	}
 
-	static <T> HashMap<String, Field<T>> copyAndExclude(Class<? super T> typeClass, List<Field<T>> fields, final String[] args) {
+	static <T> HashMap<String, Field<T>> copyAndExclude(List<Field<T>> fields, final String[] args) {
 		if (args == null || args.length == 0) {
 			throw new IllegalArgumentException("You must provide at least 1 field to exclude.");
 		}
@@ -345,7 +344,7 @@ public final class RuntimeView {
 		return map;
 	}
 
-	static <T> int includeAndAddTo(Map<String, Field<T>> map, Class<? super T> typeClass, List<Field<T>> fields, final String[] args) {
+	static <T> int includeAndAddTo(Map<String, Field<T>> map, List<Field<T>> fields, final String[] args) {
 		if (args == null || args.length == 0) {
 			throw new IllegalArgumentException("You must provide at least 1 field to include.");
 		}

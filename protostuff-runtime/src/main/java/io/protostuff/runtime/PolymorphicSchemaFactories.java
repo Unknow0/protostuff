@@ -56,7 +56,7 @@ public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory {
 
 			if (rff.id > 0 && rff.id < 15) {
 				// scalar
-				return ArraySchemas.newSchema(rff.id, ct, typeClass, strategy, handler);
+				return ArraySchemas.newSchema(rff.id, ct, strategy, handler);
 			}
 
 			if (ct.isEnum()) {

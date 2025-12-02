@@ -27,64 +27,54 @@ import io.protostuff.StringSerializer.STRING;
  * @author David Yu
  * @created Jan 27, 2011
  */
-public class JsonXRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollectionSchemaTest
-{
+public class JsonXRuntimeCollectionSchemaTest extends AbstractJsonRuntimeCollectionSchemaTest {
 
-    @Override
-    protected boolean isNumeric()
-    {
-        return false;
-    }
+	@Override
+	protected boolean isNumeric() {
+		return false;
+	}
 
-    @Override
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
-    }
+	@Override
+	protected <T> byte[] toByteArray(T message, Schema<T> schema) {
+		return JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
+	}
 
-    @Override
-    protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException
-    {
-        JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
-    }
+	@Override
+	protected <T> void writeTo(OutputStream out, T message, Schema<T> schema) throws IOException {
+		JsonXIOUtil.writeTo(out, message, schema, isNumeric(), buf());
+	}
 
-    @Override
-    protected <T> void roundTrip(T message, Schema<T> schema,
-            Pipe.Schema<T> pipeSchema) throws Exception
-    {
-        byte[] json = JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
+	@Override
+	protected <T> void roundTrip(T message, Schema<T> schema, Pipe.Schema<T> pipeSchema) throws Exception {
+		byte[] json = JsonXIOUtil.toByteArray(message, schema, isNumeric(), buf());
 
-        ByteArrayInputStream jsonStream = new ByteArrayInputStream(json);
+		ByteArrayInputStream jsonStream = new ByteArrayInputStream(json);
 
-        byte[] protostuff = ProtostuffIOUtil.toByteArray(
-                JsonIOUtil.newPipe(json, 0, json.length, isNumeric()), pipeSchema, buf());
+		byte[] protostuff = ProtostuffIOUtil.toByteArray(JsonIOUtil.newPipe(json, 0, json.length, isNumeric()), pipeSchema, buf());
 
-        byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(
-                JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
+		byte[] protostuffFromStream = ProtostuffIOUtil.toByteArray(JsonIOUtil.newPipe(jsonStream, isNumeric()), pipeSchema, buf());
 
-        assertTrue(Arrays.equals(protostuff, protostuffFromStream));
+		assertTrue(Arrays.equals(protostuff, protostuffFromStream));
 
-        T parsedMessage = schema.newMessage();
-        ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
-        SerializableObjects.assertEquals(message, parsedMessage);
+		T parsedMessage = schema.newMessage();
+		ProtostuffIOUtil.mergeFrom(protostuff, parsedMessage, schema);
+		SerializableObjects.assertEquals(message, parsedMessage);
 
-        ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
+		ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
 
-        byte[] jsonRoundTrip = JsonXIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, isNumeric(), buf());
+		byte[] jsonRoundTrip = JsonXIOUtil.toByteArray(ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, isNumeric(), buf());
 
-        byte[] jsonRoundTripFromStream = JsonXIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, isNumeric(), buf());
+		byte[] jsonRoundTripFromStream = JsonXIOUtil.toByteArray(ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, isNumeric(), buf());
 
-        assertTrue(jsonRoundTrip.length == jsonRoundTripFromStream.length);
+		assertTrue(jsonRoundTrip.length == jsonRoundTripFromStream.length);
 
-        String strJsonRoundTrip = STRING.deser(jsonRoundTrip);
+		String strJsonRoundTrip = STRING.deser(jsonRoundTrip);
 
-        assertEquals(strJsonRoundTrip, STRING.deser(jsonRoundTripFromStream));
+		assertEquals(strJsonRoundTrip, STRING.deser(jsonRoundTripFromStream));
 
-        assertTrue(jsonRoundTrip.length == json.length);
+		assertTrue(jsonRoundTrip.length == json.length);
 
-        assertEquals(strJsonRoundTrip, STRING.deser(json));
-    }
+		assertEquals(strJsonRoundTrip, STRING.deser(json));
+	}
 
 }

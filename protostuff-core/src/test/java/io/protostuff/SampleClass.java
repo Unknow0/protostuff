@@ -10,160 +10,134 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SampleClass implements Externalizable, Message<SampleClass>
-{
+public final class SampleClass implements Externalizable, Message<SampleClass> {
 
-    public static Schema<SampleClass> getSchema()
-    {
-        return SCHEMA;
-    }
+	public static Schema<SampleClass> getSchema() {
+		return SCHEMA;
+	}
 
-    public static SampleClass getDefaultInstance()
-    {
-        return DEFAULT_INSTANCE;
-    }
+	public static SampleClass getDefaultInstance() {
+		return DEFAULT_INSTANCE;
+	}
 
-    static final SampleClass DEFAULT_INSTANCE = new SampleClass();
+	static final SampleClass DEFAULT_INSTANCE = new SampleClass();
 
-    // non-private fields
-    // see http://developer.android.com/guide/practices/design/performance.html#package_inner
-    List<String> testString;
+	// non-private fields
+	// see http://developer.android.com/guide/practices/design/performance.html#package_inner
+	List<String> testString;
 
-    public SampleClass()
-    {
+	public SampleClass() {
 
-    }
+	}
 
-    // getters and setters
+	// getters and setters
 
-    // testString
+	// testString
 
-    public List<String> getTestStringList()
-    {
-        return testString;
-    }
+	public List<String> getTestStringList() {
+		return testString;
+	}
 
-    public void setTestStringList(List<String> testString)
-    {
-        this.testString = testString;
-    }
+	public void setTestStringList(List<String> testString) {
+		this.testString = testString;
+	}
 
-    // java serialization
+	// java serialization
 
-    @Override
-    public void readExternal(ObjectInput in) throws IOException
-    {
-        GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
-    }
+	@Override
+	public void readExternal(ObjectInput in) throws IOException {
+		GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
+	}
 
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
-    }
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
+	}
 
-    // message method
+	// message method
 
-    @Override
-    public Schema<SampleClass> cachedSchema()
-    {
-        return SCHEMA;
-    }
+	@Override
+	public Schema<SampleClass> cachedSchema() {
+		return SCHEMA;
+	}
 
-    static final Schema<SampleClass> SCHEMA = new Schema<SampleClass>()
-    {
-        // schema methods
+	static final Schema<SampleClass> SCHEMA = new Schema<SampleClass>() {
+		// schema methods
 
-        @Override
-        public SampleClass newMessage()
-        {
-            return new SampleClass();
-        }
+		@Override
+		public SampleClass newMessage() {
+			return new SampleClass();
+		}
 
-        @Override
-        public Class<SampleClass> typeClass()
-        {
-            return SampleClass.class;
-        }
+		@Override
+		public Class<SampleClass> typeClass() {
+			return SampleClass.class;
+		}
 
-        @Override
-        public String messageName()
-        {
-            return SampleClass.class.getSimpleName();
-        }
+		@Override
+		public String messageName() {
+			return SampleClass.class.getSimpleName();
+		}
 
-        @Override
-        public String messageFullName()
-        {
-            return SampleClass.class.getName();
-        }
+		@Override
+		public String messageFullName() {
+			return SampleClass.class.getName();
+		}
 
-        @Override
-        public boolean isInitialized(SampleClass message)
-        {
-            return true;
-        }
+		@Override
+		public boolean isInitialized(SampleClass message) {
+			return true;
+		}
 
-        @Override
-        public void mergeFrom(Input input, SampleClass message) throws IOException
-        {
-            for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
-            {
-                switch (number)
-                {
-                    case 0:
-                        return;
-                    case 1:
-                        if (message.testString == null)
-                        {
-                            message.testString = new ArrayList<>();
-                        }
-                        message.testString.add(input.readString());
-                        break;
-                    default:
-                        input.handleUnknownField(number, this);
-                }
-            }
-        }
+		@Override
+		public void mergeFrom(Input input, SampleClass message) throws IOException {
+			for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this)) {
+				switch (number) {
+					case 0:
+						return;
+					case 1:
+						if (message.testString == null) {
+							message.testString = new ArrayList<>();
+						}
+						message.testString.add(input.readString());
+						break;
+					default:
+						input.handleUnknownField(number, this);
+				}
+			}
+		}
 
-        @Override
-        public void writeTo(Output output, SampleClass message) throws IOException
-        {
-            if (message.testString != null)
-            {
-                for (String testString : message.testString)
-                {
-                    if (testString != null)
-                    {
-                        output.writeString(1, testString, true);
-                    }
-                }
-            }
-        }
+		@Override
+		public void writeTo(Output output, SampleClass message) throws IOException {
+			if (message.testString != null) {
+				for (String testString : message.testString) {
+					if (testString != null) {
+						output.writeString(1, testString, true);
+					}
+				}
+			}
+		}
 
-        @Override
-        public String getFieldName(int number)
-        {
-            switch (number)
-            {
-                case 1:
-                    return "testString";
-                default:
-                    return null;
-            }
-        }
+		@Override
+		public String getFieldName(int number) {
+			switch (number) {
+				case 1:
+					return "testString";
+				default:
+					return null;
+			}
+		}
 
-        @Override
-        public int getFieldNumber(String name)
-        {
-            final Integer number = fieldMap.get(name);
-            return number == null ? 0 : number.intValue();
-        }
+		@Override
+		public int getFieldNumber(String name) {
+			final Integer number = fieldMap.get(name);
+			return number == null ? 0 : number.intValue();
+		}
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
-        {
-            fieldMap.put("testString", 1);
-        }
-    };
+		final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
+		{
+			fieldMap.put("testString", 1);
+		}
+	};
 
 }

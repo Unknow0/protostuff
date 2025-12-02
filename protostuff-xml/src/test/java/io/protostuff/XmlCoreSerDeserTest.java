@@ -373,7 +373,7 @@ public class XmlCoreSerDeserTest {
 
 		try {
 			XmlIOUtil.mergeFrom(data, parsed, schema);
-		} catch (UninitializedMessageException e) {
+		} catch (@SuppressWarnings("unused") UninitializedMessageException e) {
 			// expected
 			return;
 		}

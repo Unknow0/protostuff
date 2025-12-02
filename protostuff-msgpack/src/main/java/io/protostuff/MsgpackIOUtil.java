@@ -43,14 +43,15 @@ public final class MsgpackIOUtil {
 	/**
 	 * Creates a msgpack pipe from a byte array.
 	 */
-	public static Pipe newPipe(byte[] data, boolean numeric) throws IOException {
+	public static Pipe newPipe(byte[] data, boolean numeric) {
 		return newPipe(data, 0, data.length, numeric);
 	}
 
 	/**
 	 * Creates a msgpack pipe from a byte array.
 	 */
-	public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) throws IOException {
+	@SuppressWarnings("resource")
+	public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) {
 		ArrayBufferInput in = new ArrayBufferInput(data, offset, length);
 		return newPipe(in, numeric);
 	}
@@ -58,7 +59,8 @@ public final class MsgpackIOUtil {
 	/**
 	 * Creates a msgpack pipe from an {@link MessageBufferInput}.
 	 */
-	public static Pipe newPipe(MessageBufferInput in, boolean numeric) throws IOException {
+	@SuppressWarnings("resource")
+	public static Pipe newPipe(MessageBufferInput in, boolean numeric) {
 		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
 		return newPipe(unpacker, numeric);
 	}
@@ -66,7 +68,8 @@ public final class MsgpackIOUtil {
 	/**
 	 * Creates a msgpack pipe from an {@link InputStream}.
 	 */
-	public static Pipe newPipe(InputStream in, boolean numeric) throws IOException {
+	@SuppressWarnings("resource")
+	public static Pipe newPipe(InputStream in, boolean numeric) {
 		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
 		return newPipe(unpacker, numeric);
 	}
@@ -74,7 +77,7 @@ public final class MsgpackIOUtil {
 	/**
 	 * Creates a msgpack pipe from a {@link MessageUnpacker}.
 	 */
-	public static Pipe newPipe(final MessageUnpacker unpacker, boolean numeric) throws IOException {
+	public static Pipe newPipe(final MessageUnpacker unpacker, boolean numeric) {
 		MsgpackParser parser = new MsgpackParser(unpacker, numeric);
 		final MsgpackInput msgpackInput = new MsgpackInput(parser);
 		return new Pipe() {
@@ -110,6 +113,7 @@ public final class MsgpackIOUtil {
 	 */
 	public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema, boolean numeric) throws IOException {
 
+		@SuppressWarnings("resource")
 		ArrayBufferInput bios = new ArrayBufferInput(data, offset, length);
 
 		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
@@ -160,6 +164,7 @@ public final class MsgpackIOUtil {
 	/**
 	 * Serializes the {@code message} using the given {@code schema}.
 	 */
+	@SuppressWarnings("resource")
 	public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric) {
 		ArrayBufferOutput out = new ArrayBufferOutput();
 		try {
@@ -175,6 +180,7 @@ public final class MsgpackIOUtil {
 	 */
 	public static <T> void writeTo(MessageBufferOutput out, T message, Schema<T> schema, boolean numeric) throws IOException {
 
+		@SuppressWarnings("resource")
 		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
 		try {
@@ -189,6 +195,7 @@ public final class MsgpackIOUtil {
 	 */
 	public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, boolean numeric) throws IOException {
 
+		@SuppressWarnings("resource")
 		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
 		try {
@@ -210,6 +217,7 @@ public final class MsgpackIOUtil {
 	 */
 	public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, boolean numeric) throws IOException {
 
+		@SuppressWarnings("resource")
 		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
 		try {
@@ -224,6 +232,7 @@ public final class MsgpackIOUtil {
 	 */
 	public static <T> void writeListTo(MessageBufferOutput out, List<T> messages, Schema<T> schema, boolean numeric) throws IOException {
 
+		@SuppressWarnings("resource")
 		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
 		try {

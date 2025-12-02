@@ -43,13 +43,13 @@ public final class MsgpackParser {
 	private int leftItems;
 	private int lastNumber;
 
-	public MsgpackParser(MessageUnpacker unpacker, boolean numeric) throws IOException {
+	public MsgpackParser(MessageUnpacker unpacker, boolean numeric) {
 		this.unpacker = unpacker;
 		this.numeric = numeric;
 		reset();
 	}
 
-	public MsgpackParser(MsgpackParser parent) throws IOException {
+	public MsgpackParser(MsgpackParser parent) {
 		this.unpacker = parent.unpacker;
 		this.numeric = parent.numeric;
 		reset();
@@ -59,7 +59,7 @@ public final class MsgpackParser {
 		return unpacker.hasNext();
 	}
 
-	public void reset() throws IOException {
+	public void reset() {
 		this.leftEntries = -1;
 		this.leftItems = 0;
 		this.lastNumber = 0;
@@ -117,12 +117,9 @@ public final class MsgpackParser {
 			leftItems = unpacker.unpackArrayHeader();
 			lastNumber = fieldNumber;
 
-			if (leftItems == 0) {
+			if (leftItems == 0)
 				return parseFieldNumber(schema);
-			} else {
-				leftItems--;
-			}
-
+			leftItems--;
 		}
 
 		return fieldNumber;

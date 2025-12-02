@@ -22,20 +22,16 @@ import java.io.IOException;
  * @author David Yu
  * @created Oct 8, 2010
  */
-public class JsonCoreStandardTest extends StandardTest
-{
+public class JsonCoreStandardTest extends StandardTest {
 
-    @Override
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
-            Schema<T> schema) throws IOException
-    {
-        JsonIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
-    }
+	@Override
+	protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		JsonIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
+	}
 
-    @Override
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        return JsonIOUtil.toByteArray(message, schema, false);
-    }
+	@Override
+	protected <T> byte[] toByteArray(T message, Schema<T> schema) {
+		return JsonIOUtil.toByteArray(message, schema, false);
+	}
 
 }

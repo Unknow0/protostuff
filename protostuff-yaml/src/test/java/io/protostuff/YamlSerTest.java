@@ -48,7 +48,7 @@ public class YamlSerTest extends AbstractTest {
 		return YamlIOUtil.writeListTo(out, messages, schema, buf());
 	}
 
-	public <T> int writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) throws IOException {
+	public <T> int writeListTo(LinkedBuffer buffer, List<T> messages, Schema<T> schema) {
 		return YamlIOUtil.writeListTo(buffer, messages, schema);
 	}
 
@@ -318,6 +318,7 @@ public class YamlSerTest extends AbstractTest {
 		print(text);
 	}
 
+	@SuppressWarnings("unused")
 	static void print(String str) {
 		// System.err.println(str);
 	}

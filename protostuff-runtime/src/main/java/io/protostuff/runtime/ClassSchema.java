@@ -98,7 +98,7 @@ public abstract class ClassSchema extends PolymorphicSchema {
 	protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
 		@Override
 		protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
-			transferObject(this, pipe, input, output, strategy);
+			transferObject(this, input, output, strategy);
 		}
 	};
 
@@ -138,10 +138,10 @@ public abstract class ClassSchema extends PolymorphicSchema {
 
 	@Override
 	public void writeTo(Output output, Object value) throws IOException {
-		writeObjectTo(output, value, this, strategy);
+		writeObjectTo(output, value, strategy);
 	}
 
-	static void writeObjectTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
+	static void writeObjectTo(Output output, Object value, IdStrategy strategy) throws IOException {
 		final Class<?> c = ((Class<?>) value);
 		if (c.isArray()) {
 			int dimensions = 1;
@@ -196,23 +196,23 @@ public abstract class ClassSchema extends PolymorphicSchema {
 		return value;
 	}
 
-	static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output, IdStrategy strategy) throws IOException {
+	static void transferObject(Pipe.Schema<Object> pipeSchema, Input input, Output output, IdStrategy strategy) throws IOException {
 		final int number = input.readFieldNumber(pipeSchema.wrappedSchema);
 		switch (number) {
 			case ID_CLASS:
-				ObjectSchema.transferClass(pipe, input, output, number, pipeSchema, false, false, strategy);
+				ObjectSchema.transferClass(input, output, number, pipeSchema, false, false, strategy);
 				break;
 
 			case ID_CLASS_MAPPED:
-				ObjectSchema.transferClass(pipe, input, output, number, pipeSchema, true, false, strategy);
+				ObjectSchema.transferClass(input, output, number, pipeSchema, true, false, strategy);
 				break;
 
 			case ID_CLASS_ARRAY:
-				ObjectSchema.transferClass(pipe, input, output, number, pipeSchema, false, true, strategy);
+				ObjectSchema.transferClass(input, output, number, pipeSchema, false, true, strategy);
 				break;
 
 			case ID_CLASS_ARRAY_MAPPED:
-				ObjectSchema.transferClass(pipe, input, output, number, pipeSchema, true, true, strategy);
+				ObjectSchema.transferClass(input, output, number, pipeSchema, true, true, strategy);
 				break;
 
 			default:

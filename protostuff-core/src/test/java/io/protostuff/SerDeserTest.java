@@ -34,401 +34,363 @@ import java.util.ArrayList;
  * @author David Yu
  * @created Nov 10, 2009
  */
-public abstract class SerDeserTest extends StandardTest
-{
-
-    /**
-     * Serializes the {@code message} (delimited) into an {@link OutputStream} via {@link DeferredOutput}.
-     */
-    protected <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message)
-            throws IOException
-    {
-        writeDelimitedTo(out, message, message.cachedSchema());
-    }
-
-    /**
-     * Serializes the {@code message} (delimited) into an {@link OutputStream} via {@link DeferredOutput} using the
-     * given schema.
-     */
-    protected abstract <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema)
-            throws IOException;
-
-    /**
-     * Deserializes from the byte array and data is merged/saved to the message.
-     */
-    protected abstract <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
-            throws IOException;
-
-    public void testFooSkipMessage() throws Exception
-    {
-        final CustomSchema<Foo> fooSchema = new CustomSchema<Foo>(foo.cachedSchema())
-        {
-            @Override
-            public void writeTo(Output output, Foo message) throws IOException
-            {
-                // 10 is an unknown field
-                output.writeObject(10, baz, Baz.getSchema(), false);
-                super.writeTo(output, message);
-            }
-        };
-
-        Foo fooCompare = foo;
-        Foo dfoo = new Foo();
-
-        byte[] output = toByteArray(fooCompare, fooSchema);
-        mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema());
-        SerializableObjects.assertEquals(fooCompare, dfoo);
-    }
-
-    public void testBarSkipMessage() throws Exception
-    {
-        final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
-        {
-            @Override
-            public void writeTo(Output output, Bar message) throws IOException
-            {
-                // 10 is an unknown field
-                output.writeObject(10, baz, Baz.getSchema(), false);
-                super.writeTo(output, message);
-            }
-        };
-
-        for (Bar barCompare : new Bar[] { bar, negativeBar })
-        {
-            Bar dbar = new Bar();
-
-            byte[] output = toByteArray(barCompare, barSchema);
-            mergeFrom(output, 0, output.length, dbar, barSchema);
-            SerializableObjects.assertEquals(barCompare, dbar);
-        }
-    }
-
-    /**
-     * Foo shares field numbers (and type) with Bar except that foo's fields are all repeated (w/c is alright). Bar also
-     * shares the same field and type (1&2) with Baz.
-     */
-    public void testShareFieldNumberAndTypeAndSkipMessage() throws Exception
-    {
-        final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema())
-        {
-            @Override
-            public void writeTo(Output output, Bar message) throws IOException
-            {
-                output.writeObject(10, baz, Baz.getSchema(), false);
-                super.writeTo(output, message);
-            }
-        };
-
-        final Baz baz = new Baz();
-        baz.setId(1);
-        baz.setName("baz");
-        final Bar bar = new Bar();
-        bar.setSomeBaz(baz);
-        bar.setSomeInt(2);
-        bar.setSomeString("bar");
-        bar.setSomeDouble(100.001d);
-        bar.setSomeFloat(10.01f);
-
-        byte[] coded = toByteArray(bar, barSchema);
-
-        Foo foo = new Foo();
-        // we expect this to succeed, skipping the baz field.
-        mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema());
-
-        assertTrue(bar.getSomeInt() == foo.getSomeInt().get(0));
-        assertEquals(bar.getSomeString(), foo.getSomeString().get(0));
-        assertTrue(bar.getSomeDouble() == foo.getSomeDouble().get(0));
-        assertTrue(bar.getSomeFloat() == foo.getSomeFloat().get(0));
-    }
+public abstract class SerDeserTest extends StandardTest {
+
+	/**
+	 * Serializes the {@code message} (delimited) into an {@link OutputStream} via {@link DeferredOutput}.
+	 */
+	protected <T extends Message<T>> void writeDelimitedTo(OutputStream out, T message) throws IOException {
+		writeDelimitedTo(out, message, message.cachedSchema());
+	}
+
+	/**
+	 * Serializes the {@code message} (delimited) into an {@link OutputStream} via {@link DeferredOutput} using the
+	 * given schema.
+	 */
+	protected abstract <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema) throws IOException;
+
+	/**
+	 * Deserializes from the byte array and data is merged/saved to the message.
+	 */
+	protected abstract <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) throws IOException;
+
+	public void testFooSkipMessage() throws Exception {
+		final CustomSchema<Foo> fooSchema = new CustomSchema<Foo>(foo.cachedSchema()) {
+			@Override
+			public void writeTo(Output output, Foo message) throws IOException {
+				// 10 is an unknown field
+				output.writeObject(10, baz, Baz.getSchema(), false);
+				super.writeTo(output, message);
+			}
+		};
+
+		Foo fooCompare = foo;
+		Foo dfoo = new Foo();
+
+		byte[] output = toByteArray(fooCompare, fooSchema);
+		mergeFrom(output, 0, output.length, dfoo, dfoo.cachedSchema());
+		SerializableObjects.assertEquals(fooCompare, dfoo);
+	}
+
+	public void testBarSkipMessage() throws Exception {
+		final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema()) {
+			@Override
+			public void writeTo(Output output, Bar message) throws IOException {
+				// 10 is an unknown field
+				output.writeObject(10, baz, Baz.getSchema(), false);
+				super.writeTo(output, message);
+			}
+		};
+
+		for (Bar barCompare : new Bar[] { bar, negativeBar }) {
+			Bar dbar = new Bar();
+
+			byte[] output = toByteArray(barCompare, barSchema);
+			mergeFrom(output, 0, output.length, dbar, barSchema);
+			SerializableObjects.assertEquals(barCompare, dbar);
+		}
+	}
+
+	/**
+	 * Foo shares field numbers (and type) with Bar except that foo's fields are all repeated (w/c is alright). Bar also
+	 * shares the same field and type (1&2) with Baz.
+	 */
+	public void testShareFieldNumberAndTypeAndSkipMessage() throws Exception {
+		final CustomSchema<Bar> barSchema = new CustomSchema<Bar>(bar.cachedSchema()) {
+			@Override
+			public void writeTo(Output output, Bar message) throws IOException {
+				output.writeObject(10, baz, Baz.getSchema(), false);
+				super.writeTo(output, message);
+			}
+		};
+
+		final Baz baz = new Baz();
+		baz.setId(1);
+		baz.setName("baz");
+		final Bar bar = new Bar();
+		bar.setSomeBaz(baz);
+		bar.setSomeInt(2);
+		bar.setSomeString("bar");
+		bar.setSomeDouble(100.001d);
+		bar.setSomeFloat(10.01f);
+
+		byte[] coded = toByteArray(bar, barSchema);
+
+		Foo foo = new Foo();
+		// we expect this to succeed, skipping the baz field.
+		mergeFrom(coded, 0, coded.length, foo, foo.cachedSchema());
+
+		assertTrue(bar.getSomeInt() == foo.getSomeInt().get(0));
+		assertEquals(bar.getSomeString(), foo.getSomeString().get(0));
+		assertTrue(bar.getSomeDouble() == foo.getSomeDouble().get(0));
+		assertTrue(bar.getSomeFloat() == foo.getSomeFloat().get(0));
+	}
+
+	public void testFooDelimited() throws Exception {
+		Foo fooCompare = SerializableObjects.foo;
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, fooCompare);
+		byte[] data = out.toByteArray();
+
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Foo foo = new Foo();
+		mergeDelimitedFrom(in, foo, foo.cachedSchema());
 
-    public void testFooDelimited() throws Exception
-    {
-        Foo fooCompare = SerializableObjects.foo;
+		SerializableObjects.assertEquals(foo, fooCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, fooCompare);
-        byte[] data = out.toByteArray();
+	public void testEmptyFooDelimited() throws Exception {
+		Foo fooCompare = new Foo();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Foo foo = new Foo();
-        mergeDelimitedFrom(in, foo, foo.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, fooCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(foo, fooCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Foo foo = new Foo();
+		mergeDelimitedFrom(in, foo, foo.cachedSchema());
 
-    public void testEmptyFooDelimited() throws Exception
-    {
-        Foo fooCompare = new Foo();
+		SerializableObjects.assertEquals(foo, fooCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, fooCompare);
-        byte[] data = out.toByteArray();
+	public void testEmptyInnerFooDelimited() throws Exception {
+		Foo fooCompare = new Foo();
+		ArrayList<Bar> bars = new ArrayList<>();
+		bars.add(new Bar());
+		fooCompare.setSomeBar(bars);
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Foo foo = new Foo();
-        mergeDelimitedFrom(in, foo, foo.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, fooCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(foo, fooCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Foo foo = new Foo();
+		mergeDelimitedFrom(in, foo, foo.cachedSchema());
 
-    public void testEmptyInnerFooDelimited() throws Exception
-    {
-        Foo fooCompare = new Foo();
-        ArrayList<Bar> bars = new ArrayList<>();
-        bars.add(new Bar());
-        fooCompare.setSomeBar(bars);
+		SerializableObjects.assertEquals(foo, fooCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, fooCompare);
-        byte[] data = out.toByteArray();
+	public void testBarDelimited() throws Exception {
+		Bar barCompare = SerializableObjects.bar;
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Foo foo = new Foo();
-        mergeDelimitedFrom(in, foo, foo.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, barCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(foo, fooCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Bar bar = new Bar();
+		mergeDelimitedFrom(in, bar, bar.cachedSchema());
 
-    public void testBarDelimited() throws Exception
-    {
-        Bar barCompare = SerializableObjects.bar;
+		SerializableObjects.assertEquals(bar, barCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, barCompare);
-        byte[] data = out.toByteArray();
+	public void testEmptyBarDelimited() throws Exception {
+		Bar barCompare = new Bar();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Bar bar = new Bar();
-        mergeDelimitedFrom(in, bar, bar.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, barCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(bar, barCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Bar bar = new Bar();
+		mergeDelimitedFrom(in, bar, bar.cachedSchema());
 
-    public void testEmptyBarDelimited() throws Exception
-    {
-        Bar barCompare = new Bar();
+		SerializableObjects.assertEquals(bar, barCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, barCompare);
-        byte[] data = out.toByteArray();
+	public void testEmptyInnerBarDelimited() throws Exception {
+		Bar barCompare = new Bar();
+		barCompare.setSomeBaz(new Baz());
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Bar bar = new Bar();
-        mergeDelimitedFrom(in, bar, bar.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, barCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(bar, barCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Bar bar = new Bar();
+		mergeDelimitedFrom(in, bar, bar.cachedSchema());
 
-    public void testEmptyInnerBarDelimited() throws Exception
-    {
-        Bar barCompare = new Bar();
-        barCompare.setSomeBaz(new Baz());
+		SerializableObjects.assertEquals(bar, barCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, barCompare);
-        byte[] data = out.toByteArray();
+	public void testBazDelimited() throws Exception {
+		Baz bazCompare = SerializableObjects.baz;
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Bar bar = new Bar();
-        mergeDelimitedFrom(in, bar, bar.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, bazCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(bar, barCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Baz baz = new Baz();
+		mergeDelimitedFrom(in, baz, baz.cachedSchema());
 
-    public void testBazDelimited() throws Exception
-    {
-        Baz bazCompare = SerializableObjects.baz;
+		SerializableObjects.assertEquals(baz, bazCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, bazCompare);
-        byte[] data = out.toByteArray();
+	public void testEmptyBazDelimited() throws Exception {
+		Baz bazCompare = new Baz();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Baz baz = new Baz();
-        mergeDelimitedFrom(in, baz, baz.cachedSchema());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		writeDelimitedTo(out, bazCompare);
+		byte[] data = out.toByteArray();
 
-        SerializableObjects.assertEquals(baz, bazCompare);
-    }
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		Baz baz = new Baz();
+		mergeDelimitedFrom(in, baz, baz.cachedSchema());
 
-    public void testEmptyBazDelimited() throws Exception
-    {
-        Baz bazCompare = new Baz();
+		SerializableObjects.assertEquals(baz, bazCompare);
+	}
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeDelimitedTo(out, bazCompare);
-        byte[] data = out.toByteArray();
+	public void testJavaSerializableGraphIOUtil() throws Exception {
+		ClubFounder founder = new ClubFounder();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        Baz baz = new Baz();
-        mergeDelimitedFrom(in, baz, baz.cachedSchema());
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < 25; i++) {
+			b.append("1234567890");
+		}
 
-        SerializableObjects.assertEquals(baz, bazCompare);
-    }
+		// 250 length string
+		// ~253 length message
 
-    public void testJavaSerializableGraphIOUtil() throws Exception
-    {
-        ClubFounder founder = new ClubFounder();
+		founder.setName(b.toString());
 
-        StringBuilder b = new StringBuilder();
-        for (int i = 0; i < 25; i++)
-        {
-            b.append("1234567890");
-        }
+		WrapsClubFounder wrapper = new WrapsClubFounder(founder);
 
-        // 250 length string
-        // ~253 length message
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(out);
+		oout.writeObject(wrapper);
 
-        founder.setName(b.toString());
+		byte[] coded = out.toByteArray();
 
-        WrapsClubFounder wrapper = new WrapsClubFounder(founder);
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+		WrapsClubFounder parsedWrapper = (WrapsClubFounder) in.readObject();
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(wrapper);
+		assertEquals(founder.getName(), parsedWrapper.getClubFounder().getName());
+	}
 
-        byte[] coded = out.toByteArray();
-
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
-        WrapsClubFounder parsedWrapper = (WrapsClubFounder) in.readObject();
+	/**
+	 * HasHasBar wraps an object without a schema. That object will have to be serialized via the default java
+	 * serialization and it will be delimited.
+	 * <p>
+	 * HasBar wraps a message {@link Bar}.
+	 */
+	public void testJavaSerializable() throws Exception {
+		HasHasBar hhbCompare = new HasHasBar("hhb", new HasBar(12345, "hb", SerializableObjects.bar));
+		HasHasBar dhhb = new HasHasBar();
 
-        assertEquals(founder.getName(), parsedWrapper.getClubFounder().getName());
-    }
+		byte[] output = toByteArray(hhbCompare);
 
-    /**
-     * HasHasBar wraps an object without a schema. That object will have to be serialized via the default java
-     * serialization and it will be delimited.
-     * <p>
-     * HasBar wraps a message {@link Bar}.
-     */
-    public void testJavaSerializable() throws Exception
-    {
-        HasHasBar hhbCompare = new HasHasBar("hhb",
-                new HasBar(12345, "hb", SerializableObjects.bar));
-        HasHasBar dhhb = new HasHasBar();
-
-        byte[] output = toByteArray(hhbCompare);
-
-        mergeFrom(output, 0, output.length, dhhb, dhhb.cachedSchema());
-        assertEquals(hhbCompare, dhhb);
-    }
-
-    public void testJavaSerializableEmptyBar() throws Exception
-    {
-        Bar bar = new Bar();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(bar);
-
-        byte[] coded = out.toByteArray();
-
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
-        Bar parsedBar = (Bar) in.readObject();
-        SerializableObjects.assertEquals(parsedBar, bar);
-    }
-
-    public void testJavaSerializableEmptyBarInner() throws Exception
-    {
-        Bar bar = new Bar();
-        bar.setSomeBaz(new Baz());
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(bar);
-
-        byte[] coded = out.toByteArray();
-
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
-        Bar parsedBar = (Bar) in.readObject();
-        SerializableObjects.assertEquals(parsedBar, bar);
-    }
-
-    public void testJavaSerializableEmptyFoo() throws Exception
-    {
-        Foo foo = new Foo();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(foo);
-
-        byte[] coded = out.toByteArray();
-
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
-        Foo parsedFoo = (Foo) in.readObject();
-        SerializableObjects.assertEquals(parsedFoo, foo);
-    }
-
-    public void testJavaSerializableEmptyFoo2() throws Exception
-    {
-        ArrayList<Bar> bars = new ArrayList<>();
-        Bar bar = new Bar();
-        bars.add(bar);
-        Foo foo = new Foo();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(foo);
-
-        byte[] coded = out.toByteArray();
-
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
-        Foo parsedFoo = (Foo) in.readObject();
-        SerializableObjects.assertEquals(parsedFoo, foo);
-    }
-
-    public void testJavaSerializableEmptyFooInner() throws Exception
-    {
-        ArrayList<Bar> bars = new ArrayList<>();
-        Bar bar = new Bar();
-        bar.setSomeBaz(new Baz());
-        bars.add(bar);
-        Foo foo = new Foo();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(foo);
-
-        byte[] coded = out.toByteArray();
-
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
-        Foo parsedFoo = (Foo) in.readObject();
-        SerializableObjects.assertEquals(parsedFoo, foo);
-    }
-
-    public static String repeatChar(char c, int size)
-    {
-        StringBuilder sb = new StringBuilder(size);
-        while (size-- > 0)
-        {
-            sb.append(c);
-        }
-
-        return sb.toString();
-    }
-
-    static void assertEquals(HasHasBar h1, HasHasBar h2)
-    {
-        // true if both are null
-        if (h1 == h2)
-        {
-            return;
-        }
-
-        assertEquals(h1.getName(), h2.getName());
-        assertEquals(h1.getHasBar(), h2.getHasBar());
-    }
-
-    static void assertEquals(HasBar h1, HasBar h2)
-    {
-        // true if both are null
-        if (h1 == h2)
-        {
-            return;
-        }
-
-        assertTrue(h1.getId() == h2.getId());
-        assertEquals(h1.getName(), h2.getName());
-        SerializableObjects.assertEquals(h1.getBar(), h2.getBar());
-    }
+		mergeFrom(output, 0, output.length, dhhb, dhhb.cachedSchema());
+		assertEquals(hhbCompare, dhhb);
+	}
+
+	public void testJavaSerializableEmptyBar() throws Exception {
+		Bar bar = new Bar();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(out);
+		oout.writeObject(bar);
+
+		byte[] coded = out.toByteArray();
+
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+		Bar parsedBar = (Bar) in.readObject();
+		SerializableObjects.assertEquals(parsedBar, bar);
+	}
+
+	public void testJavaSerializableEmptyBarInner() throws Exception {
+		Bar bar = new Bar();
+		bar.setSomeBaz(new Baz());
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(out);
+		oout.writeObject(bar);
+
+		byte[] coded = out.toByteArray();
+
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+		Bar parsedBar = (Bar) in.readObject();
+		SerializableObjects.assertEquals(parsedBar, bar);
+	}
+
+	public void testJavaSerializableEmptyFoo() throws Exception {
+		Foo foo = new Foo();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(out);
+		oout.writeObject(foo);
+
+		byte[] coded = out.toByteArray();
+
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+		Foo parsedFoo = (Foo) in.readObject();
+		SerializableObjects.assertEquals(parsedFoo, foo);
+	}
+
+	public void testJavaSerializableEmptyFoo2() throws Exception {
+		ArrayList<Bar> bars = new ArrayList<>();
+		Bar bar = new Bar();
+		bars.add(bar);
+		Foo foo = new Foo();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(out);
+		oout.writeObject(foo);
+
+		byte[] coded = out.toByteArray();
+
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+		Foo parsedFoo = (Foo) in.readObject();
+		SerializableObjects.assertEquals(parsedFoo, foo);
+	}
+
+	public void testJavaSerializableEmptyFooInner() throws Exception {
+		ArrayList<Bar> bars = new ArrayList<>();
+		Bar bar = new Bar();
+		bar.setSomeBaz(new Baz());
+		bars.add(bar);
+		Foo foo = new Foo();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(out);
+		oout.writeObject(foo);
+
+		byte[] coded = out.toByteArray();
+
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(coded));
+		Foo parsedFoo = (Foo) in.readObject();
+		SerializableObjects.assertEquals(parsedFoo, foo);
+	}
+
+	public static String repeatChar(char c, int size) {
+		StringBuilder sb = new StringBuilder(size);
+		while (size-- > 0) {
+			sb.append(c);
+		}
+
+		return sb.toString();
+	}
+
+	static void assertEquals(HasHasBar h1, HasHasBar h2) {
+		// true if both are null
+		if (h1 == h2) {
+			return;
+		}
+
+		assertEquals(h1.getName(), h2.getName());
+		assertEquals(h1.getHasBar(), h2.getHasBar());
+	}
+
+	static void assertEquals(HasBar h1, HasBar h2) {
+		// true if both are null
+		if (h1 == h2) {
+			return;
+		}
+
+		assertTrue(h1.getId() == h2.getId());
+		assertEquals(h1.getName(), h2.getName());
+		SerializableObjects.assertEquals(h1.getBar(), h2.getBar());
+	}
 
 }

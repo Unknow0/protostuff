@@ -18,7 +18,6 @@ import static io.protostuff.AbstractTest.buf;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +42,7 @@ import io.protostuff.StringSerializer.STRING;
 public class CompatTest {
 
 	@Test
-	public void testCompat() throws IOException {
+	public void testCompat() {
 		compareBar();
 
 		if (!RuntimeEnv.COLLECTION_SCHEMA_ON_REPEATED_FIELDS) {

@@ -418,7 +418,7 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T> {
 				// use the pipe schema of code-generated messages if available.
 				java.lang.reflect.Method m = clazz.getDeclaredMethod("getPipeSchema");
 				return (Pipe.Schema<T>) m.invoke(null);
-			} catch (Exception e) {
+			} catch (@SuppressWarnings("unused") Exception e) {
 				// ignore
 			}
 		}

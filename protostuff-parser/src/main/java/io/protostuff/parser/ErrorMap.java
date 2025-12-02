@@ -46,7 +46,7 @@ public final class ErrorMap implements Map<String, Object> {
 	}
 
 	@Override
-	public void clear() {
+	public void clear() { // ok
 
 	}
 

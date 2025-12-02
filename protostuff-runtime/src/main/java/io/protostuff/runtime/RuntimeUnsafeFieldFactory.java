@@ -54,6 +54,7 @@ import io.protostuff.WireFormat.FieldType;
  * @author David Yu
  * @created Jul 7, 2011
  */
+@SuppressWarnings("restriction")
 public final class RuntimeUnsafeFieldFactory {
 
 	static final sun.misc.Unsafe us = initUnsafe();
@@ -65,7 +66,7 @@ public final class RuntimeUnsafeFieldFactory {
 			f.setAccessible(true);
 
 			return (sun.misc.Unsafe) f.get(null);
-		} catch (Exception e) {
+		} catch (@SuppressWarnings("unused") Exception e) {
 			// ignore
 
 			/*

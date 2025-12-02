@@ -172,7 +172,7 @@ public class DefaultProtoLoader implements Proto.Loader {
 			protoFile = new File(importerFile.getAbsoluteFile().getParentFile(), path);
 			if (!protoFile.exists() && !(protoFile = new File(path)).exists()) {
 				// check if its relative to its importer's package base dir.
-				File baseDir = getBaseDirFromPackagePath(path, importer);
+				File baseDir = getBaseDirFromPackagePath(importer);
 				if (baseDir != null) {
 					protoFile = new File(baseDir, path);
 				}
@@ -202,7 +202,7 @@ public class DefaultProtoLoader implements Proto.Loader {
 		return protoFromOtherResource;
 	}
 
-	static File getBaseDirFromPackagePath(String path, Proto importer) {
+	static File getBaseDirFromPackagePath(Proto importer) {
 		String importerPkg = importer.getPackageName();
 		// the imports are declared before the package
 		if (importerPkg == null) {

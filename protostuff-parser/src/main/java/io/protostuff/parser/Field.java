@@ -374,11 +374,9 @@ public abstract class Field<T> extends AnnotationContainer implements Comparable
 
 		@Override
 		public java.lang.String getJavaType() {
-			if (hasOption("ByteBuffer")) {
+			if (hasOption("ByteBuffer"))
 				return "ByteBuffer";
-			} else {
-				return "ByteString";
-			}
+			return "ByteString";
 		}
 
 		@Override

@@ -302,7 +302,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 	@SuppressWarnings("unchecked")
 	static void writeObjectTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
 		if (Collections.class == value.getClass().getDeclaringClass()) {
-			writeNonPublicMapTo(output, value, currentSchema, strategy);
+			writeNonPublicMapTo(output, value, strategy);
 			return;
 		}
 
@@ -323,7 +323,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 		strategy.MAP_SCHEMA.writeTo(output, (Map<Object, Object>) value);
 	}
 
-	static void writeNonPublicMapTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
+	static void writeNonPublicMapTo(Output output, Object value, IdStrategy strategy) throws IOException {
 		final Integer n = __nonPublicMaps.get(value.getClass());
 		if (n == null) {
 			throw new RuntimeException("Unknown collection: " + value.getClass());
@@ -356,27 +356,27 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 			}
 
 			case ID_UNMODIFIABLE_MAP:
-				writeUnmodifiableMapTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableMapTo(output, value, strategy, id);
 				break;
 
 			case ID_UNMODIFIABLE_SORTED_MAP:
-				writeUnmodifiableMapTo(output, value, currentSchema, strategy, id);
+				writeUnmodifiableMapTo(output, value, strategy, id);
 				break;
 
 			case ID_SYNCHRONIZED_MAP:
-				writeSynchronizedMapTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedMapTo(output, value, strategy, id);
 				break;
 
 			case ID_SYNCHRONIZED_SORTED_MAP:
-				writeSynchronizedMapTo(output, value, currentSchema, strategy, id);
+				writeSynchronizedMapTo(output, value, strategy, id);
 				break;
 
 			case ID_CHECKED_MAP:
-				writeCheckedMapTo(output, value, currentSchema, strategy, id);
+				writeCheckedMapTo(output, value, strategy, id);
 				break;
 
 			case ID_CHECKED_SORTED_MAP:
-				writeCheckedMapTo(output, value, currentSchema, strategy, id);
+				writeCheckedMapTo(output, value, strategy, id);
 				break;
 
 			default:
@@ -384,7 +384,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 		}
 	}
 
-	private static void writeUnmodifiableMapTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy, int id) throws IOException {
+	private static void writeUnmodifiableMapTo(Output output, Object value, IdStrategy strategy, int id) throws IOException {
 		final Object m;
 		try {
 			m = fUnmodifiableMap_m.get(value);
@@ -397,7 +397,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 		output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
 	}
 
-	private static void writeSynchronizedMapTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy, int id) throws IOException {
+	private static void writeSynchronizedMapTo(Output output, Object value, IdStrategy strategy, int id) throws IOException {
 		final Object m, mutex;
 		try {
 			m = fSynchronizedMap_m.get(value);
@@ -419,7 +419,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 		output.writeObject(id, m, strategy.POLYMORPHIC_MAP_SCHEMA, false);
 	}
 
-	private static void writeCheckedMapTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy, int id) throws IOException {
+	private static void writeCheckedMapTo(Output output, Object value, IdStrategy strategy, int id) throws IOException {
 		final Object m, keyType, valueType;
 		try {
 			m = fCheckedMap_m.get(value);
@@ -469,23 +469,23 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 					throw new ProtostuffException("Corrupt input.");
 				}
 
-				return fillSingletonMapFrom(input, schema, owner, strategy, graph, map);
+				return fillSingletonMapFrom(input, schema, strategy, graph, map);
 			}
 
 			case ID_UNMODIFIABLE_MAP:
-				ret = readUnmodifiableMapFrom(input, schema, owner, strategy, graph, iUnmodifiableMap.newInstance(), false);
+				ret = readUnmodifiableMapFrom(input, owner, strategy, graph, iUnmodifiableMap.newInstance(), false);
 				break;
 
 			case ID_UNMODIFIABLE_SORTED_MAP:
-				ret = readUnmodifiableMapFrom(input, schema, owner, strategy, graph, iUnmodifiableSortedMap.newInstance(), true);
+				ret = readUnmodifiableMapFrom(input, owner, strategy, graph, iUnmodifiableSortedMap.newInstance(), true);
 				break;
 
 			case ID_SYNCHRONIZED_MAP:
-				ret = readSynchronizedMapFrom(input, schema, owner, strategy, graph, iSynchronizedMap.newInstance(), false);
+				ret = readSynchronizedMapFrom(input, owner, strategy, graph, iSynchronizedMap.newInstance(), false);
 				break;
 
 			case ID_SYNCHRONIZED_SORTED_MAP:
-				ret = readSynchronizedMapFrom(input, schema, owner, strategy, graph, iSynchronizedSortedMap.newInstance(), true);
+				ret = readSynchronizedMapFrom(input, owner, strategy, graph, iSynchronizedSortedMap.newInstance(), true);
 				break;
 
 			case ID_CHECKED_MAP:
@@ -535,7 +535,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 	/**
 	 * Return true to
 	 */
-	private static Object fillSingletonMapFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, boolean graph, Object map) throws IOException {
+	private static Object fillSingletonMapFrom(Input input, Schema<?> schema, IdStrategy strategy, boolean graph, Object map) throws IOException {
 		switch (input.readFieldNumber(schema)) {
 			case 0:
 				// both are null
@@ -616,7 +616,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 		return map;
 	}
 
-	private static Object readUnmodifiableMapFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, boolean graph, Object map, boolean sm) throws IOException {
+	private static Object readUnmodifiableMapFrom(Input input, Object owner, IdStrategy strategy, boolean graph, Object map, boolean sm) throws IOException {
 		if (graph) {
 			// update the actual reference.
 			((GraphInput) input).updateLast(map, owner);
@@ -642,7 +642,7 @@ public abstract class PolymorphicMapSchema extends PolymorphicSchema {
 		return map;
 	}
 
-	private static Object readSynchronizedMapFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, boolean graph, Object map, boolean sm) throws IOException {
+	private static Object readSynchronizedMapFrom(Input input, Object owner, IdStrategy strategy, boolean graph, Object map, boolean sm) throws IOException {
 		if (graph) {
 			// update the actual reference.
 			((GraphInput) input).updateLast(map, owner);

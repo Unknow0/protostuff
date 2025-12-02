@@ -77,7 +77,7 @@ public class MsgpackSimpleTest {
 	}
 
 	@Test
-	public void testXIO() throws IOException {
+	public void testXIO() {
 
 		InnerMessage inner = new InnerMessage();
 		inner.inner1 = "inner".getBytes();
@@ -92,14 +92,11 @@ public class MsgpackSimpleTest {
 		byte[] xdata = MsgpackXIOUtil.toByteArray(message, SCHEMA, false, LinkedBuffer.allocate());
 		byte[] data = MsgpackIOUtil.toByteArray(message, SCHEMA, false);
 
-		// System.out.println(Arrays.toString(xdata));
-		// System.out.println(Arrays.toString(data));
-
 		Assert.assertTrue(Arrays.equals(data, xdata));
 	}
 
 	@Test
-	public void testFooArray() throws IOException {
+	public void testFooArray() {
 
 		FooMessage foo = new FooMessage();
 		foo.field = Arrays.asList("a", "b");
@@ -111,7 +108,7 @@ public class MsgpackSimpleTest {
 	}
 
 	@Test
-	public void testXIOCharset() throws IOException {
+	public void testXIOCharset() {
 
 		ExampleMessage message = new ExampleMessage();
 		message.field2 = "ч";
@@ -123,7 +120,7 @@ public class MsgpackSimpleTest {
 	}
 
 	@Test
-	public void testString() throws IOException {
+	public void testString() {
 
 		String string = "ч";
 

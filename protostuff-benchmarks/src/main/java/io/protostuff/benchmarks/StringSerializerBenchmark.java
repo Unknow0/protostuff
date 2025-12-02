@@ -29,70 +29,55 @@ import io.protostuff.WriteSession;
 @Measurement(iterations = 10)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class StringSerializerBenchmark
-{
-    @Param({ "1", "10", "100", "1000", "10000", "100000" })
-    private int stringLength;
+public class StringSerializerBenchmark {
+	@Param({ "1", "10", "100", "1000", "10000", "100000" })
+	private int stringLength;
 
-    private String s;
-    private LinkedBuffer sharedBuffer;
-    private WriteSession sharedSession;
+	private String s;
+	private LinkedBuffer sharedBuffer;
+	private WriteSession sharedSession;
 
-    public static void main(String[] args) throws RunnerException
-    {
-        Options opt = new OptionsBuilder()
-                .include(StringSerializerBenchmark.class.getSimpleName())
-                .build();
-        new Runner(opt).run();
-    }
+	public static void main(String[] args) throws RunnerException {
+		Options opt = new OptionsBuilder().include(StringSerializerBenchmark.class.getSimpleName()).build();
+		new Runner(opt).run();
+	}
 
-    @Setup
-    public void prepare()
-    {
-        sharedBuffer = LinkedBuffer.allocate(512);
-        sharedSession = new WriteSession(sharedBuffer);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < stringLength; i++)
-        {
-            sb.append('.');
-        }
-        s = sb.toString();
-    }
+	@Setup
+	public void prepare() {
+		sharedBuffer = LinkedBuffer.allocate(512);
+		sharedSession = new WriteSession(sharedBuffer);
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < stringLength; i++) {
+			sb.append('.');
+		}
+		s = sb.toString();
+	}
 
-    @Benchmark
-    public byte[] builtInSerializer() throws UnsupportedEncodingException
-    {
-        return s.getBytes("UTF-8");
-    }
+	@Benchmark
+	public byte[] builtInSerializer() throws UnsupportedEncodingException {
+		return s.getBytes("UTF-8");
+	}
 
-    @Benchmark
-    public byte[] bufferedSerializer()
-    {
-        try
-        {
-            final WriteSession session = new WriteSession(sharedBuffer);
-            StringSerializer.writeUTF8(s, session, sharedBuffer);
-            return session.toByteArray();
-        }
-        finally
-        {
-            sharedBuffer.clear();
-        }
-    }
+	@Benchmark
+	public byte[] bufferedSerializer() {
+		try {
+			final WriteSession session = new WriteSession(sharedBuffer);
+			StringSerializer.writeUTF8(s, session, sharedBuffer);
+			return session.toByteArray();
+		} finally {
+			sharedBuffer.clear();
+		}
+	}
 
-    @Benchmark
-    public byte[] bufferedRecycledSerializer()
-    {
-        final WriteSession session = this.sharedSession;
-        try
-        {
-            StringSerializer.writeUTF8(s, session, session.head);
-            return session.toByteArray();
-        }
-        finally
-        {
-            session.clear();
-        }
-    }
+	@Benchmark
+	public byte[] bufferedRecycledSerializer() {
+		final WriteSession session = this.sharedSession;
+		try {
+			StringSerializer.writeUTF8(s, session, session.head);
+			return session.toByteArray();
+		} finally {
+			session.clear();
+		}
+	}
 
 }

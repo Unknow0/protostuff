@@ -23,38 +23,29 @@ import java.io.IOException;
  * @author David Yu
  * @created Jan 15, 2011
  */
-public class JsonBufferReuseTest extends StandardTest
-{
+public class JsonBufferReuseTest extends StandardTest {
 
-    private static final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>()
-    {
-        @Override
-        protected LinkedBuffer initialValue()
-        {
-            return buf();
-        }
-    };
+	private static final ThreadLocal<LinkedBuffer> localBuffer = new ThreadLocal<LinkedBuffer>() {
+		@Override
+		protected LinkedBuffer initialValue() {
+			return buf();
+		}
+	};
 
-    @Override
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
-            Schema<T> schema) throws IOException
-    {
-        ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
-        JsonIOUtil.mergeFrom(in, message, schema, false, localBuffer.get());
-    }
+	@Override
+	protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		ByteArrayInputStream in = new ByteArrayInputStream(data, offset, length);
+		JsonIOUtil.mergeFrom(in, message, schema, false, localBuffer.get());
+	}
 
-    @Override
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        final LinkedBuffer buffer = localBuffer.get();
-        try
-        {
-            return JsonXIOUtil.toByteArray(message, schema, false, buffer);
-        }
-        finally
-        {
-            buffer.clear();
-        }
-    }
+	@Override
+	protected <T> byte[] toByteArray(T message, Schema<T> schema) {
+		final LinkedBuffer buffer = localBuffer.get();
+		try {
+			return JsonXIOUtil.toByteArray(message, schema, false, buffer);
+		} finally {
+			buffer.clear();
+		}
+	}
 
 }

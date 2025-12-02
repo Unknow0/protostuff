@@ -120,10 +120,10 @@ public abstract class PolymorphicEnumSchema extends PolymorphicSchema {
 
 	@Override
 	public void writeTo(Output output, Object value) throws IOException {
-		writeObjectTo(output, value, this, strategy);
+		writeObjectTo(output, value, strategy);
 	}
 
-	static void writeObjectTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
+	static void writeObjectTo(Output output, Object value, IdStrategy strategy) throws IOException {
 		final Class<?> clazz = value.getClass();
 		if (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum()) {
 			EnumIO<?> eio = strategy.getEnumIO(clazz.getSuperclass());

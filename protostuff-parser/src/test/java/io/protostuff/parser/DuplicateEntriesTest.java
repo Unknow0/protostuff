@@ -34,7 +34,7 @@ public class DuplicateEntriesTest extends TestCase {
 
 		try {
 			ProtoUtil.loadFrom(f, proto);
-		} catch (IllegalStateException e) {
+		} catch (@SuppressWarnings("unused") IllegalStateException e) {
 			// expected
 
 			return;

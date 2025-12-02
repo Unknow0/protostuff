@@ -22,21 +22,18 @@ package io.protostuff;
  * @author David Yu
  * @created Nov 12, 2009
  */
-final class ByteArrayNode
-{
+final class ByteArrayNode {
 
-    final byte[] bytes;
-    ByteArrayNode next;
+	final byte[] bytes;
+	ByteArrayNode next;
 
-    ByteArrayNode(byte[] bytes)
-    {
-        this.bytes = bytes;
-    }
+	ByteArrayNode(byte[] bytes) {
+		this.bytes = bytes;
+	}
 
-    ByteArrayNode(byte[] bytes, ByteArrayNode node)
-    {
-        this.bytes = bytes;
-        node.next = this;
-    }
+	ByteArrayNode(byte[] bytes, ByteArrayNode node) {
+		this.bytes = bytes;
+		node.next = this;
+	}
 
 }

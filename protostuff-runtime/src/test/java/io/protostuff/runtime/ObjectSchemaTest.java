@@ -231,6 +231,7 @@ public class ObjectSchemaTest extends AbstractTest {
 		return bean;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	static void verify(Bean bean) {
 		assertEquals(bean.name, "test");
 
@@ -358,6 +359,7 @@ public class ObjectSchemaTest extends AbstractTest {
 		assertTrue(bean.anotherIdentityMap.get(Order.DESCENDING) == share);
 	}
 
+	@SafeVarargs
 	static <T> Set<T> newSet(T... ts) {
 		HashSet<T> set = new HashSet<>();
 
@@ -380,6 +382,7 @@ public class ObjectSchemaTest extends AbstractTest {
 		return new ArrayList<>();
 	}
 
+	@SafeVarargs
 	static <T> List<T> newList(T... ts) {
 		ArrayList<T> list = new ArrayList<>();
 

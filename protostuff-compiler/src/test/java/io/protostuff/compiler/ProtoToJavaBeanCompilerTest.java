@@ -7,16 +7,14 @@ import junit.framework.TestCase;
 /**
  * @author Ryan Rawson
  */
-public class ProtoToJavaBeanCompilerTest extends TestCase
-{
+public class ProtoToJavaBeanCompilerTest extends TestCase {
 
-    public void testSimpleLoad()
-    {
+	public void testSimpleLoad() {
 
-        StringTemplateGroup group = STCodeGenerator.getSTG("java_bean_primitives");
+		StringTemplateGroup group = STCodeGenerator.getSTG("java_bean_primitives");
 
-        group.getInstanceOf("message_block");
+		group.getInstanceOf("message_block");
 
-        assertEquals(0, STCodeGenerator.errorCount);
-    }
+		assertEquals(0, STCodeGenerator.errorCount);
+	}
 }

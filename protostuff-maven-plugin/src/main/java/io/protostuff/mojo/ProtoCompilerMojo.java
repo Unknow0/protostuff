@@ -220,8 +220,6 @@ public class ProtoCompilerMojo extends AbstractMojo {
 		for (String output : outputList) {
 			output = output.trim();
 			boolean standardOutput = CompilerMain.isAvailableOutput(output);
-			File basedir = baseDir.getAbsoluteFile();
-			File currentDir = new File(".").getAbsoluteFile();
 			if (!standardOutput) {
 				// custom stg
 				try {

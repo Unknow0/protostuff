@@ -22,20 +22,16 @@ import java.io.IOException;
  * @author David Yu
  * @created Feb 11, 2011
  */
-public class SmileStandardTest extends StandardTest
-{
+public class SmileStandardTest extends StandardTest {
 
-    @Override
-    protected <T> void mergeFrom(byte[] data, int offset, int length, T message,
-            Schema<T> schema) throws IOException
-    {
-        SmileIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
-    }
+	@Override
+	protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		SmileIOUtil.mergeFrom(data, 0, data.length, message, schema, false);
+	}
 
-    @Override
-    protected <T> byte[] toByteArray(T message, Schema<T> schema)
-    {
-        return SmileIOUtil.toByteArray(message, schema, false);
-    }
+	@Override
+	protected <T> byte[] toByteArray(T message, Schema<T> schema) {
+		return SmileIOUtil.toByteArray(message, schema, false);
+	}
 
 }

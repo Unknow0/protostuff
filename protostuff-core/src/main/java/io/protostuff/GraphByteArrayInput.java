@@ -25,168 +25,142 @@ import java.util.ArrayList;
  * @author David Yu
  * @created Dec 10, 2010
  */
-public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
-        implements GraphInput, Schema<Object>
-{
+public final class GraphByteArrayInput extends FilterInput<ByteArrayInput> implements GraphInput, Schema<Object> {
 
-    private final ArrayList<Object> references;
-    private int lastRef = -1;
+	private final ArrayList<Object> references;
+	private int lastRef = -1;
 
-    private Schema<Object> lastSchema;
-    private boolean messageReference = false;
+	private Schema<Object> lastSchema;
+	private boolean messageReference = false;
 
-    public GraphByteArrayInput(ByteArrayInput input)
-    {
-        super(input);
+	public GraphByteArrayInput(ByteArrayInput input) {
+		super(input);
 
-        // protostuff format only.
-        assert input.decodeNestedMessageAsGroup;
+		// protostuff format only.
+		assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<>();
-    }
+		references = new ArrayList<>();
+	}
 
-    public GraphByteArrayInput(ByteArrayInput input, int initialCapacity)
-    {
-        super(input);
+	public GraphByteArrayInput(ByteArrayInput input, int initialCapacity) {
+		super(input);
 
-        // protostuff format only.
-        assert input.decodeNestedMessageAsGroup;
+		// protostuff format only.
+		assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<>(initialCapacity);
-    }
+		references = new ArrayList<>(initialCapacity);
+	}
 
-    @Override
-    public void updateLast(Object morphedMessage, Object lastMessage)
-    {
-        final int last = references.size() - 1;
-        if (lastMessage != null && lastMessage == references.get(last))
-        {
-            // update the reference
-            references.set(last, morphedMessage);
-        }
-    }
+	@Override
+	public void updateLast(Object morphedMessage, Object lastMessage) {
+		final int last = references.size() - 1;
+		if (lastMessage != null && lastMessage == references.get(last)) {
+			// update the reference
+			references.set(last, morphedMessage);
+		}
+	}
 
-    @Override
-    public boolean isCurrentMessageReference()
-    {
-        return messageReference;
-    }
+	@Override
+	public boolean isCurrentMessageReference() {
+		return messageReference;
+	}
 
-    @Override
-    public <T> int readFieldNumber(Schema<T> schema) throws IOException
-    {
-        final int fieldNumber = input.readFieldNumber(schema);
-        if (WireFormat.getTagWireType(input.getLastTag()) == WIRETYPE_REFERENCE)
-        {
-            // a reference.
-            lastRef = input.readUInt32();
-            messageReference = true;
-        }
-        else
-        {
-            // always unset.
-            messageReference = false;
-        }
+	@Override
+	public <T> int readFieldNumber(Schema<T> schema) throws IOException {
+		final int fieldNumber = input.readFieldNumber(schema);
+		if (WireFormat.getTagWireType(input.getLastTag()) == WIRETYPE_REFERENCE) {
+			// a reference.
+			lastRef = input.readUInt32();
+			messageReference = true;
+		} else {
+			// always unset.
+			messageReference = false;
+		}
 
-        return fieldNumber;
-    }
+		return fieldNumber;
+	}
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T mergeObject(T value, Schema<T> schema) throws IOException
-    {
-        if (messageReference)
-        {
-            // a reference.
-            return (T) references.get(lastRef);
-        }
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
+		if (messageReference) {
+			// a reference.
+			return (T) references.get(lastRef);
+		}
 
-        lastSchema = (Schema<Object>) schema;
+		lastSchema = (Schema<Object>) schema;
 
-        if (value == null)
-        {
-            value = schema.newMessage();
-        }
+		if (value == null) {
+			value = schema.newMessage();
+		}
 
-        references.add(value);
+		references.add(value);
 
-        input.mergeObject(value, this);
+		input.mergeObject(value, this);
 
-        return value;
-    }
+		return value;
+	}
 
-    @Override
-    public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
-    {
-        if (!messageReference)
-        {
-            input.skipField(input.getLastTag());
-        }
-    }
+	@Override
+	public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException {
+		if (!messageReference) {
+			input.skipField(input.getLastTag());
+		}
+	}
 
-    @Override
-    public String getFieldName(int number)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public String getFieldName(int number) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public int getFieldNumber(String name)
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public int getFieldNumber(String name) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public boolean isInitialized(Object owner)
-    {
-        return true;
-    }
+	@Override
+	public boolean isInitialized(Object owner) {
+		return true;
+	}
 
-    @Override
-    public String messageFullName()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public String messageFullName() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public String messageName()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public String messageName() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Object newMessage()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Object newMessage() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Class<? super Object> typeClass()
-    {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Class<? super Object> typeClass() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public void mergeFrom(Input input, final Object message) throws IOException
-    {
-        final Schema<Object> schema = lastSchema;
+	@Override
+	public void mergeFrom(Input input, final Object message) throws IOException {
+		final Schema<Object> schema = lastSchema;
 
-        // merge using this input.
-        schema.mergeFrom(this, message);
-        if (!schema.isInitialized(message))
-        {
-            throw new UninitializedMessageException(message, schema);
-        }
+		// merge using this input.
+		schema.mergeFrom(this, message);
+		if (!schema.isInitialized(message)) {
+			throw new UninitializedMessageException(message, schema);
+		}
 
-        // restore
-        lastSchema = schema;
-    }
+		// restore
+		lastSchema = schema;
+	}
 
-    @Override
-    public void writeTo(Output output, Object message) throws IOException
-    {
-        // only using mergeFrom.
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public void writeTo(Output output, Object message) throws IOException {
+		// only using mergeFrom.
+		throw new UnsupportedOperationException();
+	}
 
 }

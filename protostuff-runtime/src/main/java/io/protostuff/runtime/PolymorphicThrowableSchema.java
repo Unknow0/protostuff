@@ -59,7 +59,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema {
 			try {
 				cause = Throwable.class.getDeclaredField("cause");
 				cause.setAccessible(true);
-			} catch (Exception e) {
+			} catch (@SuppressWarnings("unused") Exception e) {
 				cause = null;
 			}
 			__cause = cause;
@@ -175,7 +175,7 @@ public abstract class PolymorphicThrowableSchema extends PolymorphicSchema {
 		return readObjectFrom(input, schema, owner, strategy, number);
 	}
 
-	static Object readObjectFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, int number) throws IOException {
+	static Object readObjectFrom(Input input, @SuppressWarnings("unused") Schema<?> schema, Object owner, IdStrategy strategy, int number) throws IOException {
 		final Schema<Object> derivedSchema = strategy.resolvePojoFrom(input, number).getSchema();
 
 		final Object pojo = derivedSchema.newMessage();
