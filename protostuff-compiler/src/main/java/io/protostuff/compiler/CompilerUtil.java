@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Utilities and helpers for compiling protos.
- * 
+ *
  * @author David Yu
  * @created Jan 5, 2010
  */
@@ -38,11 +38,15 @@ public final class CompilerUtil
     {
         String encoding = module.getEncoding();
         if (encoding == null || encoding.isEmpty())
+        {
             encoding = "UTF-8";
+        }
 
         File packageDir = new File(module.getOutputDir(), packageName.replace('.', '/'));
         if (!packageDir.exists())
+        {
             packageDir.mkdirs();
+        }
 
         File outputFile = new File(packageDir, fileName);
         FileOutputStream out = new FileOutputStream(outputFile);
@@ -60,8 +64,10 @@ public final class CompilerUtil
     public static List<File> getFilesByExtension(File dir, String[] extensions)
     {
         if (!dir.isDirectory() || extensions == null)
+        {
             return Collections.emptyList();
-        List<File> files = new ArrayList<File>();
+        }
+        List<File> files = new ArrayList<>();
         addFilesByExtension(files, dir, extensions);
         return files;
     }
@@ -69,11 +75,12 @@ public final class CompilerUtil
     static void addFilesByExtension(List<File> list, File dir, String[] extensions)
     {
         File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++)
+        for (File f : files)
         {
-            File f = files[i];
             if (f.isDirectory())
+            {
                 addFilesByExtension(list, f, extensions);
+            }
             else
             {
                 for (String s : extensions)

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,12 +16,13 @@ package io.protostuff;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+
 import io.protostuff.Foo.EnumSample;
 
 /**
  * The objects to be tested.
- * 
+ *
  * @author David Yu
  * @created Nov 13, 2009
  */
@@ -78,29 +79,29 @@ public final class SerializableObjects
 
     /*
      * public static void assertEquals(Baz baz1, Baz baz2) { // true if both are null if(baz1 == baz2) return;
-     * 
+     *
      * Assert.assertTrue(baz1.getId() == baz2.getId()); Assert.assertEquals(baz1.getName(), baz2.getName());
      * Assert.assertTrue(baz1.getTimestamp() == baz2.getTimestamp()); }
-     * 
+     *
      * public static void assertEquals(Bar bar1, Bar bar2) { // true if both are null if(bar1 == bar2) return;
-     * 
+     *
      * Assert.assertTrue(bar1.getSomeInt() == bar2.getSomeInt()); Assert.assertEquals(bar1.getSomeString(),
      * bar2.getSomeString()); assertEquals(bar1.getBaz(), bar2.getBaz()); Assert.assertTrue(bar1.getSomeEnum() ==
      * bar2.getSomeEnum()); Assert.assertEquals(bar1.getSomeBytes(), bar2.getSomeBytes());
      * Assert.assertTrue(bar1.getSomeBoolean() == bar2.getSomeBoolean()); Assert.assertTrue(bar1.getSomeFloat() ==
      * bar2.getSomeFloat()); Assert.assertTrue(bar1.getSomeDouble() == bar2.getSomeDouble());
      * Assert.assertTrue(bar1.getSomeLong() == bar2.getSomeLong()); }
-     * 
+     *
      * public static void assertEquals(Foo f1, Foo f2) { // true if both are null if(f1 == f2) return;
-     * 
+     *
      * Assert.assertEquals(f1.getSomeInt(), f2.getSomeInt()); Assert.assertEquals(f1.getSomeString(),
      * f2.getSomeString());
-     * 
+     *
      * List<Bar> bar1 = f1.getSomeBar(); List<Bar> bar2 = f2.getSomeBar(); if(bar1!=null && bar2!=null) {
      * Assert.assertTrue(bar1.size() == bar2.size()); for(int i=0, size=bar1.size(); i<size; i++)
      * assertEquals(bar1.get(i), bar2.get(i)); }
-     * 
-     * 
+     *
+     *
      * Assert.assertEquals(f1.getSomeEnum(), f2.getSomeEnum()); Assert.assertEquals(f1.getSomeBytes(),
      * f2.getSomeBytes()); Assert.assertEquals(f1.getSomeBoolean(), f2.getSomeBoolean());
      * Assert.assertEquals(f1.getSomeFloat(), f2.getSomeFloat()); Assert.assertEquals(f1.getSomeDouble(),

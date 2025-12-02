@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,7 +47,7 @@ package io.protostuff;
 /**
  * Thrown when a protocol message being parsed is invalid in some way, e.g. it contains a malformed varint or a negative
  * byte length.
- * 
+ *
  * @author kenton@google.com Kenton Varda
  * @author David Yu
  */
@@ -55,11 +55,11 @@ public class ProtobufException extends ProtostuffException
 {
     private static final long serialVersionUID = 1616151763072450476L;
 
-    private static final String ERR_TRUNCATED_MESSAGE =
-            "While parsing a protocol message, the input ended unexpectedly " +
-                    "in the middle of a field.  This could mean either than the " +
-                    "input has been truncated or that an embedded message " +
-                    "misreported its own length.";
+    private static final String ERR_TRUNCATED_MESSAGE = "While parsing a protocol message, the input ended unexpectedly "
+            +
+            "in the middle of a field.  This could mean either than the " +
+            "input has been truncated or that an embedded message " +
+            "misreported its own length.";
 
     public ProtobufException(final String description)
     {

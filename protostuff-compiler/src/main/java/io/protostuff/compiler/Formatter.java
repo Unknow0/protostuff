@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 /**
  * Formats a string.
- * 
+ *
  * @author David Yu
  * @created Nov 9, 2012
  */
@@ -186,7 +186,9 @@ public interface Formatter
                 final StringBuilder buffer = toUnderscoreCase(str);
                 char c = buffer.charAt(0);
                 if (c > 96 && c < 123)
+                {
                     buffer.setCharAt(0, (char) (c - 32));
+                }
 
                 for (int i = 1, len = buffer.length(); i < len; i++)
                 {
@@ -194,7 +196,9 @@ public interface Formatter
                     {
                         // move to the next
                         if (++i != len && (c = buffer.charAt(i)) > 96 && c < 123)
+                        {
                             buffer.setCharAt(i, (char) (c - 32));
+                        }
 
                         continue;
                     }
@@ -205,7 +209,9 @@ public interface Formatter
 
                         c = buffer.charAt(i + 1);
                         if (c > 96 && c < 123)
+                        {
                             buffer.setCharAt(++i, (char) (c - 32));
+                        }
                     }
                 }
 
@@ -276,7 +282,8 @@ public interface Formatter
         TRIM
         {
             @Override
-            public String format(String str) {
+            public String format(String str)
+            {
                 return str.trim();
             }
         },
@@ -284,8 +291,10 @@ public interface Formatter
         CUT_L
         {
             @Override
-            public String format(String str) {
-                if (str.isEmpty()) {
+            public String format(String str)
+            {
+                if (str.isEmpty())
+                {
                     return str;
                 }
                 return str.substring(1, str.length());
@@ -295,24 +304,27 @@ public interface Formatter
         CUT_R
         {
             @Override
-            public String format(String str) {
-                if (str.isEmpty()) {
+            public String format(String str)
+            {
+                if (str.isEmpty())
+                {
                     return str;
                 }
-                return str.substring(0, str.length()-1);
+                return str.substring(0, str.length() - 1);
             }
         },
 
         ;
+
         private static List<String[]> singulars, plurals, irregulars;
         private static List<String> uncountables;
 
         static
         {
-            singulars = new ArrayList<String[]>();
-            plurals = new ArrayList<String[]>();
-            irregulars = new ArrayList<String[]>();
-            uncountables = new ArrayList<String>();
+            singulars = new ArrayList<>();
+            plurals = new ArrayList<>();
+            irregulars = new ArrayList<>();
+            uncountables = new ArrayList<>();
 
             addPlural("$", "s");
             addPlural("s$", "s");
@@ -400,7 +412,9 @@ public interface Formatter
         {
 
             if (uncountables.contains(word))
+            {
                 return word;
+            }
 
             for (String[] irregular : irregulars)
             {
@@ -414,7 +428,9 @@ public interface Formatter
             {
                 String plural = gsub(word, pair[0], pair[1]);
                 if (plural != null)
+                {
                     return plural;
+                }
             }
 
             return word;
@@ -424,7 +440,9 @@ public interface Formatter
         {
 
             if (uncountables.contains(word))
+            {
                 return word;
+            }
 
             for (String[] irregular : irregulars)
             {
@@ -438,7 +456,9 @@ public interface Formatter
             {
                 String singular = gsub(word, pair[0], pair[1]);
                 if (singular != null)
+                {
                     return singular;
+                }
             }
 
             return word;
@@ -450,7 +470,9 @@ public interface Formatter
         public static void addAllTo(Map<String, Formatter> map)
         {
             for (BUILTIN bf : BUILTIN.values())
+            {
                 map.put(bf.name(), bf);
+            }
         }
     }
 

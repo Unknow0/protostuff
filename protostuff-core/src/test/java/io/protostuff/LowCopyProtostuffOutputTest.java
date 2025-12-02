@@ -29,25 +29,24 @@ public class LowCopyProtostuffOutputTest extends TestCase
                 false,
                 3.14f,
                 2.7182818284,
-                599L
-                );
+                599L);
 
         ByteBuffer serForm2 = testObj(testBar, testBar);
         deserTest(testBar, testBar, serForm2);
 
     }
 
-    private void deserTest(Message origMsg,
-            Schema sch,
+    private <T extends Message<T>> void deserTest(T origMsg,
+            Schema<T> sch,
             ByteBuffer buf) throws IOException
     {
         ByteBufferInput input = new ByteBufferInput(buf, true);
-        Object newM = sch.newMessage();
+        T newM = sch.newMessage();
         sch.mergeFrom(input, newM);
         assertEquals(origMsg, newM);
     }
 
-    private ByteBuffer testObj(Message msg, Schema sch) throws java.io.IOException
+    private <T extends Message<T>> ByteBuffer testObj(T msg, Schema<T> sch) throws java.io.IOException
     {
         // do protostuff now:
         ByteArrayOutputStream controlStream = new ByteArrayOutputStream();

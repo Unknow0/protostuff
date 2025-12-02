@@ -70,7 +70,9 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
     public PojoWithRepeated addSomeInt32(Integer someInt32)
     {
         if (this.someInt32 == null)
-            this.someInt32 = new ArrayList<Integer>();
+        {
+            this.someInt32 = new ArrayList<>();
+        }
         this.someInt32.add(someInt32);
         return this;
     }
@@ -101,18 +103,22 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
     public PojoWithRepeated addSomeFixed64(Long someFixed64)
     {
         if (this.someFixed64 == null)
-            this.someFixed64 = new ArrayList<Long>();
+        {
+            this.someFixed64 = new ArrayList<>();
+        }
         this.someFixed64.add(someFixed64);
         return this;
     }
 
     // java serialization
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, this);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, this);
@@ -120,6 +126,7 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
 
     // message method
 
+    @Override
     public Schema<PojoWithRepeated> cachedSchema()
     {
         return DEFAULT_INSTANCE;
@@ -127,31 +134,37 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
 
     // schema methods
 
+    @Override
     public PojoWithRepeated newMessage()
     {
         return new PojoWithRepeated();
     }
 
+    @Override
     public Class<PojoWithRepeated> typeClass()
     {
         return PojoWithRepeated.class;
     }
 
+    @Override
     public String messageName()
     {
         return PojoWithRepeated.class.getSimpleName();
     }
 
+    @Override
     public String messageFullName()
     {
         return PojoWithRepeated.class.getName();
     }
 
+    @Override
     public boolean isInitialized(PojoWithRepeated message)
     {
         return true;
     }
 
+    @Override
     public void mergeFrom(Input input, PojoWithRepeated message) throws IOException
     {
         try
@@ -164,12 +177,16 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
                         return;
                     case 1:
                         if (message.someInt32 == null)
-                            message.someInt32 = new ArrayList<Integer>();
+                        {
+                            message.someInt32 = new ArrayList<>();
+                        }
                         message.someInt32.add(input.readInt32());
                         break;
                     case 2:
                         if (message.someFixed64 == null)
-                            message.someFixed64 = new ArrayList<Long>();
+                        {
+                            message.someFixed64 = new ArrayList<>();
+                        }
                         message.someFixed64.add(input.readFixed64());
                         break;
                     default:
@@ -180,16 +197,25 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
         finally
         {
             if (message.someInt32 != null)
+            {
                 message.someInt32 = java.util.Collections.unmodifiableList(message.someInt32);
+            }
             else
+            {
                 message.someInt32 = java.util.Collections.emptyList();
+            }
             if (message.someFixed64 != null)
+            {
                 message.someFixed64 = java.util.Collections.unmodifiableList(message.someFixed64);
+            }
             else
+            {
                 message.someFixed64 = java.util.Collections.emptyList();
+            }
         }
     }
 
+    @Override
     public void writeTo(Output output, PojoWithRepeated message) throws IOException
     {
         if (message.someInt32 != null)
@@ -197,7 +223,9 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
             for (Integer someInt32 : message.someInt32)
             {
                 if (someInt32 != null)
+                {
                     output.writeInt32(1, someInt32, true);
+                }
             }
         }
 
@@ -206,11 +234,14 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
             for (Long someFixed64 : message.someFixed64)
             {
                 if (someFixed64 != null)
+                {
                     output.writeFixed64(2, someFixed64, true);
+                }
             }
         }
     }
 
+    @Override
     public String getFieldName(int number)
     {
         switch (number)
@@ -224,13 +255,14 @@ public final class PojoWithRepeated implements Externalizable, Message<PojoWithR
         }
     }
 
+    @Override
     public int getFieldNumber(String name)
     {
         final Integer number = __fieldMap.get(name);
         return number == null ? 0 : number.intValue();
     }
 
-    private static final java.util.HashMap<String, Integer> __fieldMap = new java.util.HashMap<String, Integer>();
+    private static final java.util.HashMap<String, Integer> __fieldMap = new java.util.HashMap<>();
     static
     {
         __fieldMap.put("someInt32", 1);

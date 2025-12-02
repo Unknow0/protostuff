@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@ import io.protostuff.parser.Service;
 /**
  * A plugin proto compiler whose output relies on the 'output' param configured in {@link ProtoModule}. The output param
  * should point to a StringTemplate resource (file, url, or from classpath).
- * 
+ *
  * @author David Yu
  * @created May 25, 2010
  */
@@ -46,8 +46,7 @@ public class PluginProtoCompiler extends STCodeGenerator
     /**
      * To enable, specify -Dppc.check_filename_placeholder=true
      */
-    protected static final boolean CHECK_FILENAME_PLACEHOLDER =
-            Boolean.getBoolean("ppc.check_filename_placeholder");
+    protected static final boolean CHECK_FILENAME_PLACEHOLDER = Boolean.getBoolean("ppc.check_filename_placeholder");
 
     /**
      * Resolve the stg from the module.
@@ -72,19 +71,31 @@ public class PluginProtoCompiler extends STCodeGenerator
             {
                 File file = new File(stgLocation);
                 if (file.exists())
-                    return new StringTemplateGroup(new BufferedReader(new FileReader(file)));
+                {
+                    try (BufferedReader r = new BufferedReader(new FileReader(file)))
+                    {
+                        return new StringTemplateGroup(r);
+                    }
+                }
 
                 URL url = DefaultProtoLoader.getResource(stgLocation,
                         PluginProtoCompiler.class);
                 if (url != null)
                 {
-                    return new StringTemplateGroup(new BufferedReader(
-                            new InputStreamReader(url.openStream(), "UTF-8")));
+                    try (BufferedReader r = new BufferedReader(
+                            new InputStreamReader(url.openStream(), "UTF-8")))
+                    {
+                        return new StringTemplateGroup(r);
+                    }
                 }
                 if (stgLocation.startsWith("http://"))
                 {
-                    return new StringTemplateGroup(new BufferedReader(
-                            new InputStreamReader(new URL(stgLocation).openStream(), "UTF-8")));
+                    try (BufferedReader r = new BufferedReader(
+                            new InputStreamReader(new URL(stgLocation).openStream(), "UTF-8")))
+                    {
+
+                        return new StringTemplateGroup(r);
+                    }
                 }
             }
             catch (IOException e)
@@ -98,7 +109,9 @@ public class PluginProtoCompiler extends STCodeGenerator
     public static void setGroupResolver(GroupResolver resolver)
     {
         if (resolver != null)
+        {
             __resolver = resolver;
+        }
     }
 
     /**
@@ -111,7 +124,7 @@ public class PluginProtoCompiler extends STCodeGenerator
         {
             return group.lookupTemplate(template);
         }
-        catch (IllegalArgumentException e)
+        catch (@SuppressWarnings("unused") IllegalArgumentException e)
         {
             return null;
         }
@@ -260,8 +273,7 @@ public class PluginProtoCompiler extends STCodeGenerator
                     this.module.getOutput() + " != " + module.getOutput());
         }
 
-        final String packageName = javaOutput ? proto.getJavaPackageName() :
-                proto.getPackageName();
+        final String packageName = javaOutput ? proto.getJavaPackageName() : proto.getPackageName();
 
         if (protoBlockTemplate != null)
         {
@@ -379,7 +391,9 @@ public class PluginProtoCompiler extends STCodeGenerator
         {
             String outerClassname = proto.getExtraOption("java_outer_classname");
             if (outerClassname != null)
+            {
                 name = outerClassname;
+            }
         }
 
         final String fileName;
@@ -388,11 +402,15 @@ public class PluginProtoCompiler extends STCodeGenerator
             // resolve the prefix/suffix from module option
             String outerFilePrefix = module.getOption("outer_file_prefix");
             if (outerFilePrefix != null)
+            {
                 name = outerFilePrefix + name;
+            }
 
             String outerFileSuffix = module.getOption("outer_file_suffix");
             if (outerFileSuffix != null)
+            {
                 name += outerFileSuffix;
+            }
 
             fileName = name + fileExtension;
         }

@@ -51,13 +51,11 @@ public final class B64Code
 {
     // ------------------------------------------------------------------
     static final byte pad = (byte) '=';
-    static final byte[] nibble2code =
-    {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-            'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-            'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-    };
+    static final byte[] nibble2code = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+            'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
+            'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+            'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6',
+            '7', '8', '9', '+', '/' };
 
     static final byte[] code2nibble;
 
@@ -120,8 +118,7 @@ public final class B64Code
      * <p>
      * Avoids creating extra copies of the input/output.
      */
-    private static void encode(final byte[] input, int inOffset, final int inLen,
-            final byte[] output, int outOffset)
+    private static void encode(final byte[] input, int inOffset, final int inLen, final byte[] output, int outOffset)
     {
         byte b0, b1, b2;
         final int remaining = inLen % 3, stop = inOffset + (inLen - remaining);
@@ -170,8 +167,7 @@ public final class B64Code
      * <p>
      * Avoids creating extra copies of the input/output.
      */
-    private static void cencode(final byte[] input, int inOffset, final int inLen,
-            final char[] output, int outOffset)
+    private static void cencode(final byte[] input, int inOffset, final int inLen, final char[] output, int outOffset)
     {
         byte b0, b1, b2;
         final int remaining = inLen % 3, stop = inOffset + (inLen - remaining);
@@ -224,8 +220,8 @@ public final class B64Code
     /**
      * Encodes the byte array into the {@link LinkedBuffer} and grows when full.
      */
-    public static LinkedBuffer encode(final byte[] input, int inOffset, int inLen,
-            final WriteSession session, final LinkedBuffer lb) throws IOException
+    public static LinkedBuffer encode(final byte[] input, int inOffset, int inLen, final WriteSession session,
+            final LinkedBuffer lb)
     {
         int outputSize = ((inLen + 2) / 3) * 4;
         session.size += outputSize;
@@ -242,8 +238,7 @@ public final class B64Code
                     final byte[] encoded = new byte[outputSize];
                     encode(input, inOffset, inLen, encoded, 0);
                     // return a fresh buffer.
-                    return new LinkedBuffer(session.nextBufferSize,
-                            new LinkedBuffer(encoded, 0, outputSize, lb));
+                    return new LinkedBuffer(session.nextBufferSize, new LinkedBuffer(encoded, 0, outputSize, lb));
                 }
 
                 final byte[] encoded = new byte[session.nextBufferSize];
@@ -280,8 +275,7 @@ public final class B64Code
                 final byte[] encoded = new byte[outputSize];
                 encode(input, inOffset, inLen, encoded, 0);
                 // return a fresh buffer.
-                return new LinkedBuffer(session.nextBufferSize,
-                        new LinkedBuffer(encoded, 0, outputSize, lb));
+                return new LinkedBuffer(session.nextBufferSize, new LinkedBuffer(encoded, 0, outputSize, lb));
             }
 
             final byte[] encoded = new byte[session.nextBufferSize];
@@ -299,8 +293,7 @@ public final class B64Code
     /**
      * Encodes the byte array into the {@link LinkedBuffer} and flushes to the {@link OutputStream} when buffer is full.
      */
-    public static LinkedBuffer sencode(final byte[] input, int inOffset, int inLen,
-            final WriteSession session,
+    public static LinkedBuffer sencode(final byte[] input, int inOffset, int inLen, final WriteSession session,
             final LinkedBuffer lb) throws IOException
     {
         int outputSize = ((inLen + 2) / 3) * 4;
@@ -426,7 +419,7 @@ public final class B64Code
         final int outLen = ((withoutPaddingLen) * 3) / 4;
         final byte[] output = new byte[outLen];
 
-        decode(input, inOffset, inLen, output, 0, outLen);
+        decode(input, inOffset, output, 0, outLen);
 
         return output;
     }
@@ -466,7 +459,7 @@ public final class B64Code
         final int outLen = ((withoutPaddingLen) * 3) / 4;
         final byte[] output = new byte[outLen];
 
-        cdecode(input, inOffset, inLen, output, 0, outLen);
+        cdecode(input, inOffset, output, 0, outLen);
 
         return output;
     }
@@ -475,8 +468,7 @@ public final class B64Code
      * Returns the length of the decoded base64 input (written to the provided {@code output} byte array). The
      * {@code output} byte array must have enough capacity or it will fail.
      */
-    public static int decodeTo(final byte[] output, int outOffset,
-            final byte[] input, int inOffset, final int inLen)
+    public static int decodeTo(final byte[] output, int outOffset, final byte[] input, int inOffset, final int inLen)
     {
         if (inLen == 0)
             return 0;
@@ -492,13 +484,12 @@ public final class B64Code
         final int outLen = ((withoutPaddingLen) * 3) / 4;
         assert (output.length - outOffset) >= outLen;
 
-        decode(input, inOffset, inLen, output, outOffset, outLen);
+        decode(input, inOffset, output, outOffset, outLen);
 
         return outLen;
     }
 
-    private static void decode(final byte[] input, int inOffset, final int inLen,
-            final byte[] output, int outOffset, final int outLen)
+    private static void decode(final byte[] input, int inOffset, final byte[] output, int outOffset, final int outLen)
     {
         int stop = (outLen / 3) * 3;
         byte b0, b1, b2, b3;
@@ -546,15 +537,13 @@ public final class B64Code
                 }
             }
         }
-        catch (IndexOutOfBoundsException e)
+        catch (@SuppressWarnings("unused") IndexOutOfBoundsException e)
         {
-            throw new IllegalArgumentException("char " + inOffset
-                    + " was not B64 encoded");
+            throw new IllegalArgumentException("char " + inOffset + " was not B64 encoded");
         }
     }
 
-    private static void cdecode(final char[] input, int inOffset, final int inLen,
-            final byte[] output, int outOffset, final int outLen)
+    private static void cdecode(final char[] input, int inOffset, final byte[] output, int outOffset, final int outLen)
     {
         int stop = (outLen / 3) * 3;
         byte b0, b1, b2, b3;
@@ -602,10 +591,9 @@ public final class B64Code
                 }
             }
         }
-        catch (IndexOutOfBoundsException e)
+        catch (@SuppressWarnings("unused") IndexOutOfBoundsException e)
         {
-            throw new IllegalArgumentException("char " + inOffset
-                    + " was not B64 encoded");
+            throw new IllegalArgumentException("char " + inOffset + " was not B64 encoded");
         }
     }
 
@@ -636,7 +624,7 @@ public final class B64Code
         final int outLen = ((withoutPaddingLen) * 3) / 4;
         final byte[] output = new byte[outLen];
 
-        decode(str, inOffset, inLen, output, 0, outLen);
+        decode(str, inOffset, output, 0, outLen);
 
         return output;
     }
@@ -645,8 +633,7 @@ public final class B64Code
      * Returns the length of the decoded base64 input (written to the provided {@code output} byte array). The
      * {@code output} byte array must have enough capacity or it will fail.
      */
-    public static int decodeTo(final byte[] output, int outOffset,
-            final String str, int inOffset, final int inLen)
+    public static int decodeTo(final byte[] output, int outOffset, final String str, int inOffset, final int inLen)
     {
         if (inLen == 0)
             return 0;
@@ -662,13 +649,12 @@ public final class B64Code
         final int outLen = ((withoutPaddingLen) * 3) / 4;
         assert (output.length - outOffset) >= outLen;
 
-        decode(str, inOffset, inLen, output, outOffset, outLen);
+        decode(str, inOffset, output, outOffset, outLen);
 
         return outLen;
     }
 
-    private static void decode(final String str, int inOffset, final int inLen,
-            final byte[] output, int outOffset, final int outLen)
+    private static void decode(final String str, int inOffset, final byte[] output, int outOffset, final int outLen)
     {
         int stop = (outLen / 3) * 3;
         byte b0, b1, b2, b3;
@@ -716,10 +702,9 @@ public final class B64Code
                 }
             }
         }
-        catch (IndexOutOfBoundsException e)
+        catch (@SuppressWarnings("unused") IndexOutOfBoundsException e)
         {
-            throw new IllegalArgumentException("char " + inOffset
-                    + " was not B64 encoded");
+            throw new IllegalArgumentException("char " + inOffset + " was not B64 encoded");
         }
     }
 

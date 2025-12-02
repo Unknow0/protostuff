@@ -72,9 +72,13 @@ public class JsonXInput implements Input
             checkBuffer(1);
             byte b = buf[o++];
             if (b == '{' || b == ']')
+            {
                 nestedObjects++;
+            }
             if ((b == '}' || b == ']') && --nestedObjects == 0)
+            {
                 break;
+            }
         }
         readRepeated();
     }
@@ -84,10 +88,14 @@ public class JsonXInput implements Input
     {
         lastSchema = schema;
         if (readNext() != ',')
+        {
             --o;
+        }
 
         while ((lastNumber = readFieldNumber()) == -1)
+        {
             ;
+        }
         return lastNumber;
     }
 
@@ -97,7 +105,9 @@ public class JsonXInput implements Input
         {
             checkBuffer(5);
             while (readNull() && buf[o] == ',')
+            {
                 o++;
+            }
             if (buf[o] == ']')
             {
                 o++;
@@ -110,20 +120,28 @@ public class JsonXInput implements Input
 
         int next = readNext();
         if (next == '}')
+        {
             return lastNumber = 0;
+        }
         if (next != '"')
+        {
             throwUnexpectedContent('"', next);
+        }
         lastName = readRawString();
         readNext(':');
         if (readNull())
+        {
             return -1;
+        }
 
         checkBuffer(1);
         if (readNext() == '[')
         {
             checkBuffer(5);
             while (readNull() && buf[o] == ',')
+            {
                 o++;
+            }
             if (buf[o] == ']')
             {
                 o++;
@@ -133,7 +151,9 @@ public class JsonXInput implements Input
             lastRepeated = true;
         }
         else
+        {
             --o;
+        }
         return lastNumber = numeric ? Integer.parseInt(lastName) : lastSchema.getFieldNumber(lastName);
     }
 
@@ -183,7 +203,9 @@ public class JsonXInput implements Input
         String rawValue = readValue();
         readRepeated();
         if (rawValue.startsWith("-"))
+        {
             return Integer.parseInt(rawValue);
+        }
         return UnsignedNumberUtil.parseUnsignedInt(rawValue);
     }
 
@@ -281,12 +303,16 @@ public class JsonXInput implements Input
         this.lastRepeated = false;
 
         if (value == null)
+        {
             value = schema.newMessage();
+        }
 
         schema.mergeFrom(this, value);
 
         if (!schema.isInitialized(value))
+        {
             throw new UninitializedMessageException(value, schema);
+        }
 
         // restore state
         this.lastNumber = previousNumber;
@@ -303,9 +329,13 @@ public class JsonXInput implements Input
             throws IOException
     {
         if (utf8String)
+        {
             output.writeString(fieldNumber, readString(), repeated);
+        }
         else
+        {
             output.writeByteArray(fieldNumber, readByteArray(), repeated);
+        }
     }
 
     /**
@@ -320,12 +350,16 @@ public class JsonXInput implements Input
     private void checkBuffer(int n) throws IOException
     {
         if (n <= l - o)
+        {
             return;
+        }
 
         if (in == null)
         {
             if (l - o == 0)
+            {
                 throwEOF();
+            }
             return;
         }
 
@@ -342,7 +376,9 @@ public class JsonXInput implements Input
             {
                 in = null;
                 if (l - o == 0)
+                {
                     throwEOF();
+                }
                 return;
             }
             l += i;
@@ -351,7 +387,7 @@ public class JsonXInput implements Input
 
     /**
      * read next meaningful char
-     * 
+     *
      * @return char or -1 on eof
      * @throws IOException
      *             on read error
@@ -397,7 +433,9 @@ public class JsonXInput implements Input
         StringBuilder sb = new StringBuilder("Expected ").append(expected).append(" but was ").append(actual)
                 .append(" on ").append(lastName);
         if (lastSchema != null)
+        {
             sb.append(" of message ").append(lastSchema.messageFullName());
+        }
         throw new JsonInputException(sb.toString());
     }
 
@@ -410,7 +448,9 @@ public class JsonXInput implements Input
     {
         byte b = readNext();
         if (expected != b)
+        {
             throwUnexpectedContent(expected, b);
+        }
     }
 
     public void readNext(byte[] expected) throws IOException
@@ -422,23 +462,29 @@ public class JsonXInput implements Input
         while (i < expected.length && o < l)
         {
             if (buf[o++] != expected[i++])
+            {
                 throwUnexpectedContent(expected[i - 1], buf[o - 1]);
+            }
         }
         if (o == l && i < expected.length)
+        {
             throwEOF();
+        }
     }
 
     public boolean tryNext(byte[] c) throws IOException
     {
         if (c.length == 0)
+        {
             return false;
+        }
         readNext();
         --o;
         checkBuffer(c.length);
-        if (l - o < c.length)
+        if ((l - o < c.length) || !equals(c, 0, buf, o, c.length))
+        {
             return false;
-        if (!equals(c, 0, buf, o, c.length))
-            return false;
+        }
         o += c.length;
         return true;
     }
@@ -458,17 +504,29 @@ public class JsonXInput implements Input
             {
                 i = buf[o++];
                 if (i == '"' || i == '\\' || i == '/')
+                {
                     utf8.append(i);
+                }
                 else if (i == 'b')
+                {
                     utf8.append(BEL);
+                }
                 else if (i == 'f')
+                {
                     utf8.append(FF);
+                }
                 else if (i == 'n')
+                {
                     utf8.append(LF);
+                }
                 else if (i == 'r')
+                {
                     utf8.append(CR);
+                }
                 else if (i == 't')
+                {
                     utf8.append(TAB);
+                }
                 else if (i == 'u')
                 {
                     checkBuffer(4);
@@ -485,11 +543,17 @@ public class JsonXInput implements Input
     {
         byte b = buf[o++];
         if (b >= '0' && b <= '9')
+        {
             return b - '0';
+        }
         if (b >= 'a' && b <= 'f')
+        {
             return 10 + b - 'a';
+        }
         if (b >= 'A' && b <= 'F')
+        {
             return 10 + b - 'A';
+        }
         throwUnexpectedContent("hex digit", toString(b));
         return 0; // will not happen
     }
@@ -498,7 +562,9 @@ public class JsonXInput implements Input
     {
         byte i = buf[o++];
         if (i == '"')
+        {
             return readRawString();
+        }
         while (i != ',' && i != '}' && i != ']')
         {
             utf8.append(i);
@@ -512,7 +578,9 @@ public class JsonXInput implements Input
     private void readRepeated() throws IOException
     {
         if (!lastRepeated)
+        {
             return;
+        }
         checkBuffer(1);
         if (buf[o] == ']')
         {
@@ -523,7 +591,7 @@ public class JsonXInput implements Input
 
     /**
      * check array range equality
-     * 
+     *
      * @param a
      *            first array
      * @param aIndex
@@ -539,30 +607,44 @@ public class JsonXInput implements Input
     public static boolean equals(byte[] a, int aIndex, byte[] b, int bIndex, int len)
     {
         if (a == null || b == null)
+        {
             throw new IllegalArgumentException("a or b null");
+        }
         if (len < 0)
+        {
             throw new ArrayIndexOutOfBoundsException("len < 0");
+        }
         if (aIndex < 0)
+        {
             throw new ArrayIndexOutOfBoundsException("aIndex < 0");
+        }
         if (aIndex + len > a.length)
+        {
             throw new ArrayIndexOutOfBoundsException("aIndex +len > a.length");
+        }
 
         if (bIndex < 0)
+        {
             throw new ArrayIndexOutOfBoundsException("bIndex < 0");
+        }
         if (bIndex + len > b.length)
+        {
             throw new ArrayIndexOutOfBoundsException("bIndex +len > b.length");
+        }
 
         while (len-- > 0)
         {
             if (a[aIndex++] != b[bIndex++])
+            {
                 return false;
+            }
         }
         return true;
     }
 
     /**
      * convert unicode code point to String
-     * 
+     *
      * @param c
      *            unicode code point
      * @return the string

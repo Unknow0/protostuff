@@ -75,7 +75,9 @@ public final class Club implements Externalizable, Message<Club>
     public void addStudent(Student student)
     {
         if (this.student == null)
-            this.student = new ArrayList<Student>();
+        {
+            this.student = new ArrayList<>();
+        }
         this.student.add(student);
     }
 
@@ -104,7 +106,9 @@ public final class Club implements Externalizable, Message<Club>
     public void addPartnerClub(Club partnerClub)
     {
         if (this.partnerClub == null)
-            this.partnerClub = new ArrayList<Club>();
+        {
+            this.partnerClub = new ArrayList<>();
+        }
         this.partnerClub.add(partnerClub);
     }
 
@@ -178,13 +182,17 @@ public final class Club implements Externalizable, Message<Club>
                         break;
                     case 2:
                         if (message.student == null)
-                            message.student = new ArrayList<Student>();
+                        {
+                            message.student = new ArrayList<>();
+                        }
                         message.student.add(input.mergeObject(null, Student.getSchema()));
                         break;
 
                     case 3:
                         if (message.partnerClub == null)
-                            message.partnerClub = new ArrayList<Club>();
+                        {
+                            message.partnerClub = new ArrayList<>();
+                        }
                         message.partnerClub.add(input.mergeObject(null, Club.getSchema()));
                         break;
 
@@ -198,14 +206,18 @@ public final class Club implements Externalizable, Message<Club>
         public void writeTo(Output output, Club message) throws IOException
         {
             if (message.name != null)
+            {
                 output.writeString(1, message.name, false);
+            }
 
             if (message.student != null)
             {
                 for (Student student : message.student)
                 {
                     if (student != null)
+                    {
                         output.writeObject(2, student, Student.getSchema(), true);
+                    }
                 }
             }
 
@@ -214,7 +226,9 @@ public final class Club implements Externalizable, Message<Club>
                 for (Club partnerClub : message.partnerClub)
                 {
                     if (partnerClub != null)
+                    {
                         output.writeObject(3, partnerClub, Club.getSchema(), true);
+                    }
                 }
             }
 
@@ -243,7 +257,7 @@ public final class Club implements Externalizable, Message<Club>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
 
         {
             fieldMap.put("name", 1);

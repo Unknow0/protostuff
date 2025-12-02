@@ -36,7 +36,7 @@ import io.protostuff.StringSerializer.STRING;
  * Reads and decodes protocol buffer message fields from an internal byte array buffer. This object is re-usable via
  * doing a reset on the byte array position and length. This is used internally by {@link IOUtil} where it catches
  * {@link ArrayIndexOutOfBoundsException} when a message is truncated.
- * 
+ *
  * @author David Yu
  * @created Jun 22, 2010
  */
@@ -56,7 +56,7 @@ public final class ByteBufferInput implements Input
 
     /**
      * An input for a ByteBuffer
-     * 
+     *
      * @param buffer
      *            the buffer to read from, it will be sliced
      * @param protostuffMessage
@@ -71,7 +71,7 @@ public final class ByteBufferInput implements Input
     /**
      * Resets the offset and the limit of the internal buffer.
      */
-    public ByteBufferInput reset(int offset, int len)
+    public ByteBufferInput reset()
     {
         buffer.rewind();
 
@@ -135,7 +135,7 @@ public final class ByteBufferInput implements Input
     /**
      * Verifies that the last call to readTag() returned the given tag value. This is used to verify that a nested group
      * ended with the correct end tag.
-     * 
+     *
      * @throws ProtobufException
      *             {@code value} does not match the last tag.
      */
@@ -149,7 +149,7 @@ public final class ByteBufferInput implements Input
 
     /**
      * Reads and discards a single field, given its tag value.
-     * 
+     *
      * @return {@code false} if the tag is an endgroup tag, in which case nothing is skipped. Otherwise, returns
      *         {@code true}.
      */
@@ -166,7 +166,9 @@ public final class ByteBufferInput implements Input
             case WIRETYPE_LENGTH_DELIMITED:
                 final int size = readRawVarint32();
                 if (size < 0)
+                {
                     throw ProtobufException.negativeSize();
+                }
                 buffer.position(buffer.position() + size);
                 // offset += size;
                 return true;
@@ -219,7 +221,9 @@ public final class ByteBufferInput implements Input
         if (isCurrentFieldPacked())
         {
             if (packedLimit < buffer.position())
+            {
                 throw ProtobufException.misreportedSize();
+            }
 
             // Return field number while reading packed field
             return lastTag >>> TAG_TYPE_BITS;
@@ -254,7 +258,7 @@ public final class ByteBufferInput implements Input
     /**
      * Check if this field have been packed into a length-delimited field. If so, update internal state to reflect that
      * packed fields are being read.
-     * 
+     *
      * @throws IOException
      */
     private void checkIfPackedField() throws IOException
@@ -264,10 +268,14 @@ public final class ByteBufferInput implements Input
         {
             final int length = readRawVarint32();
             if (length < 0)
+            {
                 throw ProtobufException.negativeSize();
+            }
 
             if (buffer.position() + length > buffer.limit())
+            {
                 throw ProtobufException.misreportedSize();
+            }
 
             this.packedLimit = buffer.position() + length;
         }
@@ -421,10 +429,14 @@ public final class ByteBufferInput implements Input
     {
         final int length = readRawVarint32();
         if (length < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (buffer.remaining() < length)
+        {
             throw ProtobufException.misreportedSize();
+        }
 
         // if(offset + length > limit)
 
@@ -436,12 +448,9 @@ public final class ByteBufferInput implements Input
                     buffer.arrayOffset() + currPosition,
                     length);
         }
-        else
-        {
-            byte[] tmp = new byte[length];
-            buffer.get(tmp);
-            return STRING.deser(tmp);
-        }
+        byte[] tmp = new byte[length];
+        buffer.get(tmp);
+        return STRING.deser(tmp);
 
         // final int offset = this.offset;
 
@@ -461,11 +470,15 @@ public final class ByteBufferInput implements Input
     {
         final int length = readRawVarint32();
         if (length < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (buffer.remaining() < length)
+        {
             // if(offset + length > limit)
             throw ProtobufException.misreportedSize();
+        }
 
         bb.put(buffer);
     }
@@ -475,11 +488,15 @@ public final class ByteBufferInput implements Input
     {
         final int length = readRawVarint32();
         if (length < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (buffer.remaining() < length)
+        {
             // if(offset + length > limit)
             throw ProtobufException.misreportedSize();
+        }
 
         final byte[] copy = new byte[length];
         buffer.get(copy);
@@ -490,14 +507,20 @@ public final class ByteBufferInput implements Input
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if (decodeNestedMessageAsGroup)
+        {
             return mergeObjectEncodedAsGroup(value, schema);
+        }
 
         final int length = readRawVarint32();
         if (length < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (buffer.remaining() < length)
+        {
             throw ProtobufException.misreportedSize();
+        }
 
         ByteBuffer dup = buffer.slice();
         dup.limit(length);
@@ -508,11 +531,15 @@ public final class ByteBufferInput implements Input
         // this.limit = offset + length;
 
         if (value == null)
+        {
             value = schema.newMessage();
+        }
         ByteBufferInput nestedInput = new ByteBufferInput(dup, decodeNestedMessageAsGroup);
         schema.mergeFrom(nestedInput, value);
         if (!schema.isInitialized(value))
+        {
             throw new UninitializedMessageException(value, schema);
+        }
         nestedInput.checkLastTagWas(0);
         // checkLastTagWas(0);
 
@@ -526,10 +553,14 @@ public final class ByteBufferInput implements Input
     private <T> T mergeObjectEncodedAsGroup(T value, final Schema<T> schema) throws IOException
     {
         if (value == null)
+        {
             value = schema.newMessage();
+        }
         schema.mergeFrom(this, value);
         if (!schema.isInitialized(value))
+        {
             throw new UninitializedMessageException(value, schema);
+        }
         // handling is in #readFieldNumber
         checkLastTagWas(0);
         return value;
@@ -613,7 +644,7 @@ public final class ByteBufferInput implements Input
     /**
      * Read a 32-bit little-endian integer from the internal buffer.
      */
-    public int readRawLittleEndian32() throws IOException
+    public int readRawLittleEndian32()
     {
         // final byte[] buffer = this.buffer;
         // int offset = this.offset;
@@ -628,16 +659,16 @@ public final class ByteBufferInput implements Input
         //
         // this.offset = offset;
 
-        return (((int) bs[0] & 0xff)) |
-                (((int) bs[1] & 0xff) << 8) |
-                (((int) bs[2] & 0xff) << 16) |
-                (((int) bs[3] & 0xff) << 24);
+        return ((bs[0] & 0xff)) |
+                ((bs[1] & 0xff) << 8) |
+                ((bs[2] & 0xff) << 16) |
+                ((bs[3] & 0xff) << 24);
     }
 
     /**
      * Read a 64-bit little-endian integer from the internal byte buffer.
      */
-    public long readRawLittleEndian64() throws IOException
+    public long readRawLittleEndian64()
     {
         // final byte[] buffer = this.buffer;
         // int offset = this.offset;
@@ -672,7 +703,9 @@ public final class ByteBufferInput implements Input
     {
         final int length = readRawVarint32();
         if (length < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (utf8String)
         {
@@ -695,7 +728,9 @@ public final class ByteBufferInput implements Input
         {
             // Do the potentially vastly more efficient potential splice call.
             if (buffer.remaining() < length)
+            {
                 throw ProtobufException.misreportedSize();
+            }
 
             ByteBuffer dup = buffer.slice();
             dup.limit(length);

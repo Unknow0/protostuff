@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 /**
  * Common io utils for the supported formats.
- * 
+ *
  * @author David Yu
  * @created Nov 12, 2009
  */
@@ -87,12 +87,16 @@ final class IOUtil
     {
         final int size = in.read();
         if (size == -1)
+        {
             throw new EOFException("mergeDelimitedFrom");
+        }
 
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
 
         if (len < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (len != 0)
         {
@@ -129,12 +133,16 @@ final class IOUtil
     {
         final int size = in.read();
         if (size == -1)
+        {
             throw new EOFException("mergeDelimitedFrom");
+        }
 
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
 
         if (len < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (len != 0)
         {
@@ -142,6 +150,7 @@ final class IOUtil
             if (len > CodedInput.DEFAULT_BUFFER_SIZE)
             {
                 // message too big
+                @SuppressWarnings("resource")
                 final CodedInput input = new CodedInput(new LimitedInputStream(in, len),
                         decodeNestedMessageAsGroup);
                 schema.mergeFrom(input, message);
@@ -178,7 +187,9 @@ final class IOUtil
         final int len = 0 == (size & 0x80) ? size : CodedInput.readRawVarint32(in, size);
 
         if (len < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (len != 0)
         {
@@ -211,7 +222,9 @@ final class IOUtil
 
         // check it since this message is embedded in the DataInput.
         if (!schema.isInitialized(message))
+        {
             throw new UninitializedMessageException(message, schema);
+        }
 
         return len;
     }
@@ -226,7 +239,9 @@ final class IOUtil
         {
             read = in.read(buf, offset, len);
             if (read == -1)
+            {
                 throw ProtobufException.truncatedMessage();
+            }
         }
     }
 
@@ -234,7 +249,7 @@ final class IOUtil
      * Fills the buffer based from the varint32 read from the input stream.
      * <p>
      * The buffer's read offset is not set if the data (varint32 size + message size) is too large to fit in the buffer.
-     * 
+     *
      * @return the delimited size read.
      */
     static int fillBufferWithDelimitedMessageFrom(InputStream in,
@@ -245,7 +260,9 @@ final class IOUtil
         int offset = lb.start, len = buf.length - offset, read = in.read(buf, offset, len);
 
         if (read < 1)
+        {
             throw new EOFException("fillBufferWithDelimitedMessageFrom");
+        }
 
         int last = offset + read, size = buf[offset++];
         if (0 != (size & 0x80))
@@ -259,7 +276,9 @@ final class IOUtil
                     // read too few bytes
                     read = in.read(buf, last, len - (last - lb.start));
                     if (read < 1)
+                    {
                         throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                    }
 
                     last += read;
                 }
@@ -268,7 +287,9 @@ final class IOUtil
                 size |= (b & 0x7f) << shift;
 
                 if (0 == (b & 0x80))
+                {
                     break;
+                }
 
                 if (shift == 28)
                 {
@@ -280,13 +301,17 @@ final class IOUtil
                             // read more
                             read = in.read(buf, last, len - (last - lb.start));
                             if (read < 1)
+                            {
                                 throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                            }
 
                             last += read;
                         }
 
                         if (buf[offset++] >= 0)
+                        {
                             break;
+                        }
 
                         if (5 == ++i)
                         {
@@ -302,13 +327,17 @@ final class IOUtil
         if (size == 0)
         {
             if (offset != last)
+            {
                 throw ProtobufException.misreportedSize();
+            }
 
             return size;
         }
 
         if (size < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         final int partial = last - offset;
         if (partial < size)
@@ -320,14 +349,18 @@ final class IOUtil
                 // too large.
 
                 if (!drainRemainingBytesIfTooLarge)
+                {
                     return size;
+                }
 
                 // drain the remaining bytes
                 for (int remaining = size - partial; remaining > 0;)
                 {
                     read = in.read(buf, lb.start, Math.min(remaining, len));
                     if (read < 1)
+                    {
                         throw new EOFException("fillBufferWithDelimitedMessageFrom");
+                    }
 
                     remaining -= read;
                 }

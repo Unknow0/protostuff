@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,17 @@
 
 package io.protostuff;
 
-import static io.protostuff.StringSerializer.STRING;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+
+import io.protostuff.StringSerializer.STRING;
 
 /**
  * A protobuf output where the writing of bytes is deferred (buffered chunks).
  * <p>
  * Once the message serialization is done, data can then be streamed to an {@link OutputStream} or a {@link ByteBuffer}.
- * 
+ *
  * @author David Yu
  * @created Nov 9, 2009
  */
@@ -71,7 +71,9 @@ public final class DeferredOutput implements Output
     public void streamTo(OutputStream out) throws IOException
     {
         for (ByteArrayNode node = root.next; node != null; node = node.next)
+        {
             out.write(node.bytes);
+        }
     }
 
     /**
@@ -94,8 +96,8 @@ public final class DeferredOutput implements Output
     public void writeInt32(int fieldNumber, int value, boolean repeated) throws IOException
     {
         int tag = WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
-        byte[] bytes = value < 0 ? CodedOutput.getTagAndRawVarInt64Bytes(tag, value) :
-                CodedOutput.getTagAndRawVarInt32Bytes(tag, value);
+        byte[] bytes = value < 0 ? CodedOutput.getTagAndRawVarInt64Bytes(tag, value)
+                : CodedOutput.getTagAndRawVarInt32Bytes(tag, value);
         size += bytes.length;
         current = new ByteArrayNode(bytes, current);
     }
@@ -287,6 +289,7 @@ public final class DeferredOutput implements Output
     /**
      * Write the nested message encoded as group.
      */
+    @SuppressWarnings("unused")
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema,
             boolean repeated) throws IOException
     {
@@ -307,12 +310,16 @@ public final class DeferredOutput implements Output
     {
         int tagSize = CodedOutput.computeRawVarint32Size(tag);
         if (tagSize == 1)
+        {
             return new byte[] { (byte) tag };
+        }
 
         byte[] buffer = new byte[tagSize];
         int offset = 0;
         for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+        {
             buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+        }
 
         buffer[offset++] = (byte) tag;
         return buffer;

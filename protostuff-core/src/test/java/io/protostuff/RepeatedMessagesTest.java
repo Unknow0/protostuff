@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Testcase for ser/deser of multiple messages.
- * 
+ *
  * @author David Yu
  * @created Jan 14, 2010
  */
@@ -39,7 +39,7 @@ public abstract class RepeatedMessagesTest extends AbstractTest
 
     public void testBar() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 
@@ -53,12 +53,14 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testEmptyBar() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         bars.add(new Bar());
 
@@ -72,12 +74,14 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testEmptyBar2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -90,14 +94,16 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testEmptyBarInner() throws Exception
     {
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -110,12 +116,14 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testFoo() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(SerializableObjects.foo);
         foos.add(SerializableObjects.foo);
 
@@ -129,12 +137,14 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFoo() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(new Foo());
         foos.add(new Foo());
 
@@ -148,12 +158,14 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFoo2() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(new Foo());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -166,15 +178,17 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFooInner() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
 
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         Foo foo = new Foo();
         foo.setSomeBar(bars);
 
@@ -190,17 +204,19 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFooInner2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);
 
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         Foo foo = new Foo();
         foo.setSomeBar(bars);
 
@@ -216,7 +232,9 @@ public abstract class RepeatedMessagesTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
 }

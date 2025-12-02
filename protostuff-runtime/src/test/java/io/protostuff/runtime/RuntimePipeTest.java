@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,82 +21,73 @@ import io.protostuff.runtime.MathObjectsTest.Payment;
 
 /**
  * Test case for pipes generated at runtime.
- * 
+ *
  * @author David Yu
  * @created Oct 9, 2010
  */
-public class RuntimePipeTest extends ProtostuffPipeTest
-{
+public class RuntimePipeTest extends ProtostuffPipeTest {
 
-    static <T> RuntimeSchema<T> getSchema(Class<T> typeClass)
-    {
-        return (RuntimeSchema<T>) RuntimeSchema.getSchema(typeClass);
-    }
+	static <T> RuntimeSchema<T> getSchema(Class<T> typeClass) {
+		return (RuntimeSchema<T>) RuntimeSchema.getSchema(typeClass);
+	}
 
-    @Override
-    public void testFoo() throws Exception
-    {
-        RuntimeSchema<Foo> schema = getSchema(Foo.class);
+	@Override
+	public void testFoo() throws Exception {
+		RuntimeSchema<Foo> schema = getSchema(Foo.class);
 
-        Foo foo = SerializableObjects.foo;
+		Foo foo = SerializableObjects.foo;
 
-        roundTrip(foo, schema, schema.getPipeSchema());
-    }
+		roundTrip(foo, schema, schema.getPipeSchema());
+	}
 
-    @Override
-    public void testBar() throws Exception
-    {
-        RuntimeSchema<Bar> schema = getSchema(Bar.class);
+	@Override
+	public void testBar() throws Exception {
+		RuntimeSchema<Bar> schema = getSchema(Bar.class);
 
-        Bar bar = SerializableObjects.bar;
+		Bar bar = SerializableObjects.bar;
 
-        roundTrip(bar, schema, schema.getPipeSchema());
-    }
+		roundTrip(bar, schema, schema.getPipeSchema());
+	}
 
-    @Override
-    public void testBaz() throws Exception
-    {
-        RuntimeSchema<Baz> schema = getSchema(Baz.class);
+	@Override
+	public void testBaz() throws Exception {
+		RuntimeSchema<Baz> schema = getSchema(Baz.class);
 
-        Baz baz = SerializableObjects.baz;
+		Baz baz = SerializableObjects.baz;
 
-        roundTrip(baz, schema, schema.getPipeSchema());
-    }
+		roundTrip(baz, schema, schema.getPipeSchema());
+	}
 
-    public void testEmployee() throws Exception
-    {
-        RuntimeSchema<Employee> schema = getSchema(Employee.class);
+	public void testEmployee() throws Exception {
+		RuntimeSchema<Employee> schema = getSchema(Employee.class);
 
-        Employee emp = CollectionTest.filledEmployee();
+		Employee emp = CollectionTest.filledEmployee();
 
-        roundTrip(emp, schema, schema.getPipeSchema());
-    }
+		roundTrip(emp, schema, schema.getPipeSchema());
+	}
 
-    public void testTask() throws Exception
-    {
-        RuntimeSchema<Task> schema = getSchema(Task.class);
+	public void testTask() throws Exception {
+		RuntimeSchema<Task> schema = getSchema(Task.class);
 
-        Task task = CollectionTest.filledTask();
+		Task task = CollectionTest.filledTask();
 
-        roundTrip(task, schema, schema.getPipeSchema());
-    }
+		roundTrip(task, schema, schema.getPipeSchema());
+	}
 
-    public void testPayment() throws Exception
-    {
-        RuntimeSchema<Payment> schema = getSchema(Payment.class);
+	public void testPayment() throws Exception {
+		RuntimeSchema<Payment> schema = getSchema(Payment.class);
 
-        Payment payment = MathObjectsTest.filledPayment();
+		Payment payment = MathObjectsTest.filledPayment();
 
-        roundTrip(payment, schema, schema.getPipeSchema());
-    }
+		roundTrip(payment, schema, schema.getPipeSchema());
+	}
 
-    public void testPojoWithArrayAndSet() throws Exception
-    {
-        RuntimeSchema<PojoWithArrayAndSet> schema = getSchema(PojoWithArrayAndSet.class);
+	public void testPojoWithArrayAndSet() throws Exception {
+		RuntimeSchema<PojoWithArrayAndSet> schema = getSchema(PojoWithArrayAndSet.class);
 
-        PojoWithArrayAndSet p = SerDeserTest.filledPojoWithArrayAndSet();
+		PojoWithArrayAndSet p = SerDeserTest.filledPojoWithArrayAndSet();
 
-        roundTrip(p, schema, schema.getPipeSchema());
-    }
+		roundTrip(p, schema, schema.getPipeSchema());
+	}
 
 }

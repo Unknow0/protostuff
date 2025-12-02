@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -62,7 +62,7 @@ import io.protostuff.StringSerializer.STRING;
  * <p>
  * <p>
  * This class is totally unsynchronized.
- * 
+ *
  * @author kneton@google.com Kenton Varda
  * @author David Yu
  */
@@ -82,11 +82,8 @@ public final class CodedOutput implements Output
                 out.write(value);
                 return;
             }
-            else
-            {
-                out.write((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -102,11 +99,8 @@ public final class CodedOutput implements Output
                 out.write(value);
                 return;
             }
-            else
-            {
-                out.write((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -120,21 +114,29 @@ public final class CodedOutput implements Output
         int offset = 0;
         byte[] buffer = new byte[tagSize + size];
         if (tagSize == 1)
+        {
             buffer[offset++] = (byte) tag;
+        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
 
         if (size == 1)
+        {
             buffer[offset] = (byte) value;
+        }
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) ((value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -159,7 +161,9 @@ public final class CodedOutput implements Output
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -171,7 +175,9 @@ public final class CodedOutput implements Output
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) (((int) value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -195,7 +201,9 @@ public final class CodedOutput implements Output
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -221,7 +229,9 @@ public final class CodedOutput implements Output
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -237,7 +247,9 @@ public final class CodedOutput implements Output
     public static int writeRawLittleEndian32(int value, byte[] buffer, int offset)
     {
         if (buffer.length - offset < LITTLE_ENDIAN_32_SIZE)
+        {
             throw new IllegalArgumentException("buffer capacity not enough.");
+        }
 
         buffer[offset++] = (byte) (value & 0xFF);
         buffer[offset++] = (byte) (value >> 8 & 0xFF);
@@ -253,7 +265,9 @@ public final class CodedOutput implements Output
     public static int writeRawLittleEndian64(long value, byte[] buffer, int offset)
     {
         if (buffer.length - offset < LITTLE_ENDIAN_64_SIZE)
+        {
             throw new IllegalArgumentException("buffer capacity not enough.");
+        }
 
         buffer[offset++] = (byte) (value & 0xFF);
         buffer[offset++] = (byte) (value >> 8 & 0xFF);
@@ -274,12 +288,16 @@ public final class CodedOutput implements Output
     {
         int size = computeRawVarint32Size(value);
         if (size == 1)
+        {
             return new byte[] { (byte) value };
+        }
 
         int offset = 0;
         byte[] buffer = new byte[size];
         for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+        {
             buffer[offset++] = (byte) ((value & 0x7F) | 0x80);
+        }
 
         buffer[offset] = (byte) value;
         return buffer;
@@ -346,13 +364,15 @@ public final class CodedOutput implements Output
 
     /**
      * Returns the buffer size to efficiently write dataLength bytes to this CodedOutput. Used by AbstractMessageLite.
-     * 
+     *
      * @return the buffer size to efficiently write dataLength bytes to this CodedOutput.
      */
     static int computePreferredBufferSize(int dataLength)
     {
         if (dataLength > DEFAULT_BUFFER_SIZE)
+        {
             return DEFAULT_BUFFER_SIZE;
+        }
         return dataLength;
     }
 
@@ -427,14 +447,14 @@ public final class CodedOutput implements Output
      * @ /** Create a new {@code CodedOutput} that writes directly to the given byte array slice. If more bytes are
      * written than fit in the slice, {@link OutOfSpaceException} will be thrown. Writing directly to a flat array is
      * faster than writing to an {@code OutputStream}. See also {@link ByteString#newCodedBuilder}.
-     * 
+     *
      * @ public static CodedOutput newInstance(final byte[] flatArray, final int offset, final int length, final boolean
      * forceWritePrimitives) { return new CodedOutput(flatArray, offset, length, new SizeCountOutput()); }
-     * 
+     *
      * /** Create a new {@code CodedOutput} that writes directly to the given byte array slice. If more bytes are
      * written than fit in the slice, {@link OutOfSpaceException} will be thrown. Writing directly to a flat array is
      * faster than writing to an {@code OutputStream}. See also {@link ByteString#newCodedBuilder}.
-     * 
+     *
      * @ public static CodedOutput newInstance(final byte[] flatArray, final int offset, final int length, final
      * forceWritePrimitives, SizeCountOutput computedSize) { return new CodedOutput(flatArray, offset, length,
      * computedSize); }
@@ -554,7 +574,7 @@ public final class CodedOutput implements Output
 
     /*
      * @ Write a group represented by an {@link UnknownFieldSet}.
-     * 
+     *
      * @deprecated UnknownFieldSet now implements MessageLite, so you can just call {@link #writeGroup}.
      */
     /*
@@ -646,7 +666,7 @@ public final class CodedOutput implements Output
      * { writeTag(WireFormat.MESSAGE_SET_ITEM, WireFormat.WIRETYPE_START_GROUP);
      * writeUInt32(WireFormat.MESSAGE_SET_TYPE_ID, fieldNumber); writeMessage(WireFormat.MESSAGE_SET_MESSAGE, value);
      * writeTag(WireFormat.MESSAGE_SET_ITEM, WireFormat.WIRETYPE_END_GROUP); }
-     * 
+     *
      * /** Write an unparsed MessageSet extension field to the stream. For historical reasons, the wire format differs
      * from normal fields. @ public void writeRawMessageSetExtension(final int fieldNumber, final ByteString value)
      * throws IOException { writeTag(WireFormat.MESSAGE_SET_ITEM, WireFormat.WIRETYPE_START_GROUP);
@@ -748,7 +768,7 @@ public final class CodedOutput implements Output
 
     /*
      * @ Write a group represented by an {@link UnknownFieldSet}.
-     * 
+     *
      * @deprecated UnknownFieldSet now implements MessageLite, so you can just call {@link #writeGroupNoTag}.
      */
     /*
@@ -892,32 +912,32 @@ public final class CodedOutput implements Output
 
     /*
      * @ /** Compute the number of bytes that would be needed to encode a {@code string} field, including tag.
-     * 
+     *
      * @ public static int computeStringSize(final int fieldNumber, final String value) { return
      * computeTagSize(fieldNumber) + computeStringSizeNoTag(value); }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode a {@code group} field, including tag.
-     * 
+     *
      * @ public static int computeGroupSize(final int fieldNumber, final MessageLite value) { return
      * computeTagSize(fieldNumber) * 2 + computeGroupSizeNoTag(value); }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode a {@code group} field represented by an {@code
      * UnknownFieldSet}, including tag.
-     * 
+     *
      * @deprecated UnknownFieldSet now implements MessageLite, so you can just call {@link #computeGroupSize}.
-     * 
+     *
      * @
-     * 
+     *
      * @Deprecated public static int computeUnknownGroupSize(final int fieldNumber, final MessageLite value) { return
      * computeGroupSize(fieldNumber, value); }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode an embedded message field, including tag.
-     * 
+     *
      * @ public static int computeMessageSize(final int fieldNumber, final MessageLite value) { return
      * computeTagSize(fieldNumber) + computeMessageSizeNoTag(value); }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode a {@code bytes} field, including tag.
-     * 
+     *
      * @ public static int computeBytesSize(final int fieldNumber, final ByteString value) { return
      * computeTagSize(fieldNumber) + computeBytesSizeNoTag(value); }
      */
@@ -998,6 +1018,7 @@ public final class CodedOutput implements Output
     /**
      * Compute the number of bytes that would be needed to encode a {@code double} field, including tag.
      */
+    @SuppressWarnings("unused")
     public static int computeDoubleSizeNoTag(final double value)
     {
         return LITTLE_ENDIAN_64_SIZE;
@@ -1006,6 +1027,7 @@ public final class CodedOutput implements Output
     /**
      * Compute the number of bytes that would be needed to encode a {@code float} field, including tag.
      */
+    @SuppressWarnings("unused")
     public static int computeFloatSizeNoTag(final float value)
     {
         return LITTLE_ENDIAN_32_SIZE;
@@ -1036,16 +1058,14 @@ public final class CodedOutput implements Output
         {
             return computeRawVarint32Size(value);
         }
-        else
-        {
-            // Must sign-extend.
-            return 10;
-        }
+        // Must sign-extend.
+        return 10;
     }
 
     /**
      * Compute the number of bytes that would be needed to encode a {@code fixed64} field.
      */
+    @SuppressWarnings("unused")
     public static int computeFixed64SizeNoTag(final long value)
     {
         return LITTLE_ENDIAN_64_SIZE;
@@ -1054,6 +1074,7 @@ public final class CodedOutput implements Output
     /**
      * Compute the number of bytes that would be needed to encode a {@code fixed32} field.
      */
+    @SuppressWarnings("unused")
     public static int computeFixed32SizeNoTag(final int value)
     {
         return LITTLE_ENDIAN_32_SIZE;
@@ -1062,6 +1083,7 @@ public final class CodedOutput implements Output
     /**
      * Compute the number of bytes that would be needed to encode a {@code bool} field.
      */
+    @SuppressWarnings("unused")
     public static int computeBoolSizeNoTag(final boolean value)
     {
         return 1;
@@ -1069,33 +1091,33 @@ public final class CodedOutput implements Output
 
     /*
      * @ /** Compute the number of bytes that would be needed to encode a {@code string} field.
-     * 
+     *
      * @ public static int computeStringSizeNoTag(final String value) { try { final byte[] bytes =
      * value.getBytes("UTF-8"); return computeRawVarint32Size(bytes.length) + bytes.length; } catch
      * (UnsupportedEncodingException e) { throw new RuntimeException("UTF-8 not supported.", e); } }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode a {@code group} field.
-     * 
+     *
      * @ public static int computeGroupSizeNoTag(final MessageLite value) { return value.getSerializedSize(); }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode a {@code group} field represented by an {@code
      * UnknownFieldSet}, including tag.
-     * 
+     *
      * @deprecated UnknownFieldSet now implements MessageLite, so you can just call {@link
      * #computeUnknownGroupSizeNoTag}.
-     * 
+     *
      * @
-     * 
+     *
      * @Deprecated public static int computeUnknownGroupSizeNoTag(final MessageLite value) { return
      * computeGroupSizeNoTag(value); }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode an embedded message field.
-     * 
+     *
      * @ public static int computeMessageSizeNoTag(final MessageLite value) { final int size =
      * value.getSerializedSize(); return computeRawVarint32Size(size) + size; }
-     * 
+     *
      * /** Compute the number of bytes that would be needed to encode a {@code bytes} field.
-     * 
+     *
      * @ public static int computeBytesSizeNoTag(final ByteString value) { return computeRawVarint32Size(value.size()) +
      * value.size(); }
      */
@@ -1120,6 +1142,7 @@ public final class CodedOutput implements Output
     /**
      * Compute the number of bytes that would be needed to encode an {@code sfixed32} field.
      */
+    @SuppressWarnings("unused")
     public static int computeSFixed32SizeNoTag(final int value)
     {
         return LITTLE_ENDIAN_32_SIZE;
@@ -1128,6 +1151,7 @@ public final class CodedOutput implements Output
     /**
      * Compute the number of bytes that would be needed to encode an {@code sfixed64} field.
      */
+    @SuppressWarnings("unused")
     public static int computeSFixed64SizeNoTag(final long value)
     {
         return LITTLE_ENDIAN_64_SIZE;
@@ -1190,12 +1214,9 @@ public final class CodedOutput implements Output
         {
             return limit - position;
         }
-        else
-        {
-            throw new UnsupportedOperationException(
-                    "spaceLeft() can only be called on CodedOutputs that are " +
-                            "writing to a flat array.");
-        }
+        throw new UnsupportedOperationException(
+                "spaceLeft() can only be called on CodedOutputs that are " +
+                        "writing to a flat array.");
     }
 
     /**
@@ -1325,11 +1346,8 @@ public final class CodedOutput implements Output
                 writeRawByte(value);
                 return;
             }
-            else
-            {
-                writeRawByte((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            writeRawByte((value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -1340,13 +1358,21 @@ public final class CodedOutput implements Output
     public static int computeRawVarint32Size(final int value)
     {
         if ((value & (0xffffffff << 7)) == 0)
+        {
             return 1;
+        }
         if ((value & (0xffffffff << 14)) == 0)
+        {
             return 2;
+        }
         if ((value & (0xffffffff << 21)) == 0)
+        {
             return 3;
+        }
         if ((value & (0xffffffff << 28)) == 0)
+        {
             return 4;
+        }
         return 5;
     }
 
@@ -1362,11 +1388,8 @@ public final class CodedOutput implements Output
                 writeRawByte((int) value);
                 return;
             }
-            else
-            {
-                writeRawByte(((int) value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            writeRawByte(((int) value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -1376,23 +1399,41 @@ public final class CodedOutput implements Output
     public static int computeRawVarint64Size(final long value)
     {
         if ((value & (0xffffffffffffffffL << 7)) == 0)
+        {
             return 1;
+        }
         if ((value & (0xffffffffffffffffL << 14)) == 0)
+        {
             return 2;
+        }
         if ((value & (0xffffffffffffffffL << 21)) == 0)
+        {
             return 3;
+        }
         if ((value & (0xffffffffffffffffL << 28)) == 0)
+        {
             return 4;
+        }
         if ((value & (0xffffffffffffffffL << 35)) == 0)
+        {
             return 5;
+        }
         if ((value & (0xffffffffffffffffL << 42)) == 0)
+        {
             return 6;
+        }
         if ((value & (0xffffffffffffffffL << 49)) == 0)
+        {
             return 7;
+        }
         if ((value & (0xffffffffffffffffL << 56)) == 0)
+        {
             return 8;
+        }
         if ((value & (0xffffffffffffffffL << 63)) == 0)
+        {
             return 9;
+        }
         return 10;
     }
 
@@ -1430,7 +1471,7 @@ public final class CodedOutput implements Output
      * Encode a ZigZag-encoded 32-bit value. ZigZag encodes signed integers into values that can be efficiently encoded
      * with varint. (Otherwise, negative values must be sign-extended to 64 bits to be varint encoded, thus always
      * taking 10 bytes on the wire.)
-     * 
+     *
      * @param n
      *            A signed 32-bit integer.
      * @return An unsigned 32-bit integer, stored in a signed int because Java has no explicit unsigned support.
@@ -1445,7 +1486,7 @@ public final class CodedOutput implements Output
      * Encode a ZigZag-encoded 64-bit value. ZigZag encodes signed integers into values that can be efficiently encoded
      * with varint. (Otherwise, negative values must be sign-extended to 64 bits to be varint encoded, thus always
      * taking 10 bytes on the wire.)
-     * 
+     *
      * @param n
      *            A signed 64-bit integer.
      * @return An unsigned 64-bit integer, stored in a signed int because Java has no explicit unsigned support.
@@ -1501,7 +1542,7 @@ public final class CodedOutput implements Output
     /*
      * public <T extends Message<T>> void writeMessageNoTag(T value) throws IOException { writeObjectNoTag(value,
      * value.cachedSchema()); }
-     * 
+     *
      * public <T> void writeObjectNoTag(T value, Schema<T> schema) throws IOException { ComputedSizeOutput cs =
      * computedSize; int last = cs.getSize(); schema.writeTo(cs, value); writeRawVarint32(cs.getSize() - last);
      * schema.writeTo(this, value); }
@@ -1510,6 +1551,7 @@ public final class CodedOutput implements Output
     /**
      * Write the nested message encoded as group.
      */
+    @SuppressWarnings("unused")
     <T> void writeObjectEncodedAsGroup(final int fieldNumber, final T value, final Schema<T> schema,
             boolean repeated) throws IOException
     {

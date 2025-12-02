@@ -43,250 +43,193 @@ import io.protostuff.StatefulOutput;
 
 /**
  * Used when the type is assignable from {@link java.lang.Throwable}.
- * 
+ *
  * @author David Yu
  * @created May 2, 2012
  */
-public abstract class PolymorphicThrowableSchema extends PolymorphicSchema
-{
-    
-    static final java.lang.reflect.Field __cause;
-    
-    static
-    {
-        if (RuntimeEnv.JAVA_9_AND_ABOVE)
-        {
-            __cause = null;
-        }
-        else
-        {
-            java.lang.reflect.Field cause;
-            try
-            {
-                cause = Throwable.class.getDeclaredField("cause");
-                cause.setAccessible(true);
-            }
-            catch (Exception e)
-            {
-                cause = null;
-            }
-            __cause = cause;
-        }
-    }
+public abstract class PolymorphicThrowableSchema extends PolymorphicSchema {
 
-    static String name(int number)
-    {
-        return number == ID_THROWABLE ? STR_THROWABLE : null;
-    }
+	static final java.lang.reflect.Field __cause;
 
-    static int number(String name)
-    {
-        return name.length() == 1 && name.charAt(0) == 'Z' ? ID_THROWABLE : 0;
-    }
+	static {
+		if (RuntimeEnv.JAVA_9_AND_ABOVE) {
+			__cause = null;
+		} else {
+			java.lang.reflect.Field cause;
+			try {
+				cause = Throwable.class.getDeclaredField("cause");
+				cause.setAccessible(true);
+			} catch (Exception e) {
+				cause = null;
+			}
+			__cause = cause;
+		}
+	}
 
-    protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(
-            this)
-    {
-        @Override
-        protected void transfer(Pipe pipe, Input input, Output output)
-                throws IOException
-        {
-            transferObject(this, pipe, input, output, strategy);
-        }
-    };
+	static String name(int number) {
+		return number == ID_THROWABLE ? STR_THROWABLE : null;
+	}
 
-    public PolymorphicThrowableSchema(IdStrategy strategy)
-    {
-        super(strategy);
-    }
+	static int number(String name) {
+		return name.length() == 1 && name.charAt(0) == 'Z' ? ID_THROWABLE : 0;
+	}
 
-    @Override
-    public Pipe.Schema<Object> getPipeSchema()
-    {
-        return pipeSchema;
-    }
+	protected final Pipe.Schema<Object> pipeSchema = new Pipe.Schema<Object>(this) {
+		@Override
+		protected void transfer(Pipe pipe, Input input, Output output) throws IOException {
+			transferObject(this, pipe, input, output, strategy);
+		}
+	};
 
-    @Override
-    public String getFieldName(int number)
-    {
-        return name(number);
-    }
+	public PolymorphicThrowableSchema(IdStrategy strategy) {
+		super(strategy);
+	}
 
-    @Override
-    public int getFieldNumber(String name)
-    {
-        return number(name);
-    }
+	@Override
+	public Pipe.Schema<Object> getPipeSchema() {
+		return pipeSchema;
+	}
 
-    @Override
-    public String messageFullName()
-    {
-        return Throwable.class.getName();
-    }
+	@Override
+	public String getFieldName(int number) {
+		return name(number);
+	}
 
-    @Override
-    public String messageName()
-    {
-        return Throwable.class.getSimpleName();
-    }
+	@Override
+	public int getFieldNumber(String name) {
+		return number(name);
+	}
 
-    @Override
-    public void mergeFrom(Input input, Object owner) throws IOException
-    {
-        setValue(readObjectFrom(input, this, owner, strategy), owner);
-    }
+	@Override
+	public String messageFullName() {
+		return Throwable.class.getName();
+	}
 
-    @Override
-    public void writeTo(Output output, Object value) throws IOException
-    {
-        writeObjectTo(output, value, this, strategy);
-    }
+	@Override
+	public String messageName() {
+		return Throwable.class.getSimpleName();
+	}
 
-    @SuppressWarnings("unchecked")
-    static void writeObjectTo(Output output, Object value,
-            Schema<?> currentSchema, IdStrategy strategy) throws IOException
-    {
-        final Schema<Object> schema = strategy.writePojoIdTo(output,
-                ID_THROWABLE, (Class<Object>) value.getClass()).getSchema();
+	@Override
+	public void mergeFrom(Input input, Object owner) throws IOException {
+		setValue(readObjectFrom(input, this, owner, strategy), owner);
+	}
 
-        if (output instanceof StatefulOutput)
-        {
-            // update using the derived schema.
-            ((StatefulOutput) output).updateLast(schema, currentSchema);
-        }
+	@Override
+	public void writeTo(Output output, Object value) throws IOException {
+		writeObjectTo(output, value, this, strategy);
+	}
 
-        if (tryWriteWithoutCause(output, value, schema))
-            return;
+	@SuppressWarnings("unchecked")
+	static void writeObjectTo(Output output, Object value, Schema<?> currentSchema, IdStrategy strategy) throws IOException {
+		final Schema<Object> schema = strategy.writePojoIdTo(output, ID_THROWABLE, (Class<Object>) value.getClass()).getSchema();
 
-        schema.writeTo(output, value);
-    }
+		if (output instanceof StatefulOutput) {
+			// update using the derived schema.
+			((StatefulOutput) output).updateLast(schema, currentSchema);
+		}
 
-    static boolean tryWriteWithoutCause(Output output, Object value,
-            Schema<Object> schema) throws IOException
-    {
-        if (schema instanceof RuntimeSchema)
-        {
-            // ignore the field "cause" if its references itself (cyclic)
-            final RuntimeSchema<Object> ms = (RuntimeSchema<Object>) schema;
-            if (ms.getFieldCount() > 1 && ms.getFields().get(1).name.equals("cause"))
-            {
-                final Object cause;
-                try
-                {
-                    cause = (__cause != null) ? __cause.get(value) : null;
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
+		if (tryWriteWithoutCause(output, value, schema)) {
+			return;
+		}
 
-                if (cause == null || cause == value)
-                {
-                    // its cyclic, skip the second field "cause"
-                    ms.getFields().get(0).writeTo(output, value);
+		schema.writeTo(output, value);
+	}
 
-                    for (int i = 2, len = ms.getFieldCount(); i < len; i++)
-                        ms.getFields().get(i).writeTo(output, value);
+	static boolean tryWriteWithoutCause(Output output, Object value, Schema<Object> schema) throws IOException {
+		if (schema instanceof RuntimeSchema) {
+			// ignore the field "cause" if its references itself (cyclic)
+			final RuntimeSchema<Object> ms = (RuntimeSchema<Object>) schema;
+			if (ms.getFieldCount() > 1 && ms.getFields().get(1).name.equals("cause")) {
+				final Object cause;
+				try {
+					cause = (__cause != null) ? __cause.get(value) : null;
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalArgumentException e) {
+					throw new RuntimeException(e);
+				}
 
-                    return true;
-                }
-            }
-        }
+				if (cause == null || cause == value) {
+					// its cyclic, skip the second field "cause"
+					ms.getFields().get(0).writeTo(output, value);
 
-        return false;
-    }
+					for (int i = 2, len = ms.getFieldCount(); i < len; i++) {
+						ms.getFields().get(i).writeTo(output, value);
+					}
 
-    static Object readObjectFrom(Input input, Schema<?> schema, Object owner,
-            IdStrategy strategy) throws IOException
-    {
-        final int number = input.readFieldNumber(schema);
-        if (number != ID_THROWABLE)
-            throw new ProtostuffException("Corrupt input.");
+					return true;
+				}
+			}
+		}
 
-        return readObjectFrom(input, schema, owner, strategy, number);
-    }
+		return false;
+	}
 
-    static Object readObjectFrom(Input input, Schema<?> schema, Object owner,
-            IdStrategy strategy, int number) throws IOException
-    {
-        final Schema<Object> derivedSchema = strategy.resolvePojoFrom(input,
-                number).getSchema();
+	static Object readObjectFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy) throws IOException {
+		final int number = input.readFieldNumber(schema);
+		if (number != ID_THROWABLE) {
+			throw new ProtostuffException("Corrupt input.");
+		}
 
-        final Object pojo = derivedSchema.newMessage();
+		return readObjectFrom(input, schema, owner, strategy, number);
+	}
 
-        if (input instanceof GraphInput)
-        {
-            // update the actual reference.
-            ((GraphInput) input).updateLast(pojo, owner);
-        }
+	static Object readObjectFrom(Input input, Schema<?> schema, Object owner, IdStrategy strategy, int number) throws IOException {
+		final Schema<Object> derivedSchema = strategy.resolvePojoFrom(input, number).getSchema();
 
-        if (__cause != null)
-        {
-            final Object cause;
-            try
-            {
-                cause = __cause.get(pojo);
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
-            }
-            catch (IllegalArgumentException e)
-            {
-                throw new RuntimeException(e);
-            }
+		final Object pojo = derivedSchema.newMessage();
 
-            if (cause == null)
-            {
-                // was not written because it was cyclic
-                // so we set it here manually for correctness
-                try
-                {
-                    __cause.set(pojo, cause);
-                }
-                catch (IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+		if (input instanceof GraphInput) {
+			// update the actual reference.
+			((GraphInput) input).updateLast(pojo, owner);
+		}
 
-        derivedSchema.mergeFrom(input, pojo);
-        return pojo;
-    }
+		if (__cause != null) {
+			final Object cause;
+			try {
+				cause = __cause.get(pojo);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException(e);
+			}
 
-    static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe,
-            Input input, Output output, IdStrategy strategy) throws IOException
-    {
-        final int number = input.readFieldNumber(pipeSchema.wrappedSchema);
-        if (number != ID_THROWABLE)
-            throw new ProtostuffException("Corrupt input.");
+			if (cause == null) {
+				// was not written because it was cyclic
+				// so we set it here manually for correctness
+				try {
+					__cause.set(pojo, cause);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalArgumentException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
 
-        transferObject(pipeSchema, pipe, input, output, strategy, number);
-    }
+		derivedSchema.mergeFrom(input, pojo);
+		return pojo;
+	}
 
-    static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe,
-            Input input, Output output, IdStrategy strategy, int number)
-            throws IOException
-    {
-        final Pipe.Schema<Object> derivedPipeSchema = strategy.transferPojoId(
-                input, output, number).getPipeSchema();
+	static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output, IdStrategy strategy) throws IOException {
+		final int number = input.readFieldNumber(pipeSchema.wrappedSchema);
+		if (number != ID_THROWABLE) {
+			throw new ProtostuffException("Corrupt input.");
+		}
 
-        if (output instanceof StatefulOutput)
-        {
-            // update using the derived schema.
-            ((StatefulOutput) output).updateLast(derivedPipeSchema, pipeSchema);
-        }
+		transferObject(pipeSchema, pipe, input, output, strategy, number);
+	}
 
-        Pipe.transferDirect(derivedPipeSchema, pipe, input, output);
-    }
+	static void transferObject(Pipe.Schema<Object> pipeSchema, Pipe pipe, Input input, Output output, IdStrategy strategy, int number) throws IOException {
+		final Pipe.Schema<Object> derivedPipeSchema = strategy.transferPojoId(input, output, number).getPipeSchema();
+
+		if (output instanceof StatefulOutput) {
+			// update using the derived schema.
+			((StatefulOutput) output).updateLast(derivedPipeSchema, pipeSchema);
+		}
+
+		Pipe.transferDirect(derivedPipeSchema, pipe, input, output);
+	}
 
 }

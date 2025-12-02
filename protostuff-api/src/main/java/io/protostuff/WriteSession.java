@@ -112,8 +112,7 @@ public class WriteSession
      * Resets this session for re-use. Meant to be overridden by subclasses that have other state to reset.
      */
     public void reset()
-    {
-
+    { // for override
     }
 
     /**

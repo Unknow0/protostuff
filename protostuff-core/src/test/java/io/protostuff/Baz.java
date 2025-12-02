@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 /**
  * Baz - for testing
- * 
+ *
  * @author David Yu
  * @created Nov 10, 2009
  */
@@ -36,7 +36,7 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         return DEFAULT_INSTANCE;
     }
 
-    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<>();
 
     static
     {
@@ -192,13 +192,19 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
     public void writeTo(Output output, Baz message) throws IOException
     {
         if (message.id != 0)
+        {
             output.writeInt32(1, message.id, false);
+        }
 
         if (message.name != null)
+        {
             output.writeString(2, message.name, false);
+        }
 
         if (message.timestamp != 0l)
+        {
             output.writeInt64(3, message.timestamp, false);
+        }
     }
 
     @Override
@@ -260,6 +266,7 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         return PIPE_SCHEMA;
     }
 
+    @Override
     public int hashCode()
     {
         final int prime = 31;
@@ -270,26 +277,37 @@ public final class Baz implements Message<Baz>, Schema<Baz>, Externalizable
         return result;
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
-        if (obj == null)
+        }
+        if ((obj == null) || (getClass() != obj.getClass()))
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         Baz other = (Baz) obj;
         if (id != other.id)
+        {
             return false;
+        }
         if (name == null)
         {
             if (other.name != null)
+            {
                 return false;
+            }
         }
         else if (!name.equals(other.name))
+        {
             return false;
+        }
         if (timestamp != other.timestamp)
+        {
             return false;
+        }
         return true;
     }
 

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Protostuff ser/deser util for messages/objects.
- * 
+ *
  * @author David Yu
  * @created Sep 20, 2010
  */
@@ -63,7 +63,9 @@ public final class ProtostuffIOUtil
                     boolean cleanupOnly) throws IOException
             {
                 if (cleanupOnly)
+                {
                     return;
+                }
 
                 assert input == byteArrayInput;
             }
@@ -89,7 +91,9 @@ public final class ProtostuffIOUtil
                     boolean cleanupOnly) throws IOException
             {
                 if (cleanupOnly)
+                {
                     return;
+                }
 
                 assert input == codedInput;
             }
@@ -135,7 +139,7 @@ public final class ProtostuffIOUtil
 
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} using the given {@code schema}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
@@ -149,7 +153,7 @@ public final class ProtostuffIOUtil
      * <p>
      * The delimited message size must not be larger than the {@code buffer}'s size/capacity. {@link ProtobufException}
      * "size limit exceeded" is thrown otherwise.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
@@ -161,7 +165,7 @@ public final class ProtostuffIOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}. Merges from the
      * {@link DataInput}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(DataInput in, T message, Schema<T> schema)
@@ -172,13 +176,15 @@ public final class ProtostuffIOUtil
 
     /**
      * Serializes the {@code message} into a byte array using the given schema.
-     * 
+     *
      * @return the byte array containing the data.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         try
@@ -196,13 +202,15 @@ public final class ProtostuffIOUtil
 
     /**
      * Writes the {@code message} into the {@link LinkedBuffer} using the given schema.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         try
@@ -220,14 +228,16 @@ public final class ProtostuffIOUtil
 
     /**
      * Serializes the {@code message} into an {@link OutputStream} using the given schema.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer, out);
         schema.writeTo(output, message);
@@ -237,14 +247,16 @@ public final class ProtostuffIOUtil
 
     /**
      * Serializes the {@code message}, prefixed with its length, into an {@link OutputStream}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeDelimitedTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         schema.writeTo(output, message);
@@ -256,7 +268,7 @@ public final class ProtostuffIOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}. Writes to the
      * {@link DataOutput} .
-     * 
+     *
      * @return the size of the message.
      */
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema)
@@ -272,18 +284,22 @@ public final class ProtostuffIOUtil
 
     /**
      * Serializes the {@code messages} (delimited) into an {@link OutputStream} using the given schema.
-     * 
+     *
      * @return the bytes written
      */
     public static <T> int writeListTo(final OutputStream out, final List<T> messages,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final int size = messages.size();
         if (size == 0)
+        {
             return 0;
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer, out);
         output.sink.writeVarInt32(size, output, buffer);
@@ -302,7 +318,7 @@ public final class ProtostuffIOUtil
 
     /**
      * Parses the {@code messages} (delimited) from the {@link InputStream} using the given {@code schema}.
-     * 
+     *
      * @return the list containing the messages.
      */
     public static <T> List<T> parseListFrom(final InputStream in, final Schema<T> schema)
@@ -310,12 +326,16 @@ public final class ProtostuffIOUtil
     {
         int size = in.read();
         if (size == -1)
+        {
             return Collections.emptyList();
+        }
 
         if (size > 0x7f)
+        {
             size = CodedInput.readRawVarint32(in, size);
+        }
 
-        final ArrayList<T> list = new ArrayList<T>(size);
+        final ArrayList<T> list = new ArrayList<>(size);
         final CodedInput input = new CodedInput(in, true);
         for (int i = 0; i < size; i++)
         {
@@ -358,7 +378,9 @@ public final class ProtostuffIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in,
                 drainRemainingBytesIfTooLarge, buffer);
@@ -398,14 +420,16 @@ public final class ProtostuffIOUtil
     /**
      * Optimal writeDelimitedTo - The varint32 prefix is written to the buffer instead of directly writing to
      * outputstream.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int optWriteDelimitedTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
 
@@ -425,7 +449,9 @@ public final class ProtostuffIOUtil
 
         // flush remaining
         if (buffer.next != null)
+        {
             LinkedBuffer.writeTo(out, buffer.next);
+        }
 
         return size;
     }

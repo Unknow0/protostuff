@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
  * form).
  * <p>
  * This is the appropriate output sink to use when writing from binary (protostuff,protobuf,etc) pipes.
- * 
+ *
  * @author David Yu
  * @created Jul 2, 2010
  */
@@ -666,8 +666,8 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         // recursive write
         schema.writeTo(this, value);
 
-        tail = lastRepeated ? sink.writeByteArray(END_ARRAY_AND_END_OBJECT, this, tail) :
-                sink.writeByte(END_OBJECT, this, tail);
+        tail = lastRepeated ? sink.writeByteArray(END_ARRAY_AND_END_OBJECT, this, tail)
+                : sink.writeByte(END_OBJECT, this, tail);
 
         // restore state
         lastNumber = fieldNumber;
@@ -685,7 +685,9 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
         {
             final byte b = input[inStart++];
             if (b > 0x7f)
+            {
                 continue;
+            }
 
             // ascii
             final int escape = sOutputEscapes[b];
@@ -702,13 +704,17 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
                 // dump the bytes before this offset.
                 final int dumpLen = inStart - lastStart - 1;
                 if (dumpLen != 0)
+                {
                     lb = sink.writeByteArray(input, lastStart, dumpLen, session, lb);
+                }
 
                 // update
                 lastStart = inStart;
 
                 if (lb.offset + 6 > lb.buffer.length)
+                {
                     lb = sink.drain(session, lb);
+                }
 
                 final int value = -(escape + 1);
 
@@ -726,13 +732,17 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
                 // dump the bytes before this offset.
                 final int dumpLen = inStart - lastStart - 1;
                 if (dumpLen != 0)
+                {
                     lb = sink.writeByteArray(input, lastStart, dumpLen, session, lb);
+                }
 
                 // update
                 lastStart = inStart;
 
                 if (lb.offset + 2 > lb.buffer.length)
+                {
                     lb = sink.drain(session, lb);
+                }
 
                 lb.buffer[lb.offset++] = (byte) '\\';
                 lb.buffer[lb.offset++] = (byte) escape;
@@ -743,8 +753,9 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
 
         final int remaining = inStart - lastStart;
 
-        return remaining == 0 ? lb : sink.writeByteArray(input, lastStart, remaining,
-                session, lb);
+        return remaining == 0 ? lb
+                : sink.writeByteArray(input, lastStart, remaining,
+                        session, lb);
     }
 
     private static LinkedBuffer writeUTF8Escaped(final CharSequence str, final WriteSink sink,
@@ -752,7 +763,9 @@ public final class JsonXOutput extends WriteSession implements Output, StatefulO
     {
         final int len = str.length();
         if (len == 0)
+        {
             return lb;
+        }
 
         byte[] buffer = lb.buffer;
         int limit = buffer.length, offset = lb.offset, size = len;

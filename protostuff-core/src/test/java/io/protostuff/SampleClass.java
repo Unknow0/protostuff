@@ -50,11 +50,13 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
 
     // java serialization
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException
     {
         GraphIOUtil.mergeDelimitedFrom(in, this, SCHEMA);
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException
     {
         GraphIOUtil.writeDelimitedTo(out, this, SCHEMA);
@@ -62,6 +64,7 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
 
     // message method
 
+    @Override
     public Schema<SampleClass> cachedSchema()
     {
         return SCHEMA;
@@ -71,31 +74,37 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
     {
         // schema methods
 
+        @Override
         public SampleClass newMessage()
         {
             return new SampleClass();
         }
 
+        @Override
         public Class<SampleClass> typeClass()
         {
             return SampleClass.class;
         }
 
+        @Override
         public String messageName()
         {
             return SampleClass.class.getSimpleName();
         }
 
+        @Override
         public String messageFullName()
         {
             return SampleClass.class.getName();
         }
 
+        @Override
         public boolean isInitialized(SampleClass message)
         {
             return true;
         }
 
+        @Override
         public void mergeFrom(Input input, SampleClass message) throws IOException
         {
             for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
@@ -106,7 +115,9 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
                         return;
                     case 1:
                         if (message.testString == null)
-                            message.testString = new ArrayList<String>();
+                        {
+                            message.testString = new ArrayList<>();
+                        }
                         message.testString.add(input.readString());
                         break;
                     default:
@@ -115,6 +126,7 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
             }
         }
 
+        @Override
         public void writeTo(Output output, SampleClass message) throws IOException
         {
             if (message.testString != null)
@@ -122,11 +134,14 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
                 for (String testString : message.testString)
                 {
                     if (testString != null)
+                    {
                         output.writeString(1, testString, true);
+                    }
                 }
             }
         }
 
+        @Override
         public String getFieldName(int number)
         {
             switch (number)
@@ -138,13 +153,14 @@ public final class SampleClass implements Externalizable, Message<SampleClass>
             }
         }
 
+        @Override
         public int getFieldNumber(String name)
         {
             final Integer number = fieldMap.get(name);
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
         {
             fieldMap.put("testString", 1);
         }

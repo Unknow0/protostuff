@@ -1,10 +1,10 @@
 package io.protostuff;
 
-import io.protostuff.runtime.RuntimeSchema;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import io.protostuff.runtime.RuntimeSchema;
 
 /**
  * Test for ignoring unknown fields during de-seralization

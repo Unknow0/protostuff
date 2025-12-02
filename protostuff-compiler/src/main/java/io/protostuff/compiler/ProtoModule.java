@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ import java.util.Properties;
 
 /**
  * Configuration for the proto w/c ontains the compile options and arguments.
- * 
+ *
  * @author David Yu
  * @created Jan 5, 2010
  */
@@ -29,11 +29,12 @@ public class ProtoModule implements Serializable
 {
 
     public static final String DEFAULT_GENERATOR_NAME = "io.protostuff:protostuff-compiiler";
-    
+
     /**
      * {@code true} for JDKs 9, 10, 11, etc; {@code false} for 1.8 and below.
      */
-    public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0").startsWith("1.");
+    public static final boolean JAVA_9_AND_ABOVE = !System.getProperty("java.specification.version", "1.0")
+            .startsWith("1.");
 
     private static final long serialVersionUID = 6231036933426077777L;
 
@@ -48,7 +49,7 @@ public class ProtoModule implements Serializable
 
     private CachingProtoLoader protoLoader;
 
-    private HashMap<String, Object> attributes = new HashMap<String, Object>();
+    private HashMap<String, Object> attributes = new HashMap<>();
 
     public ProtoModule()
     {

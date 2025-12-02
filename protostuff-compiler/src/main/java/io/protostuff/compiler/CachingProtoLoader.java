@@ -39,7 +39,7 @@ import io.protostuff.parser.Proto;
 
 /**
  * A proto loader that caches the protos for re-use.
- * 
+ *
  * @author David Yu
  * @created Dec 4, 2011
  */
@@ -49,7 +49,7 @@ public class CachingProtoLoader extends DefaultProtoLoader
 
     public CachingProtoLoader()
     {
-        this(new HashMap<String, Proto>());
+        this(new HashMap<>());
     }
 
     public CachingProtoLoader(Map<String, Proto> loadedProtos)
@@ -68,7 +68,9 @@ public class CachingProtoLoader extends DefaultProtoLoader
         String key = file.getCanonicalPath();
         Proto proto = loadedProtos.get(key);
         if (proto == null)
+        {
             loadedProtos.put(key, proto = super.loadFrom(file, null));
+        }
 
         return proto;
     }
@@ -79,7 +81,9 @@ public class CachingProtoLoader extends DefaultProtoLoader
         String key = resource.toExternalForm();
         Proto proto = loadedProtos.get(key);
         if (proto == null)
+        {
             loadedProtos.put(key, proto = super.loadFrom(resource, null));
+        }
 
         return proto;
     }

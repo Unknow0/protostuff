@@ -43,5 +43,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Exclude
 {
-
+    // marker
 }

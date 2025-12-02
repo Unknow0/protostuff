@@ -30,11 +30,10 @@ package io.protostuff.runtime;
 
 /**
  * Checked by AbstractRuntimeObjectSchemaTest from protostuff-runtime during tests.
- * 
+ *
  * @author David Yu
  * @created Mar 29, 2012
  */
-public interface TestDummy
-{
+public interface TestDummy {
 
 }

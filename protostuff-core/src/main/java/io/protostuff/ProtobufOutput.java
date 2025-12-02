@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 /**
  * Protobuf serialization where the messages must be fully buffered on memory before it can be written to the socket (
  * {@link OutputStream}).
- * 
+ *
  * @author David Yu
  * @created May 18, 2010
  */
@@ -252,8 +252,7 @@ public final class ProtobufOutput extends WriteSession implements Output
         {
             lastBuffer = tail;
             size++;
-            lastBuffer.buffer[lastBuffer.offset++] =
-                    (byte) makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED);
+            lastBuffer.buffer[lastBuffer.offset++] = (byte) makeTag(fieldNumber, WIRETYPE_LENGTH_DELIMITED);
         }
         else
         {
@@ -262,7 +261,7 @@ public final class ProtobufOutput extends WriteSession implements Output
         }
 
         final int lastOffset = tail.offset, lastSize = size;
-        
+
         if (lastOffset == lastBuffer.buffer.length)
         {
             // not enough size for the 1-byte delimiter
@@ -283,7 +282,7 @@ public final class ProtobufOutput extends WriteSession implements Output
             new LinkedBuffer(delimited, 0, delimited.length, lastBuffer).next = nextBuffer;
             return;
         }
-        
+
         // we have enough space for the 1-byte delim
         lastBuffer.offset++;
         size++;
@@ -307,9 +306,13 @@ public final class ProtobufOutput extends WriteSession implements Output
                 lastOffset + 1, lastBuffer.offset);
 
         if (lastBuffer == tail)
+        {
             tail = view;
+        }
         else
+        {
             view.next = lastBuffer.next;
+        }
 
         // the first buffer (contains the tag)
         lastBuffer.offset = lastOffset;
@@ -326,12 +329,12 @@ public final class ProtobufOutput extends WriteSession implements Output
 
     /*
      * Write the nested message encoded as group.
-     * 
+     *
      * <T> void writeObjectEncodedAsGroup(final int fieldNumber, final T value, final Schema<T> schema, final boolean
      * repeated) throws IOException { tail = writeRawVarInt32( makeTag(fieldNumber, WIRETYPE_START_GROUP), this, tail);
-     * 
+     *
      * schema.writeTo(this, value);
-     * 
+     *
      * tail = writeRawVarInt32( makeTag(fieldNumber, WIRETYPE_END_GROUP), this, tail); }
      */
 
@@ -346,7 +349,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         final int size = computeRawVarint32Size(value);
 
         if (lb.offset + size > lb.buffer.length)
+        {
             lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
 
         final byte[] buffer = lb.buffer;
         int offset = lb.offset;
@@ -354,11 +359,15 @@ public final class ProtobufOutput extends WriteSession implements Output
         session.size += size;
 
         if (size == 1)
+        {
             buffer[offset] = (byte) value;
+        }
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) ((value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -385,8 +394,7 @@ public final class ProtobufOutput extends WriteSession implements Output
 
         final int remaining = lb.buffer.length - lb.offset;
         // if all filled up, return a fresh buffer.
-        return remaining == 0 ? new LinkedBuffer(session.nextBufferSize, buffer) :
-                new LinkedBuffer(lb, buffer);
+        return remaining == 0 ? new LinkedBuffer(session.nextBufferSize, buffer) : new LinkedBuffer(lb, buffer);
     }
 
     /**
@@ -461,7 +469,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         final int totalSize = tagSize + size;
 
         if (lb.offset + totalSize > lb.buffer.length)
+        {
             lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
 
         final byte[] buffer = lb.buffer;
         int offset = lb.offset;
@@ -469,21 +479,29 @@ public final class ProtobufOutput extends WriteSession implements Output
         session.size += totalSize;
 
         if (tagSize == 1)
+        {
             buffer[offset++] = (byte) tag;
+        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
 
         if (size == 1)
+        {
             buffer[offset] = (byte) value;
+        }
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) ((value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -502,7 +520,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         final int totalSize = tagSize + size;
 
         if (lb.offset + totalSize > lb.buffer.length)
+        {
             lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
 
         final byte[] buffer = lb.buffer;
         int offset = lb.offset;
@@ -510,21 +530,29 @@ public final class ProtobufOutput extends WriteSession implements Output
         session.size += totalSize;
 
         if (tagSize == 1)
+        {
             buffer[offset++] = (byte) tag;
+        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
 
         if (size == 1)
+        {
             buffer[offset] = (byte) value;
+        }
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) (((int) value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -542,7 +570,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         final int totalSize = tagSize + LITTLE_ENDIAN_32_SIZE;
 
         if (lb.offset + totalSize > lb.buffer.length)
+        {
             lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
 
         final byte[] buffer = lb.buffer;
         int offset = lb.offset;
@@ -550,11 +580,15 @@ public final class ProtobufOutput extends WriteSession implements Output
         session.size += totalSize;
 
         if (tagSize == 1)
+        {
             buffer[offset++] = (byte) tag;
+        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -574,7 +608,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         final int totalSize = tagSize + LITTLE_ENDIAN_64_SIZE;
 
         if (lb.offset + totalSize > lb.buffer.length)
+        {
             lb = new LinkedBuffer(session.nextBufferSize, lb);
+        }
 
         final byte[] buffer = lb.buffer;
         int offset = lb.offset;
@@ -582,11 +618,15 @@ public final class ProtobufOutput extends WriteSession implements Output
         session.size += totalSize;
 
         if (tagSize == 1)
+        {
             buffer[offset++] = (byte) tag;
+        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -597,7 +637,7 @@ public final class ProtobufOutput extends WriteSession implements Output
     }
 
     /** Encode and write a varint to the byte array */
-    public static void writeRawVarInt32(int value, final byte[] buf, int offset) throws IOException
+    public static void writeRawVarInt32(int value, final byte[] buf, int offset)
     {
         while (true)
         {
@@ -606,11 +646,8 @@ public final class ProtobufOutput extends WriteSession implements Output
                 buf[offset] = (byte) value;
                 return;
             }
-            else
-            {
-                buf[offset++] = (byte) ((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            buf[offset++] = (byte) ((value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -626,11 +663,8 @@ public final class ProtobufOutput extends WriteSession implements Output
                 out.write(value);
                 return;
             }
-            else
-            {
-                out.write((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -646,11 +680,8 @@ public final class ProtobufOutput extends WriteSession implements Output
                 out.write(value);
                 return;
             }
-            else
-            {
-                out.write((value & 0x7F) | 0x80);
-                value >>>= 7;
-            }
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
         }
     }
 
@@ -664,21 +695,29 @@ public final class ProtobufOutput extends WriteSession implements Output
         int offset = 0;
         byte[] buffer = new byte[tagSize + size];
         if (tagSize == 1)
+        {
             buffer[offset++] = (byte) tag;
+        }
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
 
         if (size == 1)
+        {
             buffer[offset] = (byte) value;
+        }
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) ((value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -703,7 +742,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -715,7 +756,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         else
         {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+            {
                 buffer[offset++] = (byte) (((int) value & 0x7F) | 0x80);
+            }
 
             buffer[offset] = (byte) value;
         }
@@ -739,7 +782,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -765,7 +810,9 @@ public final class ProtobufOutput extends WriteSession implements Output
         else
         {
             for (int i = 0, last = tagSize - 1; i < last; i++, tag >>>= 7)
+            {
                 buffer[offset++] = (byte) ((tag & 0x7F) | 0x80);
+            }
 
             buffer[offset++] = (byte) tag;
         }
@@ -781,7 +828,9 @@ public final class ProtobufOutput extends WriteSession implements Output
     public static int writeRawLittleEndian32(int value, byte[] buffer, int offset)
     {
         if (buffer.length - offset < LITTLE_ENDIAN_32_SIZE)
+        {
             throw new IllegalArgumentException("buffer capacity not enough.");
+        }
 
         buffer[offset++] = (byte) (value & 0xFF);
         buffer[offset++] = (byte) (value >> 8 & 0xFF);
@@ -797,7 +846,9 @@ public final class ProtobufOutput extends WriteSession implements Output
     public static int writeRawLittleEndian64(long value, byte[] buffer, int offset)
     {
         if (buffer.length - offset < LITTLE_ENDIAN_64_SIZE)
+        {
             throw new IllegalArgumentException("buffer capacity not enough.");
+        }
 
         buffer[offset++] = (byte) (value & 0xFF);
         buffer[offset++] = (byte) (value >> 8 & 0xFF);
@@ -818,12 +869,16 @@ public final class ProtobufOutput extends WriteSession implements Output
     {
         int size = computeRawVarint32Size(value);
         if (size == 1)
+        {
             return new byte[] { (byte) value };
+        }
 
         int offset = 0;
         byte[] buffer = new byte[size];
         for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
+        {
             buffer[offset++] = (byte) ((value & 0x7F) | 0x80);
+        }
 
         buffer[offset] = (byte) value;
         return buffer;
@@ -868,13 +923,21 @@ public final class ProtobufOutput extends WriteSession implements Output
     public static int computeRawVarint32Size(final int value)
     {
         if ((value & (0xffffffff << 7)) == 0)
+        {
             return 1;
+        }
         if ((value & (0xffffffff << 14)) == 0)
+        {
             return 2;
+        }
         if ((value & (0xffffffff << 21)) == 0)
+        {
             return 3;
+        }
         if ((value & (0xffffffff << 28)) == 0)
+        {
             return 4;
+        }
         return 5;
     }
 
@@ -884,23 +947,41 @@ public final class ProtobufOutput extends WriteSession implements Output
     public static int computeRawVarint64Size(final long value)
     {
         if ((value & (0xffffffffffffffffL << 7)) == 0)
+        {
             return 1;
+        }
         if ((value & (0xffffffffffffffffL << 14)) == 0)
+        {
             return 2;
+        }
         if ((value & (0xffffffffffffffffL << 21)) == 0)
+        {
             return 3;
+        }
         if ((value & (0xffffffffffffffffL << 28)) == 0)
+        {
             return 4;
+        }
         if ((value & (0xffffffffffffffffL << 35)) == 0)
+        {
             return 5;
+        }
         if ((value & (0xffffffffffffffffL << 42)) == 0)
+        {
             return 6;
+        }
         if ((value & (0xffffffffffffffffL << 49)) == 0)
+        {
             return 7;
+        }
         if ((value & (0xffffffffffffffffL << 56)) == 0)
+        {
             return 8;
+        }
         if ((value & (0xffffffffffffffffL << 63)) == 0)
+        {
             return 9;
+        }
         return 10;
     }
 
@@ -908,7 +989,7 @@ public final class ProtobufOutput extends WriteSession implements Output
      * Encode a ZigZag-encoded 32-bit value. ZigZag encodes signed integers into values that can be efficiently encoded
      * with varint. (Otherwise, negative values must be sign-extended to 64 bits to be varint encoded, thus always
      * taking 10 bytes on the wire.)
-     * 
+     *
      * @param n
      *            A signed 32-bit integer.
      * @return An unsigned 32-bit integer, stored in a signed int because Java has no explicit unsigned support.
@@ -923,7 +1004,7 @@ public final class ProtobufOutput extends WriteSession implements Output
      * Encode a ZigZag-encoded 64-bit value. ZigZag encodes signed integers into values that can be efficiently encoded
      * with varint. (Otherwise, negative values must be sign-extended to 64 bits to be varint encoded, thus always
      * taking 10 bytes on the wire.)
-     * 
+     *
      * @param n
      *            A signed 64-bit integer.
      * @return An unsigned 64-bit integer, stored in a signed int because Java has no explicit unsigned support.

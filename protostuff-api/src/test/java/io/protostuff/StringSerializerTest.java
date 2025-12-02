@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
 import io.protostuff.StringSerializer.STRING;
+import junit.framework.TestCase;
 
 /**
  * Tests for UTF-8 Encoding
@@ -150,7 +150,7 @@ public class StringSerializerTest extends TestCase
             10.01f,
             -10.01f,
             1234.4321f
-            - 1234.4321f,
+                    - 1234.4321f,
             56789.98765f,
             -56789.98765f,
             Float.MAX_VALUE,
@@ -162,7 +162,7 @@ public class StringSerializerTest extends TestCase
             10.01d,
             -10.01d,
             1234.4321d
-            - 1234.4321d,
+                    - 1234.4321d,
             56789.98765d,
             -56789.98765d,
             1234567890.0987654321d,
@@ -459,7 +459,7 @@ public class StringSerializerTest extends TestCase
             // using our first method?
             assertEquals(surrogatePairs, STRING.deserCustomOnly(nativeSurrogatePairsSerialized));
         }
-        catch (RuntimeException ex)
+        catch (@SuppressWarnings("unused") RuntimeException ex)
         {
             // No? Fallback should catch this.
             assertEquals(surrogatePairs, STRING.deser(nativeSurrogatePairsSerialized));
@@ -479,14 +479,14 @@ public class StringSerializerTest extends TestCase
         WriteSession session = new WriteSession(lb);
         StringSerializer.writeUTF8(partial, session, lb);
 
-        byte[] buffered = session.toByteArray();
+        session.toByteArray();
 
         // Force the use of 'slow' path
         lb = new LinkedBuffer(1);
         session = new WriteSession(lb);
         StringSerializer.writeUTF8(partial, session, lb);
 
-        buffered = session.toByteArray();
+        session.toByteArray();
 
     }
 
@@ -509,10 +509,10 @@ public class StringSerializerTest extends TestCase
 
         try
         {
-            String dinResult = din.readUTF();
+            din.readUTF();
             fail();
         }
-        catch (IOException ex)
+        catch (@SuppressWarnings("unused") IOException ex)
         {
             // Decoding failed of 4-byte format.
         }
@@ -639,13 +639,13 @@ public class StringSerializerTest extends TestCase
 
     static void print(CharSequence msg)
     {
-        // System.err.println(msg);
+        System.err.println(msg);
     }
 
     /**
      * Reads a var int 32 from the buffer.
      */
-    static int readRawVarint32(final byte[] buffer, int offset) throws IOException
+    static int readRawVarint32(final byte[] buffer, int offset)
     {
         byte tmp = buffer[offset++];
         if (tmp >= 0)

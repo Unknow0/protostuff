@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,14 @@ package io.protostuff;
 
 /**
  * Tests for reading/writing pojos from/to a buffer.
- * 
+ *
  * @author David Yu
  * @created Dec 2, 2010
  */
-public class KvpTest extends AbstractKvpTest
-{
+public class KvpTest extends AbstractKvpTest {
 
-    public KvpTest()
-    {
-        super(false);
-    }
+	public KvpTest() {
+		super(false);
+	}
 
 }

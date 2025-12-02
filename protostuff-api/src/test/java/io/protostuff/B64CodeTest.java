@@ -90,13 +90,6 @@ public class B64CodeTest extends TestCase
 
             byte[] decodedFromString = B64Code.decode(new String(b64Encoded, "UTF-8"));
 
-            String a = STRING.deser(decoded, 0, decodedLen);
-            String b = STRING.deser(decodedFromString);
-
-            boolean x = a.equals(b);
-            int lenA = a.length();
-            int lenB = b.length();
-
             assertEquals(STRING.deser(decoded, 0, decodedLen), STRING.deser(decodedFromString));
 
             assertEquals(str, STRING.deser(decoded, 0, decodedLen));
@@ -255,17 +248,17 @@ public class B64CodeTest extends TestCase
             assertTrue(cencoded[i] == encoded[i]);
     }
 
-    static void testBuffer(String str, LinkedBuffer tail) throws IOException
+    static void testBuffer(String str, LinkedBuffer tail)
     {
         testBuffer(str, "", tail);
     }
 
-    static void testBuffer(String str, String prefix, LinkedBuffer tail) throws IOException
+    static void testBuffer(String str, String prefix, LinkedBuffer tail)
     {
         testBuffer(str, prefix, tail, LinkedBuffer.DEFAULT_BUFFER_SIZE);
     }
 
-    static void testBuffer(String str, String prefix, LinkedBuffer tail, int nextBufferSize) throws IOException
+    static void testBuffer(String str, String prefix, LinkedBuffer tail, int nextBufferSize)
     {
         byte[] data = str.getBytes();
         WriteSession session = new WriteSession(tail, nextBufferSize);

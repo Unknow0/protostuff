@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,6 +44,12 @@
 
 package io.protostuff;
 
+import static io.protostuff.WireFormat.TAG_TYPE_BITS;
+import static io.protostuff.WireFormat.TAG_TYPE_MASK;
+import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
+import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
+import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
+
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,12 +58,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.protostuff.StringSerializer.STRING;
-
-import static io.protostuff.WireFormat.TAG_TYPE_BITS;
-import static io.protostuff.WireFormat.TAG_TYPE_MASK;
-import static io.protostuff.WireFormat.WIRETYPE_END_GROUP;
-import static io.protostuff.WireFormat.WIRETYPE_LENGTH_DELIMITED;
-import static io.protostuff.WireFormat.WIRETYPE_TAIL_DELIMITER;
 
 /**
  * Reads and decodes protocol message fields.
@@ -284,11 +284,8 @@ public final class CodedInput implements Input
             bufferPos += size;
             return result;
         }
-        else
-        {
-            // Slow path: Build a byte array first then copy it.
-            return STRING.deser(readRawBytes(size));
-        }
+        // Slow path: Build a byte array first then copy it.
+        return STRING.deser(readRawBytes(size));
     }
 
     /**
@@ -318,7 +315,9 @@ public final class CodedInput implements Input
     public <T> T mergeObject(T value, final Schema<T> schema) throws IOException
     {
         if (decodeNestedMessageAsGroup)
+        {
             return mergeObjectEncodedAsGroup(value, schema);
+        }
 
         final int length = readRawVarint32();
         // if (recursionDepth >= recursionLimit) {
@@ -369,7 +368,7 @@ public final class CodedInput implements Input
 
     /*
      * @ Reads a {@code group} field value from the stream and merges it into the given {@link UnknownFieldSet}.
-     * 
+     *
      * @deprecated UnknownFieldSet.Builder now implements MessageLite.Builder, so you can just call {@link #readGroup}.
      */
     /*
@@ -399,12 +398,9 @@ public final class CodedInput implements Input
             bufferPos += size;
             return result;
         }
-        else
-        {
-            // Slow path: Build a byte array first then copy it.
-            // return ByteString.copyFrom(readRawBytes(size));
-            return ByteString.wrap(readRawBytes(size));
-        }
+        // Slow path: Build a byte array first then copy it.
+        // return ByteString.copyFrom(readRawBytes(size));
+        return ByteString.wrap(readRawBytes(size));
     }
 
     /**
@@ -637,10 +633,10 @@ public final class CodedInput implements Input
         final byte b2 = readRawByte();
         final byte b3 = readRawByte();
         final byte b4 = readRawByte();
-        return (((int) b1 & 0xff)) |
-                (((int) b2 & 0xff) << 8) |
-                (((int) b3 & 0xff) << 16) |
-                (((int) b4 & 0xff) << 24);
+        return ((b1 & 0xff)) |
+                ((b2 & 0xff) << 8) |
+                ((b3 & 0xff) << 16) |
+                ((b4 & 0xff) << 24);
     }
 
     /**
@@ -770,9 +766,9 @@ public final class CodedInput implements Input
     /*
      * Set the maximum message recursion depth. In order to prevent malicious messages from causing stack overflows,
      * {@code CodedInput} limits how deeply messages may be nested. The default limit is 64.
-     * 
+     *
      * @return the old limit.
-     * 
+     *
      * public int setRecursionLimit(final int limit) { if (limit < 0) { throw new IllegalArgumentException(
      * "Recursion limit cannot be negative: " + limit); } final int oldLimit = recursionLimit; recursionLimit = limit;
      * return oldLimit; }
@@ -941,10 +937,7 @@ public final class CodedInput implements Input
             {
                 throw ProtobufException.truncatedMessage();
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         totalBytesRetired += bufferSize;
@@ -964,22 +957,15 @@ public final class CodedInput implements Input
             {
                 throw ProtobufException.truncatedMessage();
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
-        else
+        recomputeBufferSizeAfterLimit();
+        final int totalBytesRead = totalBytesRetired + bufferSize + bufferSizeAfterLimit;
+        if (totalBytesRead > sizeLimit || totalBytesRead < 0)
         {
-            recomputeBufferSizeAfterLimit();
-            final int totalBytesRead =
-                    totalBytesRetired + bufferSize + bufferSizeAfterLimit;
-            if (totalBytesRead > sizeLimit || totalBytesRead < 0)
-            {
-                throw ProtobufException.sizeLimitExceeded();
-            }
-            return true;
+            throw ProtobufException.sizeLimitExceeded();
         }
+        return true;
     }
 
     /**
@@ -1077,7 +1063,7 @@ public final class CodedInput implements Input
 
             // Read all the rest of the bytes we need.
             int sizeLeft = size - (originalBufferSize - originalBufferPos);
-            final List<byte[]> chunks = new ArrayList<byte[]>();
+            final List<byte[]> chunks = new ArrayList<>();
 
             while (sizeLeft > 0)
             {
@@ -1085,8 +1071,7 @@ public final class CodedInput implements Input
                 int pos = 0;
                 while (pos < chunk.length)
                 {
-                    final int n = (input == null) ? -1 :
-                            input.read(chunk, pos, chunk.length - pos);
+                    final int n = (input == null) ? -1 : input.read(chunk, pos, chunk.length - pos);
                     if (n == -1)
                     {
                         throw ProtobufException.truncatedMessage();
@@ -1178,7 +1163,9 @@ public final class CodedInput implements Input
         if (isCurrentFieldPacked())
         {
             if (packedLimit < getTotalBytesRead())
+            {
                 throw ProtobufException.misreportedSize();
+            }
 
             // Return field number while reading packed field
             return lastTag >>> TAG_TYPE_BITS;
@@ -1222,7 +1209,9 @@ public final class CodedInput implements Input
         {
             final int length = readRawVarint32();
             if (length < 0)
+            {
                 throw ProtobufException.negativeSize();
+            }
 
             this.packedLimit = getTotalBytesRead() + length;
         }
@@ -1241,11 +1230,8 @@ public final class CodedInput implements Input
             bufferPos += size;
             return copy;
         }
-        else
-        {
-            // Slow path: Build a byte array first then copy it.
-            return readRawBytes(size);
-        }
+        // Slow path: Build a byte array first then copy it.
+        return readRawBytes(size);
     }
 
     @Override

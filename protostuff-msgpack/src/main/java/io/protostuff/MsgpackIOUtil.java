@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,340 +30,273 @@ import org.msgpack.core.buffer.MessageBufferOutput;
 
 /**
  * Utility for the message pack serialization/deserialization of messages and objects tied to a schema.
- * 
+ *
  * @author Alex Shvid
  */
-public final class MsgpackIOUtil
-{
+public final class MsgpackIOUtil {
 
-    public static final int END_OF_OBJECT = 0;
+	public static final int END_OF_OBJECT = 0;
 
-    private MsgpackIOUtil()
-    {
-    }
+	private MsgpackIOUtil() {
+	}
 
-    /**
-     * Creates a msgpack pipe from a byte array.
-     */
-    public static Pipe newPipe(byte[] data, boolean numeric) throws IOException
-    {
-        return newPipe(data, 0, data.length, numeric);
-    }
+	/**
+	 * Creates a msgpack pipe from a byte array.
+	 */
+	public static Pipe newPipe(byte[] data, boolean numeric) throws IOException {
+		return newPipe(data, 0, data.length, numeric);
+	}
 
-    /**
-     * Creates a msgpack pipe from a byte array.
-     */
-    public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) throws IOException
-    {
-        ArrayBufferInput in = new ArrayBufferInput(data, offset, length);
-        return newPipe(in, numeric);
-    }
-    
-    /**
-     * Creates a msgpack pipe from an {@link MessageBufferInput}.
-     */
-    public static Pipe newPipe(MessageBufferInput in, boolean numeric) throws IOException
-    {
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-        return newPipe(unpacker, numeric);
-    }
+	/**
+	 * Creates a msgpack pipe from a byte array.
+	 */
+	public static Pipe newPipe(byte[] data, int offset, int length, boolean numeric) throws IOException {
+		ArrayBufferInput in = new ArrayBufferInput(data, offset, length);
+		return newPipe(in, numeric);
+	}
 
-    /**
-     * Creates a msgpack pipe from an {@link InputStream}.
-     */
-    public static Pipe newPipe(InputStream in, boolean numeric) throws IOException
-    {
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
-        return newPipe(unpacker, numeric);
-    }
+	/**
+	 * Creates a msgpack pipe from an {@link MessageBufferInput}.
+	 */
+	public static Pipe newPipe(MessageBufferInput in, boolean numeric) throws IOException {
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+		return newPipe(unpacker, numeric);
+	}
 
-    /**
-     * Creates a msgpack pipe from a {@link MessageUnpacker}.
-     */
-    public static Pipe newPipe(final MessageUnpacker unpacker, boolean numeric) throws IOException
-    {
-        MsgpackParser parser = new MsgpackParser(unpacker, numeric);
-        final MsgpackInput msgpackInput = new MsgpackInput(parser);
-        return new Pipe()
-        {
-            @Override
-            protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException
-            {
-                return msgpackInput;
-            }
+	/**
+	 * Creates a msgpack pipe from an {@link InputStream}.
+	 */
+	public static Pipe newPipe(InputStream in, boolean numeric) throws IOException {
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+		return newPipe(unpacker, numeric);
+	}
 
-            @Override
-            protected void end(Pipe.Schema<?> pipeSchema, Input input,
-                    boolean cleanupOnly) throws IOException
-            {
-                if (cleanupOnly)
-                {
-                    unpacker.close();
-                    return;
-                }
+	/**
+	 * Creates a msgpack pipe from a {@link MessageUnpacker}.
+	 */
+	public static Pipe newPipe(final MessageUnpacker unpacker, boolean numeric) throws IOException {
+		MsgpackParser parser = new MsgpackParser(unpacker, numeric);
+		final MsgpackInput msgpackInput = new MsgpackInput(parser);
+		return new Pipe() {
+			@Override
+			protected Input begin(Pipe.Schema<?> pipeSchema) throws IOException {
+				return msgpackInput;
+			}
 
-                assert input == msgpackInput;
+			@Override
+			protected void end(Pipe.Schema<?> pipeSchema, Input input, boolean cleanupOnly) throws IOException {
+				if (cleanupOnly) {
+					unpacker.close();
+					return;
+				}
 
-                unpacker.close();
+				assert input == msgpackInput;
 
-            }
-        };
-    }
+				unpacker.close();
 
-    /**
-     * Merges the {@code message} with the byte array using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema, boolean numeric) throws IOException
-    {
-        mergeFrom(data, 0, data.length, message, schema, numeric);
-    }
+			}
+		};
+	}
 
-    /**
-     * Merges the {@code message} with the byte array using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema, boolean numeric)
-            throws IOException
-    {
+	/**
+	 * Merges the {@code message} with the byte array using the given {@code schema}.
+	 */
+	public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema, boolean numeric) throws IOException {
+		mergeFrom(data, 0, data.length, message, schema, numeric);
+	}
 
-        ArrayBufferInput bios = new ArrayBufferInput(data, offset, length);
+	/**
+	 * Merges the {@code message} with the byte array using the given {@code schema}.
+	 */
+	public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema, boolean numeric) throws IOException {
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
+		ArrayBufferInput bios = new ArrayBufferInput(data, offset, length);
 
-        try
-        {
-            mergeFrom(unpacker, message, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
-        }
-    }
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(bios);
 
-    /**
-     * Merges the {@code message} from the {@link MessageBufferInput} using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(MessageBufferInput in, T message, Schema<T> schema, boolean numeric) throws IOException
-    {
+		try {
+			mergeFrom(unpacker, message, schema, numeric);
+		} finally {
+			unpacker.close();
+		}
+	}
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+	/**
+	 * Merges the {@code message} from the {@link MessageBufferInput} using the given {@code schema}.
+	 */
+	public static <T> void mergeFrom(MessageBufferInput in, T message, Schema<T> schema, boolean numeric) throws IOException {
 
-        try
-        {
-            mergeFrom(unpacker, message, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
-        }
-    }
-    
-    /**
-     * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, boolean numeric) throws IOException
-    {
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+		try {
+			mergeFrom(unpacker, message, schema, numeric);
+		} finally {
+			unpacker.close();
+		}
+	}
 
-        try
-        {
-            mergeFrom(unpacker, message, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
-        }
-    }
+	/**
+	 * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
+	 */
+	public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema, boolean numeric) throws IOException {
 
-    /**
-     * Merges the {@code message} from the JsonParser using the given {@code schema}.
-     */
-    public static <T> void mergeFrom(MessageUnpacker unpacker, T message, Schema<T> schema, boolean numeric)
-            throws IOException
-    {
-        MsgpackParser parser = new MsgpackParser(unpacker, numeric);
-        schema.mergeFrom(new MsgpackInput(parser), message);
-    }
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
 
-    /**
-     * Serializes the {@code message} using the given {@code schema}.
-     */
-    public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric)
-    {
-        ArrayBufferOutput out = new ArrayBufferOutput();
-        try
-        {
-            writeTo(out, message, schema, numeric);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Serializing to a byte array threw an IOException", e);
-        }
-        return out.toByteArray();
-    }
+		try {
+			mergeFrom(unpacker, message, schema, numeric);
+		} finally {
+			unpacker.close();
+		}
+	}
 
-    /**
-     * Serializes the {@code message} into an {@link MessageBufferOutput} using the given {@code schema}.
-     */
-    public static <T> void writeTo(MessageBufferOutput out, T message, Schema<T> schema, boolean numeric)
-            throws IOException
-    {
+	/**
+	 * Merges the {@code message} from the JsonParser using the given {@code schema}.
+	 */
+	public static <T> void mergeFrom(MessageUnpacker unpacker, T message, Schema<T> schema, boolean numeric) throws IOException {
+		MsgpackParser parser = new MsgpackParser(unpacker, numeric);
+		schema.mergeFrom(new MsgpackInput(parser), message);
+	}
 
-        MessagePacker packer = MessagePack.newDefaultPacker(out);
+	/**
+	 * Serializes the {@code message} using the given {@code schema}.
+	 */
+	public static <T> byte[] toByteArray(T message, Schema<T> schema, boolean numeric) {
+		ArrayBufferOutput out = new ArrayBufferOutput();
+		try {
+			writeTo(out, message, schema, numeric);
+		} catch (IOException e) {
+			throw new RuntimeException("Serializing to a byte array threw an IOException", e);
+		}
+		return out.toByteArray();
+	}
 
-        try
-        {
-            writeTo(packer, message, schema, numeric);
-        }
-        finally
-        {
-            packer.flush();
-        }
-    }
+	/**
+	 * Serializes the {@code message} into an {@link MessageBufferOutput} using the given {@code schema}.
+	 */
+	public static <T> void writeTo(MessageBufferOutput out, T message, Schema<T> schema, boolean numeric) throws IOException {
 
-    /**
-     * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
-     */
-    public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, boolean numeric) throws IOException
-    {
+		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
-        MessagePacker packer = MessagePack.newDefaultPacker(out);
+		try {
+			writeTo(packer, message, schema, numeric);
+		} finally {
+			packer.flush();
+		}
+	}
 
-        try
-        {
-            writeTo(packer, message, schema, numeric);
-        }
-        finally
-        {
-            packer.flush();
-        }
-    }
+	/**
+	 * Serializes the {@code message} into an {@link OutputStream} using the given {@code schema}.
+	 */
+	public static <T> void writeTo(OutputStream out, T message, Schema<T> schema, boolean numeric) throws IOException {
 
-    public static <T> void writeTo(MessagePacker packer, T message, Schema<T> schema, boolean numeric)
-            throws IOException
-    {
-        MsgpackGenerator generator = new MsgpackGenerator(numeric);
-        MsgpackOutput output = new MsgpackOutput(generator, schema);
-        schema.writeTo(output, message);
-        generator.writeTo(packer);
-    }
+		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
-    /**
-     * Serializes the {@code messages} into the stream using the given schema.
-     */
-    public static <T> void writeListTo(OutputStream out, List<T> messages,
-            Schema<T> schema, boolean numeric) throws IOException
-    {
+		try {
+			writeTo(packer, message, schema, numeric);
+		} finally {
+			packer.flush();
+		}
+	}
 
-        MessagePacker packer = MessagePack.newDefaultPacker(out);
+	public static <T> void writeTo(MessagePacker packer, T message, Schema<T> schema, boolean numeric) throws IOException {
+		MsgpackGenerator generator = new MsgpackGenerator(numeric);
+		MsgpackOutput output = new MsgpackOutput(generator, schema);
+		schema.writeTo(output, message);
+		generator.writeTo(packer);
+	}
 
-        try
-        {
-            writeListTo(packer, messages, schema, numeric);
-        }
-        finally
-        {
-            packer.flush();
-        }
-    }
+	/**
+	 * Serializes the {@code messages} into the stream using the given schema.
+	 */
+	public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, boolean numeric) throws IOException {
 
-    /**
-     * Serializes the {@code messages} into the stream using the given schema.
-     */
-    public static <T> void writeListTo(MessageBufferOutput out, List<T> messages,
-            Schema<T> schema, boolean numeric) throws IOException
-    {
+		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
-        MessagePacker packer = MessagePack.newDefaultPacker(out);
+		try {
+			writeListTo(packer, messages, schema, numeric);
+		} finally {
+			packer.flush();
+		}
+	}
 
-        try
-        {
-            writeListTo(packer, messages, schema, numeric);
-        }
-        finally
-        {
-            packer.flush();
-        }
-    }
+	/**
+	 * Serializes the {@code messages} into the stream using the given schema.
+	 */
+	public static <T> void writeListTo(MessageBufferOutput out, List<T> messages, Schema<T> schema, boolean numeric) throws IOException {
 
-    /**
-     * Serializes the {@code messages} into the generator using the given schema.
-     */
-    public static <T> void writeListTo(MessagePacker packer, List<T> messages,
-            Schema<T> schema, boolean numeric) throws IOException
-    {
-        MsgpackGenerator generator = new MsgpackGenerator(numeric);
-        MsgpackOutput output = new MsgpackOutput(generator, schema);
+		MessagePacker packer = MessagePack.newDefaultPacker(out);
 
-        for (T m : messages)
-        {
-            schema.writeTo(output, m);
-            generator.writeTo(packer);
-            generator.reset();
-        }
+		try {
+			writeListTo(packer, messages, schema, numeric);
+		} finally {
+			packer.flush();
+		}
+	}
 
-    }
+	/**
+	 * Serializes the {@code messages} into the generator using the given schema.
+	 */
+	public static <T> void writeListTo(MessagePacker packer, List<T> messages, Schema<T> schema, boolean numeric) throws IOException {
+		MsgpackGenerator generator = new MsgpackGenerator(numeric);
+		MsgpackOutput output = new MsgpackOutput(generator, schema);
 
-    /**
-     * Parses the {@code messages} from the stream using the given {@code schema}.
-     */
-    public static <T> List<T> parseListFrom(MessageBufferInput in, Schema<T> schema, boolean numeric) throws IOException
-    {
+		for (T m : messages) {
+			schema.writeTo(output, m);
+			generator.writeTo(packer);
+			generator.reset();
+		}
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+	}
 
-        try
-        {
-            return parseListFrom(unpacker, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
-        }
-    }
-    
-    /**
-     * Parses the {@code messages} from the stream using the given {@code schema}.
-     */
-    public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, boolean numeric) throws IOException
-    {
+	/**
+	 * Parses the {@code messages} from the stream using the given {@code schema}.
+	 */
+	public static <T> List<T> parseListFrom(MessageBufferInput in, Schema<T> schema, boolean numeric) throws IOException {
 
-        MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
 
-        try
-        {
-            return parseListFrom(unpacker, schema, numeric);
-        }
-        finally
-        {
-            unpacker.close();
-        }
-    }
+		try {
+			return parseListFrom(unpacker, schema, numeric);
+		} finally {
+			unpacker.close();
+		}
+	}
 
-    /**
-     * Parses the {@code messages} from the parser using the given {@code schema}.
-     */
-    public static <T> List<T> parseListFrom(MessageUnpacker unpacker, Schema<T> schema, boolean numeric)
-            throws IOException
-    {
+	/**
+	 * Parses the {@code messages} from the stream using the given {@code schema}.
+	 */
+	public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema, boolean numeric) throws IOException {
 
-        MsgpackParser parser = new MsgpackParser(unpacker, numeric);
-        MsgpackInput input = new MsgpackInput(parser);
+		MessageUnpacker unpacker = MessagePack.newDefaultUnpacker(in);
 
-        List<T> list = new ArrayList<T>();
+		try {
+			return parseListFrom(unpacker, schema, numeric);
+		} finally {
+			unpacker.close();
+		}
+	}
 
-        while (parser.hasNext())
-        {
+	/**
+	 * Parses the {@code messages} from the parser using the given {@code schema}.
+	 */
+	public static <T> List<T> parseListFrom(MessageUnpacker unpacker, Schema<T> schema, boolean numeric) throws IOException {
 
-            T message = schema.newMessage();
-            schema.mergeFrom(input, message);
+		MsgpackParser parser = new MsgpackParser(unpacker, numeric);
+		MsgpackInput input = new MsgpackInput(parser);
 
-            list.add(message);
+		List<T> list = new ArrayList<>();
 
-            parser.reset();
+		while (parser.hasNext()) {
 
-        }
+			T message = schema.newMessage();
+			schema.mergeFrom(input, message);
 
-        return list;
-    }
+			list.add(message);
+
+			parser.reset();
+
+		}
+
+		return list;
+	}
 }

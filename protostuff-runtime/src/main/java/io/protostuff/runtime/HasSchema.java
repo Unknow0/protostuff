@@ -35,40 +35,35 @@ import io.protostuff.runtime.PolymorphicSchema.Handler;
 /**
  * Wraps a schema.
  */
-public abstract class HasSchema<T> implements PolymorphicSchema.Factory
-{
+public abstract class HasSchema<T> implements PolymorphicSchema.Factory {
 
-    public final IdStrategy strategy;
-    
-    public final ArraySchemas.Base genericElementSchema;
-    
-    /**
-     * Gets the schema.
-     */
-    public abstract Schema<T> getSchema();
+	public final IdStrategy strategy;
 
-    /**
-     * Gets the pipe schema.
-     */
-    public abstract Pipe.Schema<T> getPipeSchema();
+	public final ArraySchemas.Base genericElementSchema;
 
-    // for the array of this type
+	/**
+	 * Gets the schema.
+	 */
+	public abstract Schema<T> getSchema();
 
-    @SuppressWarnings("unchecked")
-    protected HasSchema(IdStrategy strategy)
-    {
-        this.strategy = strategy;
-        
-        genericElementSchema = new ArraySchemas.PojoArray(strategy, 
-                ArraySchemas.GENERIC_HANDLER, (HasSchema<Object>) this);
-    }
+	/**
+	 * Gets the pipe schema.
+	 */
+	public abstract Pipe.Schema<T> getPipeSchema();
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy,
-            Handler handler)
-    {
-        return new ArraySchemas.PojoArray(strategy, handler, (HasSchema<Object>) this);
-    }
+	// for the array of this type
+
+	@SuppressWarnings("unchecked")
+	protected HasSchema(IdStrategy strategy) {
+		this.strategy = strategy;
+
+		genericElementSchema = new ArraySchemas.PojoArray(strategy, ArraySchemas.GENERIC_HANDLER, (HasSchema<Object>) this);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, Handler handler) {
+		return new ArraySchemas.PojoArray(strategy, handler, (HasSchema<Object>) this);
+	}
 
 }

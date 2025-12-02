@@ -7,9 +7,8 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Marker annotation, indicates that an annotated method is a rpc service method.
- * Other annotations can be used for request/response qualifiers customization -
- * {@link Request}, {@link Response}.
+ * Marker annotation, indicates that an annotated method is a rpc service method. Other annotations can be used for
+ * request/response qualifiers customization - {@link Request}, {@link Response}.
  *
  * @author Kostiantyn Shchepanovskyi
  */
@@ -17,5 +16,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 public @interface Rpc
 {
-
+    // marker
 }

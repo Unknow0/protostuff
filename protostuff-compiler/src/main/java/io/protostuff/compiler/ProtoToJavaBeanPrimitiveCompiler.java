@@ -20,10 +20,12 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler
 
     void setByteBuffer(Message m)
     {
-        for (Field f : m.getFields())
+        for (Field<?> f : m.getFields())
         {
             if (f.isBytesField())
+            {
                 f.putExtraOption("ByteBuffer", true);
+            }
         }
 
         for (Message m2 : m.getNestedMessages())

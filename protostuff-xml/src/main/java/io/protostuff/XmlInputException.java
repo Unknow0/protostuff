@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,23 +18,20 @@ import javax.xml.stream.XMLStreamException;
 
 /**
  * Thrown when an xml-encoded message being parsed is invalid in some way.
- * 
+ *
  * @author David Yu
  * @created May 24, 2010
  */
-public class XmlInputException extends ProtostuffException
-{
+public class XmlInputException extends ProtostuffException {
 
-    private static final long serialVersionUID = 7334323404937711844L;
+	private static final long serialVersionUID = 7334323404937711844L;
 
-    public XmlInputException(String message)
-    {
-        super(message);
-    }
+	public XmlInputException(String message) {
+		super(message);
+	}
 
-    public XmlInputException(XMLStreamException cause)
-    {
-        super(cause);
-    }
+	public XmlInputException(XMLStreamException cause) {
+		super(cause);
+	}
 
 }

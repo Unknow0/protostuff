@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 
 /**
  * Testing for json ser/deser against messages.
- * 
+ *
  * @author David Yu
  * @created Nov 20, 2009
  */
@@ -72,7 +72,7 @@ public class JsonNumericCoreSerDeserTest extends TestCase
 
     public void testListIO() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 
@@ -88,7 +88,9 @@ public class JsonNumericCoreSerDeserTest extends TestCase
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
 }

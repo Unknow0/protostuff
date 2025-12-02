@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,25 +21,21 @@ import java.util.List;
 
 /**
  * Repeated messages test for MsgpackXIOUtil
- * 
+ *
  * @author Alex Shvid
  *
  */
 
-public class MsgpackXRepeatedMessagesTest extends RepeatedMessagesTest
-{
+public class MsgpackXRepeatedMessagesTest extends RepeatedMessagesTest {
 
-    @Override
-    protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
-    {
-        return MsgpackIOUtil.parseListFrom(in, schema, false);
-    }
+	@Override
+	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
+		return MsgpackIOUtil.parseListFrom(in, schema, false);
+	}
 
-    @Override
-    protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema)
-            throws IOException
-    {
-        MsgpackXIOUtil.writeListTo(out, messages, schema, false, buf());
-    }
+	@Override
+	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
+		MsgpackXIOUtil.writeListTo(out, messages, schema, false, buf());
+	}
 
 }

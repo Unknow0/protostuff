@@ -24,8 +24,9 @@ public class Utf8DecoderTest
 
     private String str;
 
-    public Utf8DecoderTest(String str) {
-        this.str=str;
+    public Utf8DecoderTest(String str)
+    {
+        this.str = str;
     }
 
     @Test
@@ -33,8 +34,10 @@ public class Utf8DecoderTest
     {
         Utf8Decoder d = new Utf8Decoder();
         byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-        for (int i = 0; i < bytes.length; i++)
-            d.append(bytes[i]);
+        for (byte element : bytes)
+        {
+            d.append(element);
+        }
         assertEquals(str, d.done());
     }
 }

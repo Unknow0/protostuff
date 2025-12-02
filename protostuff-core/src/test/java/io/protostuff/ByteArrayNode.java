@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,7 @@ package io.protostuff;
  * A node that wraps a byte array and has a reference to the next node.
  * <p>
  * This is used as a single-direction linked list of byte[] wrappers.
- * 
+ *
  * @author David Yu
  * @created Nov 12, 2009
  */

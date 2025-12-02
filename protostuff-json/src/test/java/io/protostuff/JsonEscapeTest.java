@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,7 @@ import io.protostuff.StringSerializer.STRING;
 
 /**
  * Json escape test
- * 
+ *
  * @author David Yu
  * @created Oct 10, 2010
  */
@@ -36,11 +36,11 @@ public class JsonEscapeTest extends AbstractTest
         bar.setSomeBytes(ByteString.copyFromUtf8(ESCAPE_TARGET));
         bar.setSomeString(ESCAPE_TARGET);
 
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
         bars.add(bar);
 
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         strings.add(ESCAPE_TARGET);
         strings.add("");
         strings.add(ESCAPE_TARGET);

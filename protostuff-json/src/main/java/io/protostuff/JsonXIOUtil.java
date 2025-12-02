@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Json serialization via {@link JsonXOutput}.
- * 
+ *
  * @author David Yu
  * @created Jul 2, 2010
  */
@@ -75,9 +75,11 @@ public final class JsonXIOUtil
         input.readNext(fmt.start());
 
         if (input.tryNext(fmt.end()))
+        {
             return Collections.emptyList();
+        }
 
-        final List<T> list = new ArrayList<T>();
+        final List<T> list = new ArrayList<>();
         do
         {
             input.readNext('{');
@@ -94,7 +96,9 @@ public final class JsonXIOUtil
             LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final JsonXOutput output = new JsonXOutput(buffer, numeric, schema);
 
@@ -105,7 +109,9 @@ public final class JsonXIOUtil
             schema.writeTo(output, message);
 
             if (output.isLastRepeated())
+            {
                 output.writeEndArray();
+            }
 
             output.writeEndObject();
         }
@@ -126,7 +132,9 @@ public final class JsonXIOUtil
             boolean numeric)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final JsonXOutput output = new JsonXOutput(buffer, numeric, schema);
 
@@ -137,7 +145,9 @@ public final class JsonXIOUtil
             schema.writeTo(output, message);
 
             if (output.isLastRepeated())
+            {
                 output.writeEndArray();
+            }
 
             output.writeEndObject();
         }
@@ -166,7 +176,9 @@ public final class JsonXIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final JsonXOutput output = new JsonXOutput(buffer, out, numeric, schema);
 
@@ -175,7 +187,9 @@ public final class JsonXIOUtil
         schema.writeTo(output, message);
 
         if (output.isLastRepeated())
+        {
             output.writeEndArray();
+        }
 
         output.writeEndObject();
 
@@ -207,7 +221,9 @@ public final class JsonXIOUtil
             ListFormat fmt)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         if (messages.isEmpty())
         {
@@ -228,12 +244,16 @@ public final class JsonXIOUtil
                     write(output, fmt.start());
                 }
                 else
+                {
                     write(output, fmt.delimiter());
+                }
 
                 output.writeStartObject();
                 schema.writeTo(output, m);
                 if (output.isLastRepeated())
+                {
                     output.writeEndArray();
+                }
 
                 output.writeEndObject().reset();
             }
@@ -250,11 +270,17 @@ public final class JsonXIOUtil
     private static void write(JsonXOutput o, byte[] b) throws IOException
     {
         if (b.length == 0)
+        {
             return;
+        }
         if (b.length == 1)
+        {
             o.tail = o.sink.writeByte(b[0], o, o.tail);
+        }
         else
+        {
             o.tail = o.sink.writeByteArray(b, o, o.tail);
+        }
     }
 
     /**
@@ -264,7 +290,9 @@ public final class JsonXIOUtil
             LinkedBuffer buffer, ListFormat fmt) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         if (messages.isEmpty())
         {
@@ -282,12 +310,16 @@ public final class JsonXIOUtil
                 write(output, fmt.start());
             }
             else
+            {
                 write(output, fmt.delimiter());
+            }
 
             output.writeStartObject();
             schema.writeTo(output, m);
             if (output.isLastRepeated())
+            {
                 output.writeEndArray();
+            }
 
             output.writeEndObject().reset();
         }

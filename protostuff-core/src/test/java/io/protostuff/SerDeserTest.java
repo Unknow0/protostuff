@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 /**
  * Serialization and deserialization test cases.
- * 
+ *
  * @author David Yu
  * @created Nov 10, 2009
  */
@@ -174,7 +174,7 @@ public abstract class SerDeserTest extends StandardTest
     public void testEmptyInnerFooDelimited() throws Exception
     {
         Foo fooCompare = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         fooCompare.setSomeBar(bars);
 
@@ -271,7 +271,9 @@ public abstract class SerDeserTest extends StandardTest
 
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < 25; i++)
+        {
             b.append("1234567890");
+        }
 
         // 250 length string
         // ~253 length message
@@ -358,7 +360,7 @@ public abstract class SerDeserTest extends StandardTest
 
     public void testJavaSerializableEmptyFoo2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bars.add(bar);
         Foo foo = new Foo();
@@ -376,7 +378,7 @@ public abstract class SerDeserTest extends StandardTest
 
     public void testJavaSerializableEmptyFooInner() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);
@@ -397,7 +399,9 @@ public abstract class SerDeserTest extends StandardTest
     {
         StringBuilder sb = new StringBuilder(size);
         while (size-- > 0)
+        {
             sb.append(c);
+        }
 
         return sb.toString();
     }
@@ -406,7 +410,9 @@ public abstract class SerDeserTest extends StandardTest
     {
         // true if both are null
         if (h1 == h2)
+        {
             return;
+        }
 
         assertEquals(h1.getName(), h2.getName());
         assertEquals(h1.getHasBar(), h2.getHasBar());
@@ -416,7 +422,9 @@ public abstract class SerDeserTest extends StandardTest
     {
         // true if both are null
         if (h1 == h2)
+        {
             return;
+        }
 
         assertTrue(h1.getId() == h2.getId());
         assertEquals(h1.getName(), h2.getName());

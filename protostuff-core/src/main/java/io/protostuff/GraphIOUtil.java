@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ import java.io.OutputStream;
 
 /**
  * IO Utilities for graph objects (references and cyclic dependencies).
- * 
+ *
  * @author David Yu
  * @created Jan 19, 2011
  */
@@ -102,7 +102,7 @@ public final class GraphIOUtil
 
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} using the given {@code schema}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
@@ -110,12 +110,16 @@ public final class GraphIOUtil
     {
         final int size = in.read();
         if (size == -1)
+        {
             throw ProtobufException.truncatedMessage();
+        }
 
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
 
         if (len < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (len != 0)
         {
@@ -123,6 +127,7 @@ public final class GraphIOUtil
             if (len > CodedInput.DEFAULT_BUFFER_SIZE)
             {
                 // message too big
+                @SuppressWarnings("resource")
                 final CodedInput input = new CodedInput(new LimitedInputStream(in, len),
                         true);
                 final GraphCodedInput graphInput = new GraphCodedInput(input);
@@ -155,7 +160,7 @@ public final class GraphIOUtil
      * <p>
      * The delimited message size must not be larger than the {@code buffer}'s size/capacity. {@link ProtobufException}
      * "size limit exceeded" is thrown otherwise.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
@@ -163,14 +168,18 @@ public final class GraphIOUtil
     {
         final int size = in.read();
         if (size == -1)
+        {
             throw ProtobufException.truncatedMessage();
+        }
 
         final byte[] buf = buffer.buffer;
 
         final int len = size < 0x80 ? size : CodedInput.readRawVarint32(in, size);
 
         if (len < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (len != 0)
         {
@@ -203,7 +212,7 @@ public final class GraphIOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}. Merges from the
      * {@link DataInput}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(DataInput in, T message, Schema<T> schema)
@@ -213,7 +222,9 @@ public final class GraphIOUtil
         final int len = 0 == (size & 0x80) ? size : CodedInput.readRawVarint32(in, size);
 
         if (len < 0)
+        {
             throw ProtobufException.negativeSize();
+        }
 
         if (len != 0)
         {
@@ -248,20 +259,24 @@ public final class GraphIOUtil
 
         // check it since this message is embedded in the DataInput.
         if (!schema.isInitialized(message))
+        {
             throw new UninitializedMessageException(message, schema);
+        }
 
         return len;
     }
 
     /**
      * Serializes the {@code message} into a byte array using the given schema.
-     * 
+     *
      * @return the byte array containing the data.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -280,13 +295,15 @@ public final class GraphIOUtil
 
     /**
      * Writes the {@code message} into the {@link LinkedBuffer} using the given schema.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -305,14 +322,16 @@ public final class GraphIOUtil
 
     /**
      * Serializes the {@code message} into an {@link OutputStream} using the given schema.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer, out);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -323,14 +342,16 @@ public final class GraphIOUtil
 
     /**
      * Serializes the {@code message}, prefixed with its length, into an {@link OutputStream}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeDelimitedTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -343,7 +364,7 @@ public final class GraphIOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}. Writes to the
      * {@link DataOutput} .
-     * 
+     *
      * @return the size of the message.
      */
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema)
@@ -386,7 +407,9 @@ public final class GraphIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in,
                 drainRemainingBytesIfTooLarge, buffer);
@@ -427,14 +450,16 @@ public final class GraphIOUtil
     /**
      * Optimal writeDelimitedTo - The varint32 prefix is written to the buffer instead of directly writing to
      * outputstream.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int optWriteDelimitedTo(final OutputStream out, final T message,
             final Schema<T> schema, final LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtostuffOutput output = new ProtostuffOutput(buffer);
         final GraphProtostuffOutput graphOutput = new GraphProtostuffOutput(output);
@@ -455,7 +480,9 @@ public final class GraphIOUtil
 
         // flush remaining
         if (buffer.next != null)
+        {
             LinkedBuffer.writeTo(out, buffer.next);
+        }
 
         return size;
     }

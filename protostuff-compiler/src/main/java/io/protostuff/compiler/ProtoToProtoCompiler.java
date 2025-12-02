@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ import io.protostuff.parser.Proto;
 
 /**
  * Kind of preprocessor for proto files. Able to extend one messages with fields from other ones.
- * 
+ *
  * @author Ivan Prisyazhniy, Igor Scherbak
  * @created Mar 9, 2012
  */
@@ -55,55 +55,67 @@ public class ProtoToProtoCompiler extends STCodeGenerator
         String src = module.getSource().getAbsolutePath();
         String path = proto.getFile().getAbsolutePath().replace(src, "").replace(proto.getFile().getName(), "");
 
-        Writer writer = CompilerUtil.newWriter(module, path, proto.getFile().getName());
-        // Read proto file in a buffer
-        StringBuilder builder = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new FileReader(proto.getFile()));
-        String line = reader.readLine();
-        while (line != null)
+        try (Writer writer = CompilerUtil.newWriter(module, path, proto.getFile().getName()))
         {
-            builder.append(line);
-            builder.append(LINE_SEPARATOR);
-            line = reader.readLine();
-        }
-        reader.close();
-
-        String data = builder.toString();
-
-        for (Message message : proto.getMessages())
-        {
-            Annotation annotation = message.getAnnotation("Extend");
-            if (annotation != null)
+            // Read proto file in a buffer
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader(proto.getFile())))
             {
-                Object byMessageRef = annotation.getValue("by");
-                if (byMessageRef == null)
-                    throw new IllegalArgumentException("By parameter of attribute @Extend is not specified");
-
-                if (!(byMessageRef instanceof Message))
-                    throw new IllegalArgumentException(
-                            "By parameter have a non Message reference in your @Extend annotation");
-
-                Message base = (Message) byMessageRef;
-                String result = extendBy(group, message, base);
-                if (result != null && result.length() > 0)
-                    data = injectAfterAnnotation(message, base, data, result);
+                String line = reader.readLine();
+                while (line != null)
+                {
+                    builder.append(line);
+                    builder.append(LINE_SEPARATOR);
+                    line = reader.readLine();
+                }
             }
 
-            Object extOpt = message.getExtraOption("extends");
-            if (extOpt != null)
+            String data = builder.toString();
+
+            for (Message message : proto.getMessages())
             {
-                if (!(extOpt instanceof Message))
-                    throw new IllegalArgumentException("Option extends specified not a message reference");
+                Annotation annotation = message.getAnnotation("Extend");
+                if (annotation != null)
+                {
+                    Object byMessageRef = annotation.getValue("by");
+                    if (byMessageRef == null)
+                    {
+                        throw new IllegalArgumentException("By parameter of attribute @Extend is not specified");
+                    }
 
-                Message base = (Message) extOpt;
-                String result = extendBy(group, message, base);
-                if (result != null && result.length() > 0)
-                    data = injectAfterOption(message, base, data, result);
+                    if (!(byMessageRef instanceof Message))
+                    {
+                        throw new IllegalArgumentException(
+                                "By parameter have a non Message reference in your @Extend annotation");
+                    }
+
+                    Message base = (Message) byMessageRef;
+                    String result = extendBy(group, message, base);
+                    if (result != null && result.length() > 0)
+                    {
+                        data = injectAfterAnnotation(message, base, data, result);
+                    }
+                }
+
+                Object extOpt = message.getExtraOption("extends");
+                if (extOpt != null)
+                {
+                    if (!(extOpt instanceof Message))
+                    {
+                        throw new IllegalArgumentException("Option extends specified not a message reference");
+                    }
+
+                    Message base = (Message) extOpt;
+                    String result = extendBy(group, message, base);
+                    if (result != null && result.length() > 0)
+                    {
+                        data = injectAfterOption(message, base, data, result);
+                    }
+                }
             }
-        }
 
-        writer.write(data);
-        writer.close();
+            writer.write(data);
+        }
     }
 
     public static String extendBy(StringTemplateGroup group, Message extend, Message by) throws IOException
@@ -136,7 +148,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
             messageIndex = matcher.start(2);
             openBracketIndex = matcher.end(2);
             extendProto = extendProto.substring(0, openBracketIndex) +
-                    LINE_SEPARATOR + indentation + "// " + generateTimestamp(extend, by) +
+                    LINE_SEPARATOR + indentation + "// " + generateTimestamp(by) +
                     LINE_SEPARATOR + insertIndentation(byContent, indentation) +
                     LINE_SEPARATOR + extendProto.substring(openBracketIndex);
         }
@@ -152,7 +164,9 @@ public class ProtoToProtoCompiler extends STCodeGenerator
             aend = matcher.end(1);
         }
         if (astart > -1)
+        {
             extendProto = extendProto.substring(0, astart) + "// " + extendProto.substring(astart);
+        }
 
         return extendProto;
     }
@@ -180,7 +194,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator
             // Make a replace
             StringBuffer sb = new StringBuffer();
             matcher.appendReplacement(sb, "$1" +
-                    "// " + generateTimestamp(extend, by) + LINE_SEPARATOR +
+                    "// " + generateTimestamp(by) + LINE_SEPARATOR +
                     indentation + "// $2" + LINE_SEPARATOR + insertIndentation(byContent, indentation));
             matcher.appendTail(sb);
             return sb.toString();
@@ -192,23 +206,29 @@ public class ProtoToProtoCompiler extends STCodeGenerator
     public static String insertIndentation(String content, String indent)
     {
         if (!content.startsWith(LINE_SEPARATOR))
+        {
             content = indent + content;
+        }
         return content.replace(LINE_SEPARATOR, LINE_SEPARATOR + indent);
     }
 
     public static String generateIndentation(String indentation, int length)
     {
         if (indentation == null)
+        {
             indentation = "";
+        }
 
         StringBuilder builder = new StringBuilder(indentation);
         for (int i = 0; i < length; i++)
+        {
             builder.append(' ');
+        }
 
         return builder.toString();
     }
 
-    public static String generateTimestamp(Message extend, Message by)
+    public static String generateTimestamp(Message by)
     {
         return "Extended by " + by.getName() + " at " + new Date();
     }

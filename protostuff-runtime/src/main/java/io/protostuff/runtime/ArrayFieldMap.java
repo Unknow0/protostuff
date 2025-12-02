@@ -20,67 +20,57 @@ import java.util.Map;
  *
  * @author Kostiantyn Shchepanovskyi
  */
-final class ArrayFieldMap<T> implements FieldMap<T>
-{
-    private final List<Field<T>> fields;
-    private final Field<T>[] fieldsByNumber;
-    private final Map<String, Field<T>> fieldsByName;
+final class ArrayFieldMap<T> implements FieldMap<T> {
+	private final List<Field<T>> fields;
+	private final Field<T>[] fieldsByNumber;
+	private final Map<String, Field<T>> fieldsByName;
 
-    @SuppressWarnings("unchecked")
-    public ArrayFieldMap(Collection<Field<T>> fields, int lastFieldNumber)
-    {
-        fieldsByName = new HashMap<String, Field<T>>();
-        fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
-        for (Field<T> f : fields)
-        {
-            Field<T> last = this.fieldsByName.put(f.name, f);
-            if (last != null)
-            {
-                throw new IllegalStateException(last + " and " + f
-                        + " cannot have the same name.");
-            }
-            if (fieldsByNumber[f.number] != null)
-            {
-                throw new IllegalStateException("Fields '" + fieldsByNumber[f.number].name + "' " + fieldsByNumber[f.number]
-                        + " and '" + f.name + "' " + f + " cannot have the same number: " + f.number);
-            }
+	@SuppressWarnings("unchecked")
+	public ArrayFieldMap(Collection<Field<T>> fields, int lastFieldNumber) {
+		fieldsByName = new HashMap<>();
+		fieldsByNumber = (Field<T>[]) new Field<?>[lastFieldNumber + 1];
+		for (Field<T> f : fields) {
+			Field<T> last = this.fieldsByName.put(f.name, f);
+			if (last != null) {
+				throw new IllegalStateException(last + " and " + f + " cannot have the same name.");
+			}
+			if (fieldsByNumber[f.number] != null) {
+				throw new IllegalStateException("Fields '" + fieldsByNumber[f.number].name + "' " + fieldsByNumber[f.number] + " and '" + f.name + "' " + f
+						+ " cannot have the same number: " + f.number);
+			}
 
-            fieldsByNumber[f.number] = f;
-        }
+			fieldsByNumber[f.number] = f;
+		}
 
-        List<Field<T>> fieldList = new ArrayList<Field<T>>(fields.size());
-        for (Field<T> field : fieldsByNumber)
-        {
-            if (field != null)
-                fieldList.add(field);
-        }
-        this.fields = Collections.unmodifiableList(fieldList);
-    }
+		List<Field<T>> fieldList = new ArrayList<>(fields.size());
+		for (Field<T> field : fieldsByNumber) {
+			if (field != null) {
+				fieldList.add(field);
+			}
+		}
+		this.fields = Collections.unmodifiableList(fieldList);
+	}
 
-    @Override
-    public Field<T> getFieldByNumber(int n)
-    {
-        return n < fieldsByNumber.length ? fieldsByNumber[n] : null;
-    }
+	@Override
+	public Field<T> getFieldByNumber(int n) {
+		return n < fieldsByNumber.length ? fieldsByNumber[n] : null;
+	}
 
-    @Override
-    public Field<T> getFieldByName(String fieldName)
-    {
-        return fieldsByName.get(fieldName);
-    }
+	@Override
+	public Field<T> getFieldByName(String fieldName) {
+		return fieldsByName.get(fieldName);
+	}
 
-    /**
-     * Returns the message's total number of fields.
-     */
-    @Override
-    public int getFieldCount()
-    {
-        return fields.size();
-    }
+	/**
+	 * Returns the message's total number of fields.
+	 */
+	@Override
+	public int getFieldCount() {
+		return fields.size();
+	}
 
-    @Override
-    public List<Field<T>> getFields()
-    {
-        return fields;
-    }
+	@Override
+	public List<Field<T>> getFields() {
+		return fields;
+	}
 }

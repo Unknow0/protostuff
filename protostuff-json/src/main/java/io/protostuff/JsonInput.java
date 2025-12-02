@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -111,7 +111,9 @@ public final class JsonInput implements Input
                 lastRepeated = false;
                 // skip the scalar elements
                 while (parser.nextToken() != END_ARRAY)
+                {
                     ;
+                }
             }
             return;
         }
@@ -131,7 +133,9 @@ public final class JsonInput implements Input
                 // skip null elements
                 JsonToken jt;
                 while (VALUE_NULL == (jt = parser.nextToken()))
+                {
                     ;
+                }
 
                 if (jt == END_ARRAY)
                 {
@@ -152,10 +156,12 @@ public final class JsonInput implements Input
     private <T> int readFieldNumber(final Schema<T> schema, final JsonParser parser)
             throws IOException
     {
-        for (; ; )
+        for (;;)
         {
             if (parser.nextToken() == END_OBJECT)
+            {
                 return 0;
+            }
 
             if (parser.getCurrentToken() != FIELD_NAME)
             {
@@ -199,9 +205,11 @@ public final class JsonInput implements Input
                 if (jt == VALUE_NULL)
                 {
                     // skip null elements
-                    //noinspection StatementWithEmptyBody
+                    // noinspection StatementWithEmptyBody
                     while (VALUE_NULL == (jt = parser.nextToken()))
+                    {
                         ;
+                    }
 
                     // all elements were null.
                     if (jt == END_ARRAY)
@@ -229,12 +237,18 @@ public final class JsonInput implements Input
     {
         final JsonToken jt = parser.getCurrentToken();
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         if (jt == VALUE_TRUE)
+        {
             return true;
+        }
         if (jt == VALUE_FALSE)
+        {
             return false;
+        }
 
         throw new JsonInputException("Expected token: true/false but was " + jt);
     }
@@ -245,7 +259,9 @@ public final class JsonInput implements Input
         final byte[] value = parser.getBinaryValue();
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         return value;
     }
@@ -262,7 +278,9 @@ public final class JsonInput implements Input
         bb.put(parser.getBinaryValue());
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
     }
 
     @Override
@@ -274,18 +292,31 @@ public final class JsonInput implements Input
             final String textValue = parser.getText();
 
             if ("Infinity".equals(textValue))
+            {
                 value = Double.POSITIVE_INFINITY;
+            }
             else if ("-Infinity".equals(textValue))
-                    value = Double.NEGATIVE_INFINITY;
+            {
+                value = Double.NEGATIVE_INFINITY;
+            }
             else if ("NaN".equals(textValue))
+            {
                 value = Double.NaN;
+            }
             else
+            {
                 value = parser.getDoubleValue();
-        } else
+            }
+        }
+        else
+        {
             value = parser.getDoubleValue();
+        }
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         return value;
     }
@@ -335,18 +366,31 @@ public final class JsonInput implements Input
             final String textValue = parser.getText();
 
             if ("Infinity".equals(textValue))
+            {
                 value = Float.POSITIVE_INFINITY;
+            }
             else if ("-Infinity".equals(textValue))
-                    value = Float.NEGATIVE_INFINITY;
+            {
+                value = Float.NEGATIVE_INFINITY;
+            }
             else if ("NaN".equals(textValue))
+            {
                 value = Float.NaN;
+            }
             else
+            {
                 value = parser.getFloatValue();
-        } else
+            }
+        }
+        else
+        {
             value = parser.getFloatValue();
+        }
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         return value;
     }
@@ -357,7 +401,9 @@ public final class JsonInput implements Input
         final int value = parser.getIntValue();
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         return value;
     }
@@ -368,7 +414,9 @@ public final class JsonInput implements Input
         final long value = parser.getLongValue();
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         return value;
     }
@@ -401,12 +449,16 @@ public final class JsonInput implements Input
     public String readString() throws IOException
     {
         if (parser.getCurrentToken() != VALUE_STRING)
+        {
             throw new JsonInputException("Expected token: string but was " + parser.getCurrentToken());
+        }
 
         final String value = parser.getText();
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             lastRepeated = false;
+        }
 
         return value;
     }
@@ -459,7 +511,9 @@ public final class JsonInput implements Input
         this.lastRepeated = false;
 
         if (value == null)
+        {
             value = schema.newMessage();
+        }
 
         schema.mergeFrom(this, value);
 
@@ -471,7 +525,9 @@ public final class JsonInput implements Input
         }
 
         if (!schema.isInitialized(value))
+        {
             throw new UninitializedMessageException(value, schema);
+        }
 
         // restore state
         this.lastNumber = lastNumber;
@@ -479,7 +535,9 @@ public final class JsonInput implements Input
         this.lastName = lastName;
 
         if (lastRepeated && parser.nextToken() == END_ARRAY)
+        {
             this.lastRepeated = false;
+        }
 
         return value;
     }
@@ -489,9 +547,13 @@ public final class JsonInput implements Input
             boolean repeated) throws IOException
     {
         if (utf8String)
+        {
             output.writeString(fieldNumber, readString(), repeated);
+        }
         else
+        {
             output.writeByteArray(fieldNumber, readByteArray(), repeated);
+        }
     }
 
     /**

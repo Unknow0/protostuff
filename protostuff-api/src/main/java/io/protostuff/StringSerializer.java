@@ -442,7 +442,7 @@ public final class StringSerializer
 
                 buffer[offset++] = (byte) (0x80 | ((c >> 0) & 0x3F));
             }
-            else if (Character.isHighSurrogate((char) c) && i < len && Character.isLowSurrogate((char) str.charAt(i)))
+            else if (Character.isHighSurrogate(c) && i < len && Character.isLowSurrogate(str.charAt(i)))
             {
                 // We have a surrogate pair, so use the 4-byte encoding.
                 if (offset == limit)
@@ -472,7 +472,7 @@ public final class StringSerializer
                     }
                 }
 
-                int codePoint = Character.toCodePoint((char) c, (char) str.charAt(i));
+                int codePoint = Character.toCodePoint(c, str.charAt(i));
 
                 buffer[offset++] = (byte) (0xF0 | ((codePoint >> 18) & 0x07));
 
@@ -688,7 +688,7 @@ public final class StringSerializer
                 buffer[offset++] = (byte) (0xC0 | ((c >> 6) & 0x1F));
                 buffer[offset++] = (byte) (0x80 | ((c >> 0) & 0x3F));
             }
-            else if (Character.isHighSurrogate((char) c) && i < len && Character.isLowSurrogate((char) str.charAt(i)))
+            else if (Character.isHighSurrogate((char) c) && i < len && Character.isLowSurrogate(str.charAt(i)))
             {
                 // We have a surrogate pair, so use the 4-byte encoding.
                 adjustableLimit += 3;
@@ -699,7 +699,7 @@ public final class StringSerializer
                     return writeUTF8(str, i - 1, len, buffer, offset, buffer.length, session, lb);
                 }
 
-                int codePoint = Character.toCodePoint((char) c, (char) str.charAt(i));
+                int codePoint = Character.toCodePoint((char) c, str.charAt(i));
                 buffer[offset++] = (byte) (0xF0 | ((codePoint >> 18) & 0x07));
                 buffer[offset++] = (byte) (0x80 | ((codePoint >> 12) & 0x3F));
                 buffer[offset++] = (byte) (0x80 | ((codePoint >> 6) & 0x3F));
@@ -1161,7 +1161,7 @@ public final class StringSerializer
                     {
                         return readUTF(nonNullValue, offset, len);
                     }
-                    catch (UTFDataFormatException e)
+                    catch (@SuppressWarnings("unused") UTFDataFormatException e)
                     {
                         // Unexpected, but most systems previously using
                         // Protostuff don't expect error to occur from
@@ -1228,7 +1228,7 @@ public final class StringSerializer
             // If they're not, break out and take the 'slow' path.
             for (; i < len; i++)
             {
-                int ch = (int) buffer[offset + i] & 0xff;
+                int ch = buffer[offset + i] & 0xff;
 
                 // If it's not 7-bit character, break out
                 if (ch > 127)
@@ -1240,7 +1240,7 @@ public final class StringSerializer
             // 'Slow' path
             while (i < len)
             {
-                int ch = (int) buffer[offset + i] & 0xff;
+                int ch = buffer[offset + i] & 0xff;
 
                 // Determine how to decode based on 'bits of code point'
                 // See: http://en.wikipedia.org/wiki/UTF-8#Description
@@ -1260,7 +1260,7 @@ public final class StringSerializer
                     if (i > len)
                         throw new UTFDataFormatException("Malformed input: Partial character at end");
 
-                    int ch2 = (int) buffer[offset + i - 1];
+                    int ch2 = buffer[offset + i - 1];
 
                     // Make sure the second byte has the form 10xxxxxx
                     if ((ch2 & 0xC0) != 0x80)
@@ -1276,8 +1276,8 @@ public final class StringSerializer
                     if (i > len)
                         throw new UTFDataFormatException("Malformed input: Partial character at end");
 
-                    int ch2 = (int) buffer[offset + i - 2];
-                    int ch3 = (int) buffer[offset + i - 1];
+                    int ch2 = buffer[offset + i - 2];
+                    int ch3 = buffer[offset + i - 1];
 
                     // Check the 10xxxxxx 10xxxxxx of second two bytes
                     if (((ch2 & 0xC0) != 0x80) || ((ch3 & 0xC0) != 0x80))
@@ -1299,15 +1299,14 @@ public final class StringSerializer
                         if (i > len)
                             throw new UTFDataFormatException("Malformed input: Partial character at end");
 
-                        int ch2 = (int) buffer[offset + i - 3];
-                        int ch3 = (int) buffer[offset + i - 2];
-                        int ch4 = (int) buffer[offset + i - 1];
+                        int ch2 = buffer[offset + i - 3];
+                        int ch3 = buffer[offset + i - 2];
+                        int ch4 = buffer[offset + i - 1];
 
-                        int value =
-                                ((ch & 0x07) << 18) |
-                                        ((ch2 & 0x3F) << 12) |
-                                        ((ch3 & 0x3F) << 6) |
-                                        ((ch4 & 0x3F));
+                        int value = ((ch & 0x07) << 18) |
+                                ((ch2 & 0x3F) << 12) |
+                                ((ch3 & 0x3F) << 6) |
+                                ((ch4 & 0x3F));
 
                         charArray[c++] = highSurrogate(value);
                         charArray[c++] = lowSurrogate(value);
@@ -1324,13 +1323,14 @@ public final class StringSerializer
         }
     }
 
-
-    public static char highSurrogate(int codePoint) {
+    public static char highSurrogate(int codePoint)
+    {
         return (char) ((codePoint >>> 10)
                 + (MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT >>> 10)));
     }
 
-    public static char lowSurrogate(int codePoint) {
+    public static char lowSurrogate(int codePoint)
+    {
         return (char) ((codePoint & 0x3ff) + MIN_LOW_SURROGATE);
     }
 

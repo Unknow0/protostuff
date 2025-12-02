@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ import io.protostuff.parser.ProtoUtil;
 
 /**
  * Base class for code generators using StringTemplate.
- * 
+ *
  * @author David Yu
  * @created Jan 5, 2010
  */
@@ -44,56 +44,52 @@ public abstract class STCodeGenerator implements ProtoCompiler
 
     public static final Pattern FORMAT_DELIM = Pattern.compile("&&");
 
-    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS =
-            new ConcurrentHashMap<Class<?>, AttributeRenderer>();
+    static final ConcurrentHashMap<Class<?>, AttributeRenderer> DEFAULT_RENDERERS = new ConcurrentHashMap<>();
 
-    static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS =
-            new ConcurrentHashMap<String, Formatter>();
+    static final ConcurrentHashMap<String, Formatter> DEFAULT_FORMATTERS = new ConcurrentHashMap<>();
 
     public static int errorCount = 0;
 
-    public static final StringTemplateErrorListener ERROR_LISTENER =
-            new StringTemplateErrorListener()
+    public static final StringTemplateErrorListener ERROR_LISTENER = new StringTemplateErrorListener()
+    {
+        @Override
+        public void error(String msg, Throwable e)
+        {
+            errorCount += 1;
+            System.err.println("error: " + msg);
+        }
+
+        @Override
+        public void warning(String msg)
+        {
+            System.err.println("warning: " + msg);
+        }
+    };
+
+    public static final CommonGroupLoader GROUP_LOADER = new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
+
+    public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER = new AttributeRenderer()
+    {
+        @Override
+        public String toString(Object o)
+        {
+            return (String) o;
+        }
+
+        @Override
+        public String toString(Object o, String formatName)
+        {
+            String str = (String) o;
+            if (formatName == null)
             {
-                @Override
-                public void error(String msg, Throwable e)
-                {
-                    errorCount += 1;
-                    System.err.println("error: " + msg);
-                }
+                return str;
+            }
 
-                @Override
-                public void warning(String msg)
-                {
-                    System.err.println("warning: " + msg);
-                }
-            };
+            String[] formats = FORMAT_DELIM.split(formatName);
 
-    public static final CommonGroupLoader GROUP_LOADER =
-            new CommonGroupLoader(TEMPLATE_BASE, ERROR_LISTENER);
-
-    public static final AttributeRenderer STRING_ATTRIBUTE_RENDERER =
-            new AttributeRenderer()
-            {
-                @Override
-                public String toString(Object o)
-                {
-                    return (String) o;
-                }
-
-                @Override
-                public String toString(Object o, String formatName)
-                {
-                    String str = (String) o;
-                    if (formatName == null)
-                        return str;
-
-                    String[] formats = FORMAT_DELIM.split(formatName);
-
-                    return formats.length == 0 ? format(str, formatName) :
-                            chainedFormat(str, formats);
-                }
-            };
+            return formats.length == 0 ? format(str, formatName) : chainedFormat(str, formats);
+        }
+    };
 
     static
     {
@@ -111,12 +107,12 @@ public abstract class STCodeGenerator implements ProtoCompiler
     /**
      * Formats the string n times.
      * <p>
-     * 
+     *
      * <pre>
      * For example:
      * input = "some_foo"
      * formatters = ["PCS", "UPPER"]
-     * 
+     *
      * Output:
      * 1st pass: "Some Foo"
      * 2nd pass: "SOME FOO"
@@ -127,7 +123,9 @@ public abstract class STCodeGenerator implements ProtoCompiler
         // chained formatting
         String formatted = str;
         for (String f : formats)
+        {
             formatted = format(formatted, f);
+        }
 
         return formatted;
     }
@@ -141,7 +139,9 @@ public abstract class STCodeGenerator implements ProtoCompiler
     {
         final Formatter formatter = DEFAULT_FORMATTERS.get(formatName);
         if (formatter != null)
+        {
             return formatter.format(str);
+        }
 
         // regex replace
         int eq = formatName.indexOf("==");
@@ -151,7 +151,9 @@ public abstract class STCodeGenerator implements ProtoCompiler
             String replacement = formatName.substring(eq + 2);
 
             if (toReplace.length() == 1 && replacement.length() == 1)
+            {
                 return str.replace(toReplace.charAt(0), replacement.charAt(0));
+            }
 
             return str.replaceAll(toReplace, replacement);
         }
@@ -220,17 +222,23 @@ public abstract class STCodeGenerator implements ProtoCompiler
         if (source.isDirectory())
         {
             for (File f : CompilerUtil.getProtoFiles(source))
+            {
                 compile(module, parseProto(f, module), compileImports, recursive);
+            }
         }
         else
+        {
             compile(module, parseProto(source, module), compileImports, recursive);
+        }
     }
 
     protected static Proto parseProto(File file, ProtoModule module)
     {
         CachingProtoLoader loader = module.getCachingProtoLoader();
         if (loader == null)
+        {
             return ProtoUtil.parseProto(file);
+        }
 
         try
         {
@@ -245,7 +253,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
     protected void compile(ProtoModule module, Proto proto, boolean compileImports,
             boolean recursive) throws IOException
     {
-        final List<Proto> overridden = new ArrayList<Proto>();
+        final List<Proto> overridden = new ArrayList<>();
         try
         {
             collect(module, proto, overridden, recursive);
@@ -256,14 +264,18 @@ public abstract class STCodeGenerator implements ProtoCompiler
                 if (compileImports)
                 {
                     for (Proto p : proto.getImportedProtos())
+                    {
                         compile(module, p);
+                    }
                 }
             }
         }
         finally
         {
             for (Proto p : overridden)
-                postCompile(module, p);
+            {
+                postCompile(p);
+            }
         }
     }
 
@@ -271,13 +283,19 @@ public abstract class STCodeGenerator implements ProtoCompiler
             List<Proto> overridden, boolean compile) throws IOException
     {
         for (Proto p : proto.getImportedProtos())
+        {
             collect(module, p, overridden, compile);
+        }
 
         if (override(module, proto))
+        {
             overridden.add(proto);
+        }
 
         if (compile)
+        {
             compile(module, proto);
+        }
     }
 
     protected static boolean override(ProtoModule module, Proto proto)
@@ -300,7 +318,7 @@ public abstract class STCodeGenerator implements ProtoCompiler
         return override;
     }
 
-    protected static void postCompile(ProtoModule module, Proto proto)
+    protected static void postCompile(Proto proto)
     {
         proto.getMutableJavaPackageName().reset();
         proto.getMutablePackageName().reset();

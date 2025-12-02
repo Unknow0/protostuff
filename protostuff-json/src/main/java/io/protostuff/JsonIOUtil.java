@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
 
 /**
  * Utility for the JSON serialization/deserialization of messages and objects tied to a schema.
- * 
+ *
  * @author David Yu
  * @created Nov 20, 2009
  */
@@ -459,7 +459,9 @@ public final class JsonIOUtil
         final JsonOutput output = new JsonOutput(generator, numeric, schema);
         schema.writeTo(output, message);
         if (output.isLastRepeated())
+        {
             generator.writeEndArray();
+        }
 
         generator.writeEndObject();
     }
@@ -549,7 +551,9 @@ public final class JsonIOUtil
 
             schema.writeTo(output, m);
             if (output.isLastRepeated())
+            {
                 generator.writeEndArray();
+            }
 
             generator.writeEndObject();
             output.reset();
@@ -631,7 +635,7 @@ public final class JsonIOUtil
         }
 
         final JsonInput input = new JsonInput(parser, numeric);
-        final List<T> list = new ArrayList<T>();
+        final List<T> list = new ArrayList<>();
         for (JsonToken t = parser.nextToken(); t != JsonToken.END_ARRAY; t = parser.nextToken())
         {
             if (t != JsonToken.START_OBJECT)

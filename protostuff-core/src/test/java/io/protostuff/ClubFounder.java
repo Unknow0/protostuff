@@ -141,10 +141,14 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
         public void writeTo(Output output, ClubFounder message) throws IOException
         {
             if (message.name != null)
+            {
                 output.writeString(1, message.name, false);
+            }
 
             if (message.club != null)
+            {
                 output.writeObject(2, message.club, Club.getSchema(), false);
+            }
 
         }
 
@@ -169,7 +173,7 @@ public final class ClubFounder implements Externalizable, Message<ClubFounder>
             return number == null ? 0 : number.intValue();
         }
 
-        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<String, Integer>();
+        final java.util.HashMap<String, Integer> fieldMap = new java.util.HashMap<>();
 
         {
             fieldMap.put("name", 1);

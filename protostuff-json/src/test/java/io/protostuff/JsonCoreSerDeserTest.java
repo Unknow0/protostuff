@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 
 /**
  * Testing for json ser/deser against messages.
- * 
+ *
  * @author David Yu
  * @created Nov 20, 2009
  */
@@ -135,7 +135,7 @@ public class JsonCoreSerDeserTest extends TestCase
 
     public void testListIO() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 
@@ -151,12 +151,14 @@ public class JsonCoreSerDeserTest extends TestCase
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testListEmpty() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         JsonIOUtil.writeListTo(out, bars,
@@ -171,12 +173,14 @@ public class JsonCoreSerDeserTest extends TestCase
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testListIOWithArrays() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(SerializableObjects.foo);
         foos.add(SerializableObjects.foo);
 
@@ -192,7 +196,9 @@ public class JsonCoreSerDeserTest extends TestCase
         assertTrue(parsed.size() == foos.size());
         int i = 0;
         for (Foo f : parsed)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyMessage() throws Exception
@@ -327,7 +333,7 @@ public class JsonCoreSerDeserTest extends TestCase
     public void testEmptyFooInner() throws Exception
     {
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         foo.setSomeBar(bars);
 
@@ -342,7 +348,7 @@ public class JsonCoreSerDeserTest extends TestCase
     public void testEmptyFooDeeper() throws Exception
     {
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);

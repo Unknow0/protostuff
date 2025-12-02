@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Foo - for testing
- * 
+ *
  * @author David Yu
  * @created Nov 10, 2009
  */
@@ -38,7 +38,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         return DEFAULT_INSTANCE;
     }
 
-    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<>();
 
     static
     {
@@ -367,47 +367,65 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         if (message.someInt != null)
         {
             for (int value : message.someInt)
+            {
                 output.writeInt32(1, value, true);
+            }
         }
         if (message.someString != null)
         {
             for (String value : message.someString)
+            {
                 output.writeString(2, value, true);
+            }
         }
         if (message.someBar != null)
         {
             for (Bar value : message.someBar)
+            {
                 output.writeObject(3, value, Bar.getSchema(), true);
+            }
         }
         if (message.someEnum != null)
         {
             for (EnumSample value : message.someEnum)
+            {
                 output.writeEnum(4, value.number, true);
+            }
         }
         if (message.someBytes != null)
         {
             for (ByteString value : message.someBytes)
+            {
                 output.writeBytes(5, value, true);
+            }
         }
         if (message.someBoolean != null)
         {
             for (boolean value : message.someBoolean)
+            {
                 output.writeBool(6, value, true);
+            }
         }
         if (message.someFloat != null)
         {
             for (Float value : message.someFloat)
+            {
                 output.writeFloat(7, value, true);
+            }
         }
         if (message.someDouble != null)
         {
             for (Double value : message.someDouble)
+            {
                 output.writeDouble(8, value, true);
+            }
         }
         if (message.someLong != null)
         {
             for (Long value : message.someLong)
+            {
                 output.writeInt64(9, value, true);
+            }
         }
     }
 
@@ -422,47 +440,65 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
                     return;
                 case 1:
                     if (message.someInt == null)
-                        message.someInt = new ArrayList<Integer>();
+                    {
+                        message.someInt = new ArrayList<>();
+                    }
                     message.someInt.add(input.readInt32());
                     break;
                 case 2:
                     if (message.someString == null)
-                        message.someString = new ArrayList<String>();
+                    {
+                        message.someString = new ArrayList<>();
+                    }
                     message.someString.add(input.readString());
                     break;
                 case 3:
                     if (message.someBar == null)
-                        message.someBar = new ArrayList<Bar>();
+                    {
+                        message.someBar = new ArrayList<>();
+                    }
                     message.someBar.add(input.mergeObject(null, Bar.getSchema()));
                     break;
                 case 4:
                     if (message.someEnum == null)
-                        message.someEnum = new ArrayList<EnumSample>();
+                    {
+                        message.someEnum = new ArrayList<>();
+                    }
                     message.someEnum.add(EnumSample.valueOf(input.readEnum()));
                     break;
                 case 5:
                     if (message.someBytes == null)
-                        message.someBytes = new ArrayList<ByteString>();
+                    {
+                        message.someBytes = new ArrayList<>();
+                    }
                     message.someBytes.add(input.readBytes());
                     break;
                 case 6:
                     if (message.someBoolean == null)
-                        message.someBoolean = new ArrayList<Boolean>();
+                    {
+                        message.someBoolean = new ArrayList<>();
+                    }
                     message.someBoolean.add(input.readBool());
                     break;
                 case 7:
                     if (message.someFloat == null)
-                        message.someFloat = new ArrayList<Float>();
+                    {
+                        message.someFloat = new ArrayList<>();
+                    }
                     message.someFloat.add(input.readFloat());
                     break;
                 case 8:
                     if (message.someDouble == null)
-                        message.someDouble = new ArrayList<Double>();
+                    {
+                        message.someDouble = new ArrayList<>();
+                    }
                     message.someDouble.add(input.readDouble());
                     break;
                 case 9:
                     if (message.someLong == null)
-                        message.someLong = new ArrayList<Long>();
+                    {
+                        message.someLong = new ArrayList<>();
+                    }
                     message.someLong.add(input.readInt64());
                     break;
                 default:
@@ -522,6 +558,7 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         return PIPE_SCHEMA;
     }
 
+    @Override
     public int hashCode()
     {
         final int prime = 31;
@@ -538,78 +575,117 @@ public final class Foo implements Message<Foo>, Schema<Foo>, Externalizable
         return result;
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
-        if (obj == null)
+        }
+        if ((obj == null) || (getClass() != obj.getClass()))
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         Foo other = (Foo) obj;
         if (someBar == null)
         {
             if (other.someBar != null)
+            {
                 return false;
+            }
         }
         else if (!someBar.equals(other.someBar))
+        {
             return false;
+        }
         if (someBoolean == null)
         {
             if (other.someBoolean != null)
+            {
                 return false;
+            }
         }
         else if (!someBoolean.equals(other.someBoolean))
+        {
             return false;
+        }
         if (someBytes == null)
         {
             if (other.someBytes != null)
+            {
                 return false;
+            }
         }
         else if (!someBytes.equals(other.someBytes))
+        {
             return false;
+        }
         if (someDouble == null)
         {
             if (other.someDouble != null)
+            {
                 return false;
+            }
         }
         else if (!someDouble.equals(other.someDouble))
+        {
             return false;
+        }
         if (someEnum == null)
         {
             if (other.someEnum != null)
+            {
                 return false;
+            }
         }
         else if (!someEnum.equals(other.someEnum))
+        {
             return false;
+        }
         if (someFloat == null)
         {
             if (other.someFloat != null)
+            {
                 return false;
+            }
         }
         else if (!someFloat.equals(other.someFloat))
+        {
             return false;
+        }
         if (someInt == null)
         {
             if (other.someInt != null)
+            {
                 return false;
+            }
         }
         else if (!someInt.equals(other.someInt))
+        {
             return false;
+        }
         if (someLong == null)
         {
             if (other.someLong != null)
+            {
                 return false;
+            }
         }
         else if (!someLong.equals(other.someLong))
+        {
             return false;
+        }
         if (someString == null)
         {
             if (other.someString != null)
+            {
                 return false;
+            }
         }
         else if (!someString.equals(other.someString))
+        {
             return false;
+        }
         return true;
     }
 

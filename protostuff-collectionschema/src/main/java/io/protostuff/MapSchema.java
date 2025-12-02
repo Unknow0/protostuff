@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new HashMap<K, V>();
+                return new HashMap<>();
             }
         },
         // defaults to TreeMap
@@ -70,7 +70,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         // defaults to TreeMap
@@ -79,7 +79,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         HashMap(java.util.HashMap.class)
@@ -87,7 +87,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new HashMap<K, V>();
+                return new HashMap<>();
             }
         },
         LinkedHashMap(java.util.LinkedHashMap.class)
@@ -95,7 +95,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.LinkedHashMap<K, V>();
+                return new java.util.LinkedHashMap<>();
             }
         },
         TreeMap(java.util.TreeMap.class)
@@ -103,7 +103,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.TreeMap<K, V>();
+                return new java.util.TreeMap<>();
             }
         },
         WeakHashMap(java.util.WeakHashMap.class)
@@ -111,7 +111,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.WeakHashMap<K, V>();
+                return new java.util.WeakHashMap<>();
             }
         },
         IdentityHashMap(java.util.IdentityHashMap.class)
@@ -119,7 +119,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.IdentityHashMap<K, V>();
+                return new java.util.IdentityHashMap<>();
             }
         },
         Hashtable(java.util.Hashtable.class)
@@ -127,7 +127,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.Hashtable<K, V>();
+                return new java.util.Hashtable<>();
             }
         },
         // defaults to ConcurrentHashMap
@@ -136,7 +136,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentHashMap<K, V>();
+                return new java.util.concurrent.ConcurrentHashMap<>();
             }
         },
         ConcurrentHashMap(java.util.concurrent.ConcurrentHashMap.class)
@@ -144,7 +144,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentHashMap<K, V>();
+                return new java.util.concurrent.ConcurrentHashMap<>();
             }
         },
         // defaults to ConcurrentNavigableMap
@@ -153,7 +153,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+                return new java.util.concurrent.ConcurrentSkipListMap<>();
             }
         },
         ConcurrentSkipListMap(java.util.concurrent.ConcurrentSkipListMap.class)
@@ -161,7 +161,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             @Override
             public <K, V> Map<K, V> newMessage()
             {
-                return new java.util.concurrent.ConcurrentSkipListMap<K, V>();
+                return new java.util.concurrent.ConcurrentSkipListMap<>();
             }
         },
         Properties(java.util.Properties.class)
@@ -192,9 +192,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
          */
         public static MessageFactories getFactory(Class<? extends Map<?, ?>> mapType)
         {
-            return mapType.getName().startsWith("java.util") ?
-                    MessageFactories.valueOf(mapType.getSimpleName()) :
-                    null;
+            return mapType.getName().startsWith("java.util") ? MessageFactories.valueOf(mapType.getSimpleName()) : null;
         }
 
         /**
@@ -215,15 +213,15 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     }
 
     /**
-     * This is used by {@link MessageFactories#accept(String)} method. Rather than iterating enums in runtime
-     * which can be an expensive way to do, caching all the enums as static property will be a good way.
+     * This is used by {@link MessageFactories#accept(String)} method. Rather than iterating enums in runtime which can
+     * be an expensive way to do, caching all the enums as static property will be a good way.
      */
     static final Set<String> MESSAGE_FACTORIES_NAMES;
 
     static
     {
         MessageFactories[] messageFactories = MapSchema.MessageFactories.values();
-        MESSAGE_FACTORIES_NAMES = new HashSet<String>(messageFactories.length);
+        MESSAGE_FACTORIES_NAMES = new HashSet<>(messageFactories.length);
         for (MessageFactories messageFactory : messageFactories)
         {
             MESSAGE_FACTORIES_NAMES.add(messageFactory.name());
@@ -354,7 +352,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
                     if (entry == null)
                     {
                         // lazy initialize
-                        entry = new MapWrapper<K, V>(map);
+                        entry = new MapWrapper<>(map);
                     }
 
                     if (entry != input.mergeObject(entry, entrySchema))
@@ -385,30 +383,28 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
     /**
      * The pipe schema of the {@link Map}.
      */
-    public final Pipe.Schema<Map<K, V>> pipeSchema =
-            new Pipe.Schema<Map<K, V>>(MapSchema.this)
+    public final Pipe.Schema<Map<K, V>> pipeSchema = new Pipe.Schema<Map<K, V>>(MapSchema.this)
+    {
+        @Override
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            for (int number = input.readFieldNumber(MapSchema.this);; number = input.readFieldNumber(MapSchema.this))
             {
-                @Override
-                protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+                switch (number)
                 {
-                    for (int number = input.readFieldNumber(MapSchema.this);;
-                    number = input.readFieldNumber(MapSchema.this))
-                    {
-                        switch (number)
-                        {
-                            case 0:
-                                return;
-                            case 1:
-                                output.writeObject(number, pipe, entryPipeSchema, true);
-                                break;
-                            default:
-                                throw new ProtostuffException("The map was incorrectly " +
-                                        "serialized.");
-                        }
-                    }
+                    case 0:
+                        return;
+                    case 1:
+                        output.writeObject(number, pipe, entryPipeSchema, true);
+                        break;
+                    default:
+                        throw new ProtostuffException("The map was incorrectly " +
+                                "serialized.");
                 }
+            }
+        }
 
-            };
+    };
 
     private final Schema<Entry<K, V>> entrySchema = new Schema<Entry<K, V>>()
     {
@@ -431,7 +427,9 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
         public final int getFieldNumber(String name)
         {
             if (name.length() != 1)
+            {
                 return 0;
+            }
 
             switch (name.charAt(0))
             {
@@ -482,8 +480,7 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
 
             K key = null;
             boolean valueRetrieved = false;
-            for (int number = input.readFieldNumber(this);;
-            number = input.readFieldNumber(this))
+            for (int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
                 switch (number)
                 {
@@ -531,42 +528,44 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             final K key = message.getKey();
             final V value = message.getValue();
             if (key != null)
+            {
                 writeKeyTo(output, 1, key, false);
+            }
 
             if (value != null)
+            {
                 writeValueTo(output, 2, value, false);
+            }
         }
 
     };
 
-    private final Pipe.Schema<Entry<K, V>> entryPipeSchema =
-            new Pipe.Schema<Entry<K, V>>(entrySchema)
+    private final Pipe.Schema<Entry<K, V>> entryPipeSchema = new Pipe.Schema<Entry<K, V>>(entrySchema)
+    {
+
+        @Override
+        protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+        {
+            for (int number = input.readFieldNumber(entrySchema);; number = input.readFieldNumber(entrySchema))
             {
-
-                @Override
-                protected void transfer(Pipe pipe, Input input, Output output) throws IOException
+                switch (number)
                 {
-                    for (int number = input.readFieldNumber(entrySchema);;
-                    number = input.readFieldNumber(entrySchema))
-                    {
-                        switch (number)
-                        {
-                            case 0:
-                                return;
-                            case 1:
-                                transferKey(pipe, input, output, 1, false);
-                                break;
-                            case 2:
-                                transferValue(pipe, input, output, 2, false);
-                                break;
-                            default:
-                                throw new ProtostuffException("The map was incorrectly " +
-                                        "serialized.");
-                        }
-                    }
+                    case 0:
+                        return;
+                    case 1:
+                        transferKey(pipe, input, output, 1, false);
+                        break;
+                    case 2:
+                        transferValue(pipe, input, output, 2, false);
+                        break;
+                    default:
+                        throw new ProtostuffException("The map was incorrectly " +
+                                "serialized.");
                 }
+            }
+        }
 
-            };
+    };
 
     /**
      * A {@link Map.Entry} w/c wraps a {@link Map}.
@@ -627,9 +626,13 @@ public abstract class MapSchema<K, V> implements Schema<Map<K, V>>
             // Do not add the entry yet if the value is retrieved before the key.
             // This could happen when you're dealing with json serialized from the browser.
             if (key == null)
+            {
                 this.value = value;
+            }
             else
+            {
                 map.put(key, value);
+            }
         }
 
     }

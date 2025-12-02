@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,16 +20,16 @@ import static io.protostuff.runtime.SerializableObjects.foo;
 import static io.protostuff.runtime.SerializableObjects.negativeBar;
 import static io.protostuff.runtime.SerializableObjects.negativeBaz;
 
-import junit.framework.TestCase;
 import io.protostuff.runtime.Bar;
 import io.protostuff.runtime.Baz;
 import io.protostuff.runtime.Foo;
 import io.protostuff.runtime.RuntimeSchema;
 import io.protostuff.runtime.SerializableObjects;
+import junit.framework.TestCase;
 
 /**
  * Testing for json ser/deser against runtime messages.
- * 
+ *
  * @author David Yu
  * @created Nov 20, 2009
  */

@@ -28,342 +28,278 @@
 
 package io.protostuff.runtime;
 
-import io.protostuff.runtime.PolymorphicSchema.Handler;
-
 import java.util.Collection;
 import java.util.Map;
 
+import io.protostuff.runtime.PolymorphicSchema.Handler;
+
 /**
  * Polymorphic types.
- * 
+ *
  * @author David Yu
  * @created Apr 30, 2012
  */
-public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory
-{
+public enum PolymorphicSchemaFactories implements PolymorphicSchema.Factory {
 
-    ARRAY
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            @SuppressWarnings("unchecked")
-            Class<Object> ct = (Class<Object>) typeClass.getComponentType();
+	ARRAY {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			@SuppressWarnings("unchecked")
+			Class<Object> ct = (Class<Object>) typeClass.getComponentType();
 
-            RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(
-                    ct, strategy);
+			RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(ct, strategy);
 
-            if (rff == RuntimeFieldFactory.DELEGATE)
-            {
-                // delegate
-                return strategy.getDelegateWrapper(ct).newSchema(typeClass,
-                        strategy, handler);
-            }
+			if (rff == RuntimeFieldFactory.DELEGATE) {
+				// delegate
+				return strategy.getDelegateWrapper(ct).newSchema(typeClass, strategy, handler);
+			}
 
-            if (rff.id > 0 && rff.id < 15)
-            {
-                // scalar
-                return ArraySchemas.newSchema(rff.id, ct, typeClass, strategy,
-                        handler);
-            }
+			if (rff.id > 0 && rff.id < 15) {
+				// scalar
+				return ArraySchemas.newSchema(rff.id, ct, typeClass, strategy, handler);
+			}
 
-            if (ct.isEnum())
-            {
-                // enum
-                return strategy.getEnumIO(ct).newSchema(typeClass, strategy,
-                        handler);
-            }
+			if (ct.isEnum()) {
+				// enum
+				return strategy.getEnumIO(ct).newSchema(typeClass, strategy, handler);
+			}
 
-            if (rff == RuntimeFieldFactory.POJO
-                    || (rff == RuntimeFieldFactory.POLYMORPHIC_POJO && RuntimeFieldFactory
-                            .pojo(ct, null, strategy)))
-            {
-                // pojo
-                return strategy.getSchemaWrapper(ct, true).newSchema(typeClass,
-                        strategy, handler);
-            }
+			if (rff == RuntimeFieldFactory.POJO || (rff == RuntimeFieldFactory.POLYMORPHIC_POJO && RuntimeFieldFactory.pojo(ct, null, strategy))) {
+				// pojo
+				return strategy.getSchemaWrapper(ct, true).newSchema(typeClass, strategy, handler);
+			}
 
-            return new ArraySchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    NUMBER
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new NumberSchema(strategy)
-            {
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    CLASS
-    {
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new ClassSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    ENUM
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicEnumSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    COLLECTION
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicCollectionSchema(strategy)
-            {
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    MAP
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicMapSchema(strategy)
-            {
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    THROWABLE
-    {
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicThrowableSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    POJO
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicPojoSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    POJO_MAP
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicPojoMapSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    POJO_COLLECTION
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new PolymorphicPojoCollectionSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    },
-    OBJECT
-    {
-        @Override
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, final Handler handler)
-        {
-            return new ObjectSchema(strategy)
-            {
-                @Override
-                protected void setValue(Object value, Object owner)
-                {
-                    handler.setValue(value, owner);
-                }
-            };
-        }
-    };
+			return new ArraySchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	NUMBER {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new NumberSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	CLASS {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new ClassSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	ENUM {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicEnumSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	COLLECTION {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicCollectionSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	MAP {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicMapSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	THROWABLE {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicThrowableSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	POJO {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicPojoSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	POJO_MAP {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicPojoMapSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	POJO_COLLECTION {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new PolymorphicPojoCollectionSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	},
+	OBJECT {
+		@Override
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, final Handler handler) {
+			return new ObjectSchema(strategy) {
+				@Override
+				protected void setValue(Object value, Object owner) {
+					handler.setValue(value, owner);
+				}
+			};
+		}
+	};
 
-    public static PolymorphicSchema.Factory getFactoryFromField(
-            final java.lang.reflect.Field f, final IdStrategy strategy)
-    {
-        final Class<?> clazz = f.getType();
-        
-        if (clazz.isArray())
-            return ARRAY;
+	public static PolymorphicSchema.Factory getFactoryFromField(final java.lang.reflect.Field f, final IdStrategy strategy) {
+		final Class<?> clazz = f.getType();
 
-        if (Number.class == clazz)
-            return NUMBER;
+		if (clazz.isArray()) {
+			return ARRAY;
+		}
 
-        if (Class.class == clazz)
-            return CLASS;
+		if (Number.class == clazz) {
+			return NUMBER;
+		}
 
-        if (Enum.class == clazz)
-            return ENUM;
-        
-        if (Throwable.class.isAssignableFrom(clazz))
-            return THROWABLE;
-        
-        if (Map.class.isAssignableFrom(clazz))
-        {
-            return 0 != (IdStrategy.POJO_SCHEMA_ON_MAP_FIELDS & strategy.flags) ? 
-                    POJO_MAP : MAP;
-        }
+		if (Class.class == clazz) {
+			return CLASS;
+		}
 
-        if (Collection.class.isAssignableFrom(clazz))
-        {
-            return 0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) ? 
-                    POJO_COLLECTION : COLLECTION;
-        }
+		if (Enum.class == clazz) {
+			return ENUM;
+		}
 
-        return OBJECT;
-    }
+		if (Throwable.class.isAssignableFrom(clazz)) {
+			return THROWABLE;
+		}
 
-    public static PolymorphicSchema.Factory getFactoryFromRepeatedValueGenericType(
-            Class<?> clazz)
-    {
-        if (clazz.isArray())
-            return ARRAY;
+		if (Map.class.isAssignableFrom(clazz)) {
+			return 0 != (IdStrategy.POJO_SCHEMA_ON_MAP_FIELDS & strategy.flags) ? POJO_MAP : MAP;
+		}
 
-        if (Number.class == clazz)
-            return NUMBER;
+		if (Collection.class.isAssignableFrom(clazz)) {
+			return 0 != (IdStrategy.POJO_SCHEMA_ON_COLLECTION_FIELDS & strategy.flags) ? POJO_COLLECTION : COLLECTION;
+		}
 
-        if (Class.class == clazz)
-            return CLASS;
+		return OBJECT;
+	}
 
-        if (Enum.class == clazz)
-            return ENUM;
+	public static PolymorphicSchema.Factory getFactoryFromRepeatedValueGenericType(Class<?> clazz) {
+		if (clazz.isArray()) {
+			return ARRAY;
+		}
 
-        if (Object.class == clazz)
-            return OBJECT;
+		if (Number.class == clazz) {
+			return NUMBER;
+		}
 
-        if (Throwable.class.isAssignableFrom(clazz))
-            return THROWABLE;
-        
-        return null;
-    }
+		if (Class.class == clazz) {
+			return CLASS;
+		}
 
-    public static PolymorphicSchema getSchemaFromCollectionOrMapGenericType(
-            Class<?> clazz, IdStrategy strategy)
-    {
-        if (clazz.isArray())
-        {
-            @SuppressWarnings("unchecked")
-            Class<Object> ct = (Class<Object>) clazz.getComponentType();
+		if (Enum.class == clazz) {
+			return ENUM;
+		}
 
-            RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(
-                    ct, strategy);
+		if (Object.class == clazz) {
+			return OBJECT;
+		}
 
-            if (rff == RuntimeFieldFactory.DELEGATE)
-            {
-                // delegate
-                return strategy.getDelegateWrapper(ct).genericElementSchema;
-            }
+		if (Throwable.class.isAssignableFrom(clazz)) {
+			return THROWABLE;
+		}
 
-            if (rff.id > 0 && rff.id < 15)
-            {
-                // scalar
-                return ArraySchemas.getGenericElementSchema(rff.id, strategy);
-            }
+		return null;
+	}
 
-            if (ct.isEnum())
-            {
-                // enum
-                return strategy.getEnumIO(ct).genericElementSchema;
-            }
+	public static PolymorphicSchema getSchemaFromCollectionOrMapGenericType(Class<?> clazz, IdStrategy strategy) {
+		if (clazz.isArray()) {
+			@SuppressWarnings("unchecked")
+			Class<Object> ct = (Class<Object>) clazz.getComponentType();
 
-            if (rff == RuntimeFieldFactory.POJO
-                    || (rff == RuntimeFieldFactory.POLYMORPHIC_POJO && RuntimeFieldFactory
-                            .pojo(ct, null, strategy)))
-            {
-                // pojo
-                return strategy.getSchemaWrapper(ct, true).genericElementSchema;
-            }
+			RuntimeFieldFactory<?> rff = RuntimeFieldFactory.getFieldFactory(ct, strategy);
 
-            return strategy.ARRAY_ELEMENT_SCHEMA;
-        }
+			if (rff == RuntimeFieldFactory.DELEGATE) {
+				// delegate
+				return strategy.getDelegateWrapper(ct).genericElementSchema;
+			}
 
-        if (Number.class == clazz)
-            return strategy.NUMBER_ELEMENT_SCHEMA;
+			if (rff.id > 0 && rff.id < 15) {
+				// scalar
+				return ArraySchemas.getGenericElementSchema(rff.id, strategy);
+			}
 
-        if (Class.class == clazz)
-            return strategy.CLASS_ELEMENT_SCHEMA;
+			if (ct.isEnum()) {
+				// enum
+				return strategy.getEnumIO(ct).genericElementSchema;
+			}
 
-        if (Enum.class == clazz)
-            return strategy.POLYMORPHIC_ENUM_ELEMENT_SCHEMA;
+			if (rff == RuntimeFieldFactory.POJO || (rff == RuntimeFieldFactory.POLYMORPHIC_POJO && RuntimeFieldFactory.pojo(ct, null, strategy))) {
+				// pojo
+				return strategy.getSchemaWrapper(ct, true).genericElementSchema;
+			}
 
-        if (Object.class == clazz)
-            return strategy.OBJECT_ELEMENT_SCHEMA;
-        
-        if (Throwable.class.isAssignableFrom(clazz))
-            return strategy.POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA;
-        
-        return null;
-    }
+			return strategy.ARRAY_ELEMENT_SCHEMA;
+		}
+
+		if (Number.class == clazz) {
+			return strategy.NUMBER_ELEMENT_SCHEMA;
+		}
+
+		if (Class.class == clazz) {
+			return strategy.CLASS_ELEMENT_SCHEMA;
+		}
+
+		if (Enum.class == clazz) {
+			return strategy.POLYMORPHIC_ENUM_ELEMENT_SCHEMA;
+		}
+
+		if (Object.class == clazz) {
+			return strategy.OBJECT_ELEMENT_SCHEMA;
+		}
+
+		if (Throwable.class.isAssignableFrom(clazz)) {
+			return strategy.POLYMORPHIC_THROWABLE_ELEMENT_SCHEMA;
+		}
+
+		return null;
+	}
 }

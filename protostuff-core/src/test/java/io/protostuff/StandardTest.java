@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 /**
  * Base for all ser/deser test cases.
- * 
+ *
  * @author David Yu
  * @created Oct 8, 2010
  */
@@ -101,7 +101,7 @@ public abstract class StandardTest extends AbstractTest
     {
         Bar bar = new Bar();
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
         foo.setSomeBar(bars);
 
@@ -114,10 +114,10 @@ public abstract class StandardTest extends AbstractTest
     public void testPartialEmptyFoo() throws Exception
     {
         Bar bar = new Bar();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
         Foo foo = new Foo();
-        ArrayList<Integer> someInt = new ArrayList<Integer>();
+        ArrayList<Integer> someInt = new ArrayList<>();
         someInt.add(1);
         foo.setSomeInt(someInt);
 
@@ -135,9 +135,9 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         strings.add("someString");
         foo.setSomeString(strings);
 
@@ -153,9 +153,9 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         strings.add("");
         foo.setSomeString(strings);
 
@@ -171,7 +171,7 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);
@@ -187,7 +187,7 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);
@@ -203,7 +203,7 @@ public abstract class StandardTest extends AbstractTest
         Bar bar = new Bar();
         bar.setSomeBaz(baz);
         Foo foo = new Foo();
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         foo.setSomeBar(bars);
 
         byte[] output = toByteArray(foo);

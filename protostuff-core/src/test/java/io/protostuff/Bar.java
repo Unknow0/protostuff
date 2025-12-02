@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 /**
  * Bar - for testing
- * 
+ *
  * @author David Yu
  * @created Nov 10, 2009
  */
@@ -36,7 +36,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
         return DEFAULT_INSTANCE;
     }
 
-    private static final HashMap<String, Integer> __fieldMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> __fieldMap = new HashMap<>();
 
     static
     {
@@ -359,31 +359,49 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
     public void writeTo(Output output, Bar message) throws IOException
     {
         if (message.someInt != 0)
+        {
             output.writeInt32(1, message.someInt, false);
+        }
 
         if (message.someString != null)
+        {
             output.writeString(2, message.someString, false);
+        }
 
         if (message.someBaz != null)
+        {
             output.writeObject(3, message.someBaz, Baz.getSchema(), false);
+        }
 
         if (message.someEnum != null)
+        {
             output.writeEnum(4, message.someEnum.number, false);
+        }
 
         if (message.someBytes != null)
+        {
             output.writeBytes(5, message.someBytes, false);
+        }
 
         if (message.someBoolean)
+        {
             output.writeBool(6, message.someBoolean, false);
+        }
 
         if (message.someFloat != 0f)
+        {
             output.writeFloat(7, message.someFloat, false);
+        }
 
         if (message.someDouble != 0d)
+        {
             output.writeDouble(8, message.someDouble, false);
+        }
 
         if (message.someLong != 0l)
+        {
             output.writeInt64(9, message.someLong, false);
+        }
     }
 
     @Override
@@ -479,6 +497,7 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
         return PIPE_SCHEMA;
     }
 
+    @Override
     public int hashCode()
     {
         final int prime = 31;
@@ -497,53 +516,82 @@ public final class Bar implements Message<Bar>, Schema<Bar>, Externalizable
         return result;
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
-        if (obj == null)
+        }
+        if ((obj == null) || (getClass() != obj.getClass()))
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         Bar other = (Bar) obj;
         if (someBaz == null)
         {
             if (other.someBaz != null)
+            {
                 return false;
+            }
         }
         else if (!someBaz.equals(other.someBaz))
+        {
             return false;
+        }
         if (someBoolean != other.someBoolean)
+        {
             return false;
+        }
         if (someBytes == null)
         {
             if (other.someBytes != null)
+            {
                 return false;
+            }
         }
         else if (!someBytes.equals(other.someBytes))
+        {
             return false;
+        }
         if (Double.doubleToLongBits(someDouble) != Double.doubleToLongBits(other.someDouble))
+        {
             return false;
+        }
         if (someEnum == null)
         {
             if (other.someEnum != null)
+            {
                 return false;
+            }
         }
         else if (!someEnum.equals(other.someEnum))
+        {
             return false;
+        }
         if (Float.floatToIntBits(someFloat) != Float.floatToIntBits(other.someFloat))
+        {
             return false;
+        }
         if (someInt != other.someInt)
+        {
             return false;
+        }
         if (someLong != other.someLong)
+        {
             return false;
+        }
         if (someString == null)
         {
             if (other.someString != null)
+            {
                 return false;
+            }
         }
         else if (!someString.equals(other.someString))
+        {
             return false;
+        }
         return true;
     }
 

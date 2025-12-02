@@ -14,8 +14,6 @@
 
 package io.protostuff;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 /**
@@ -68,7 +66,7 @@ public class NumberParserTest extends TestCase
 
     }
 
-    public void testParseLong() throws IOException
+    public void testParseLong()
     {
         assertTrue(0l == NumberParser.parseLong(new byte[] { '0' }, 0, 1, 10));
         assertTrue(1l == NumberParser.parseLong(new byte[] { '1' }, 0, 1, 10));

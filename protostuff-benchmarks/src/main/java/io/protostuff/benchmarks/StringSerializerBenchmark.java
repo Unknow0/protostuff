@@ -1,6 +1,5 @@
 package io.protostuff.benchmarks;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +47,7 @@ public class StringSerializerBenchmark
     }
 
     @Setup
-    public void prepare() throws IOException
+    public void prepare()
     {
         sharedBuffer = LinkedBuffer.allocate(512);
         sharedSession = new WriteSession(sharedBuffer);

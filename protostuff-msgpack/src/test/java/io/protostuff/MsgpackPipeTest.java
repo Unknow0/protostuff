@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,98 +21,82 @@ import io.protostuff.StringSerializer.STRING;
 
 /**
  * Test case for msgpack pipes.
- * 
+ *
  * @author Alex Shvid
  */
-public class MsgpackPipeTest extends AbstractTest
-{
+public class MsgpackPipeTest extends AbstractTest {
 
-    protected static boolean numeric = false;
-    
-    static <T> void protobufRoundTrip(T message, Schema<T> schema,
-            Pipe.Schema<T> pipeSchema) throws Exception
-    {
-        byte[] protobuf = ProtobufIOUtil.toByteArray(message, schema, buf());
+	protected static boolean numeric = false;
 
-        ByteArrayInputStream protobufStream = new ByteArrayInputStream(protobuf);
+	static <T> void protobufRoundTrip(T message, Schema<T> schema, Pipe.Schema<T> pipeSchema) throws Exception {
+		byte[] protobuf = ProtobufIOUtil.toByteArray(message, schema, buf());
 
-        byte[] msgpack = MsgpackIOUtil.toByteArray(
-                ProtobufIOUtil.newPipe(protobuf, 0, protobuf.length), pipeSchema, numeric);
+		ByteArrayInputStream protobufStream = new ByteArrayInputStream(protobuf);
 
-        byte[] msgpackFromStream = MsgpackIOUtil.toByteArray(
-                ProtobufIOUtil.newPipe(protobufStream), pipeSchema, numeric);
+		byte[] msgpack = MsgpackIOUtil.toByteArray(ProtobufIOUtil.newPipe(protobuf, 0, protobuf.length), pipeSchema, numeric);
 
-        assertTrue(msgpack.length == msgpackFromStream.length);
-        assertEquals(STRING.deser(msgpack), STRING.deser(msgpackFromStream));
+		byte[] msgpackFromStream = MsgpackIOUtil.toByteArray(ProtobufIOUtil.newPipe(protobufStream), pipeSchema, numeric);
 
-        T parsedMessage = schema.newMessage();
-        MsgpackIOUtil.mergeFrom(msgpack, parsedMessage, schema, numeric);
-        SerializableObjects.assertEquals(message, parsedMessage);
+		assertTrue(msgpack.length == msgpackFromStream.length);
+		assertEquals(STRING.deser(msgpack), STRING.deser(msgpackFromStream));
 
-        ByteArrayInputStream jsonStream = new ByteArrayInputStream(msgpack);
+		T parsedMessage = schema.newMessage();
+		MsgpackIOUtil.mergeFrom(msgpack, parsedMessage, schema, numeric);
+		SerializableObjects.assertEquals(message, parsedMessage);
 
-        byte[] protobufRoundTrip = ProtobufIOUtil.toByteArray(
-                MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length, numeric), pipeSchema, buf());
+		ByteArrayInputStream jsonStream = new ByteArrayInputStream(msgpack);
 
-        byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(
-                MsgpackIOUtil.newPipe(jsonStream, numeric), pipeSchema, buf());
+		byte[] protobufRoundTrip = ProtobufIOUtil.toByteArray(MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length, numeric), pipeSchema, buf());
 
-        assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
-        assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
-    }
+		byte[] protobufRoundTripFromStream = ProtobufIOUtil.toByteArray(MsgpackIOUtil.newPipe(jsonStream, numeric), pipeSchema, buf());
 
-    static <T> void protostuffRoundTrip(T message, Schema<T> schema,
-            Pipe.Schema<T> pipeSchema) throws Exception
-    {
-        byte[] protostuff = ProtostuffIOUtil.toByteArray(message, schema, buf());
+		assertTrue(Arrays.equals(protobufRoundTrip, protobufRoundTripFromStream));
+		assertTrue(Arrays.equals(protobufRoundTrip, protobuf));
+	}
 
-        ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
+	static <T> void protostuffRoundTrip(T message, Schema<T> schema, Pipe.Schema<T> pipeSchema) throws Exception {
+		byte[] protostuff = ProtostuffIOUtil.toByteArray(message, schema, buf());
 
-        byte[] msgpack = MsgpackIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, numeric);
+		ByteArrayInputStream protostuffStream = new ByteArrayInputStream(protostuff);
 
-        byte[] msgpackFromStream = MsgpackIOUtil.toByteArray(
-                ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, numeric);
+		byte[] msgpack = MsgpackIOUtil.toByteArray(ProtostuffIOUtil.newPipe(protostuff, 0, protostuff.length), pipeSchema, numeric);
 
-        assertTrue(msgpack.length == msgpackFromStream.length);
-        assertEquals(STRING.deser(msgpack), STRING.deser(msgpackFromStream));
+		byte[] msgpackFromStream = MsgpackIOUtil.toByteArray(ProtostuffIOUtil.newPipe(protostuffStream), pipeSchema, numeric);
 
-        T parsedMessage = schema.newMessage();
-        MsgpackIOUtil.mergeFrom(msgpack, parsedMessage, schema, numeric);
-        SerializableObjects.assertEquals(message, parsedMessage);
+		assertTrue(msgpack.length == msgpackFromStream.length);
+		assertEquals(STRING.deser(msgpack), STRING.deser(msgpackFromStream));
 
-        ByteArrayInputStream msgpackStream = new ByteArrayInputStream(msgpack);
+		T parsedMessage = schema.newMessage();
+		MsgpackIOUtil.mergeFrom(msgpack, parsedMessage, schema, numeric);
+		SerializableObjects.assertEquals(message, parsedMessage);
 
-        byte[] protostuffRoundTrip = ProtostuffIOUtil.toByteArray(
-                MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length, numeric), pipeSchema, buf());
+		ByteArrayInputStream msgpackStream = new ByteArrayInputStream(msgpack);
 
-        byte[] protostuffRoundTripFromStream = ProtostuffIOUtil.toByteArray(
-                MsgpackIOUtil.newPipe(msgpackStream, numeric), pipeSchema, buf());
+		byte[] protostuffRoundTrip = ProtostuffIOUtil.toByteArray(MsgpackIOUtil.newPipe(msgpack, 0, msgpack.length, numeric), pipeSchema, buf());
 
-        assertTrue(Arrays.equals(protostuffRoundTrip, protostuffRoundTripFromStream));
-        assertTrue(Arrays.equals(protostuffRoundTrip, protostuff));
+		byte[] protostuffRoundTripFromStream = ProtostuffIOUtil.toByteArray(MsgpackIOUtil.newPipe(msgpackStream, numeric), pipeSchema, buf());
 
-    }
+		assertTrue(Arrays.equals(protostuffRoundTrip, protostuffRoundTripFromStream));
+		assertTrue(Arrays.equals(protostuffRoundTrip, protostuff));
 
-    public void testFoo() throws Exception
-    {
-        Foo foo = SerializableObjects.foo;
-        protobufRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());
-        protostuffRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());
-    }
+	}
 
-    public void testBar() throws Exception
-    {
-        Bar bar = SerializableObjects.bar;
-        protobufRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema());
-        protostuffRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema());
-    }
+	public void testFoo() throws Exception {
+		Foo foo = SerializableObjects.foo;
+		protobufRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());
+		protostuffRoundTrip(foo, Foo.getSchema(), Foo.getPipeSchema());
+	}
 
-    public void testBaz() throws Exception
-    {
-        Baz baz = SerializableObjects.baz;
-        protobufRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema());
-        protostuffRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema());
-    }
+	public void testBar() throws Exception {
+		Bar bar = SerializableObjects.bar;
+		protobufRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema());
+		protostuffRoundTrip(bar, Bar.getSchema(), Bar.getPipeSchema());
+	}
+
+	public void testBaz() throws Exception {
+		Baz baz = SerializableObjects.baz;
+		protobufRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema());
+		protostuffRoundTrip(baz, Baz.getSchema(), Baz.getPipeSchema());
+	}
 
 }

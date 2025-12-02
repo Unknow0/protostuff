@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
  * Computes the size of the data to be written.
  * <p>
  * Used internally by {@link CodedOutput}.
- * 
+ *
  * @author David Yu
  * @created Nov 9, 2009
  */
@@ -115,7 +115,7 @@ public final class ComputedSizeOutput implements Output
     {
         size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber,
                 WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint32Size(
-                ProtobufOutput.encodeZigZag32(value));
+                        ProtobufOutput.encodeZigZag32(value));
     }
 
     @Override
@@ -151,7 +151,7 @@ public final class ComputedSizeOutput implements Output
     {
         size += ProtobufOutput.computeRawVarint32Size(WireFormat.makeTag(fieldNumber,
                 WireFormat.WIRETYPE_VARINT)) + ProtobufOutput.computeRawVarint64Size(
-                ProtobufOutput.encodeZigZag64(value));
+                        ProtobufOutput.encodeZigZag64(value));
     }
 
     @Override
@@ -246,6 +246,7 @@ public final class ComputedSizeOutput implements Output
         size += actualSize;
     }
 
+    @SuppressWarnings("unused")
     <T> void writeObjectEncodedAsGroup(int fieldNumber, T value, Schema<T> schema,
             boolean repeated) throws IOException
     {

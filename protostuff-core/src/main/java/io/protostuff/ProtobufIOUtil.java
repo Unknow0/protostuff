@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Protobuf ser/deser util for messages/objects.
- * 
+ *
  * @author David Yu
  * @created Oct 5, 2010
  */
@@ -62,7 +62,9 @@ public final class ProtobufIOUtil
                     boolean cleanupOnly) throws IOException
             {
                 if (cleanupOnly)
+                {
                     return;
+                }
 
                 assert input == byteArrayInput;
             }
@@ -88,7 +90,9 @@ public final class ProtobufIOUtil
                     boolean cleanupOnly) throws IOException
             {
                 if (cleanupOnly)
+                {
                     return;
+                }
 
                 assert input == codedInput;
             }
@@ -134,7 +138,7 @@ public final class ProtobufIOUtil
 
     /**
      * Merges the {@code message} (delimited) from the {@link InputStream} using the given {@code schema}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema)
@@ -148,7 +152,7 @@ public final class ProtobufIOUtil
      * <p>
      * The delimited message size must not be larger than the {@code buffer}'s size/capacity. {@link ProtobufException}
      * "size limit exceeded" is thrown otherwise.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(InputStream in, T message, Schema<T> schema,
@@ -160,7 +164,7 @@ public final class ProtobufIOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}. Merges from the
      * {@link DataInput}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int mergeDelimitedFrom(DataInput in, T message, Schema<T> schema)
@@ -171,13 +175,15 @@ public final class ProtobufIOUtil
 
     /**
      * Serializes the {@code message} into a byte array using the given schema.
-     * 
+     *
      * @return the byte array containing the data.
      */
     public static <T> byte[] toByteArray(T message, Schema<T> schema, LinkedBuffer buffer)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         try
@@ -195,13 +201,15 @@ public final class ProtobufIOUtil
 
     /**
      * Writes the {@code message} into the {@link LinkedBuffer} using the given schema.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeTo(LinkedBuffer buffer, T message, Schema<T> schema)
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         try
@@ -219,14 +227,16 @@ public final class ProtobufIOUtil
 
     /**
      * Serializes the {@code message} into an {@link OutputStream} using the given schema.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeTo(OutputStream out, T message, Schema<T> schema,
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         schema.writeTo(output, message);
@@ -235,14 +245,16 @@ public final class ProtobufIOUtil
 
     /**
      * Serializes the {@code message}, prefixed with its length, into an {@link OutputStream}.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema,
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         schema.writeTo(output, message);
@@ -258,7 +270,7 @@ public final class ProtobufIOUtil
     /**
      * Used by the code generated messages that implement {@link java.io.Externalizable}. Writes to the
      * {@link DataOutput} .
-     * 
+     *
      * @return the size of the message.
      */
     public static <T> int writeDelimitedTo(DataOutput out, T message, Schema<T> schema)
@@ -279,14 +291,16 @@ public final class ProtobufIOUtil
 
     /**
      * Serializes the {@code messages} (delimited) into an {@link OutputStream} using the given schema.
-     * 
+     *
      * @return the total size of the messages (excluding the length prefix varint)
      */
     public static <T> int writeListTo(OutputStream out, List<T> messages, Schema<T> schema,
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
         int totalSize = 0;
@@ -307,12 +321,13 @@ public final class ProtobufIOUtil
 
     /**
      * Parses the {@code messages} (delimited) from the {@link InputStream} using the given {@code schema}.
-     * 
+     *
      * @return the list containing the messages.
      */
+    @SuppressWarnings("resource")
     public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException
     {
-        final ArrayList<T> list = new ArrayList<T>();
+        final ArrayList<T> list = new ArrayList<>();
         byte[] buf = null;
         int biggestLen = 0;
         LimitedInputStream lin = null;
@@ -328,7 +343,9 @@ public final class ProtobufIOUtil
                 {
                     // message too big
                     if (lin == null)
+                    {
                         lin = new LimitedInputStream(in);
+                    }
                     final CodedInput input = new CodedInput(lin.limit(len), false);
                     schema.mergeFrom(input, message);
                     input.checkLastTagWas(0);
@@ -386,7 +403,9 @@ public final class ProtobufIOUtil
             LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final int size = IOUtil.fillBufferWithDelimitedMessageFrom(in,
                 drainRemainingBytesIfTooLarge, buffer);
@@ -426,14 +445,16 @@ public final class ProtobufIOUtil
     /**
      * Optimal writeDelimitedTo - The varint32 prefix is written to the buffer instead of directly writing to
      * outputstream.
-     * 
+     *
      * @return the size of the message
      */
     public static <T> int optWriteDelimitedTo(OutputStream out, T message,
             Schema<T> schema, LinkedBuffer buffer) throws IOException
     {
         if (buffer.start != buffer.offset)
+        {
             throw new IllegalArgumentException("Buffer previously used and had not been reset.");
+        }
 
         final ProtobufOutput output = new ProtobufOutput(buffer);
 
@@ -453,7 +474,9 @@ public final class ProtobufIOUtil
 
         // flush remaining
         if (buffer.next != null)
+        {
             LinkedBuffer.writeTo(out, buffer.next);
+        }
 
         return size;
     }

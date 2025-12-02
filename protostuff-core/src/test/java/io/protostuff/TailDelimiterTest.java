@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Test case for tail-delimited protostuff messages.
- * 
+ *
  * @author David Yu
  * @created Oct 5, 2010
  */
@@ -46,7 +46,7 @@ public class TailDelimiterTest extends AbstractTest
 
     public void testBar() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(SerializableObjects.bar);
         bars.add(SerializableObjects.negativeBar);
 
@@ -60,12 +60,14 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testEmptyBar() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
         bars.add(new Bar());
 
@@ -79,12 +81,14 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testEmptyBar2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -97,14 +101,16 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testEmptyBarInner() throws Exception
     {
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -117,12 +123,14 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedBars.size() == bars.size());
         int i = 0;
         for (Bar b : parsedBars)
+        {
             SerializableObjects.assertEquals(bars.get(i++), b);
+        }
     }
 
     public void testFoo() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(SerializableObjects.foo);
         foos.add(SerializableObjects.foo);
 
@@ -136,12 +144,14 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyList() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         final int bytesWritten = writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
@@ -154,12 +164,14 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFoo() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(new Foo());
         foos.add(new Foo());
 
@@ -173,12 +185,14 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFoo2() throws Exception
     {
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         foos.add(new Foo());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -191,15 +205,17 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFooInner() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(new Bar());
 
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         Foo foo = new Foo();
         foo.setSomeBar(bars);
 
@@ -215,17 +231,19 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
     public void testEmptyFooInner2() throws Exception
     {
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         Bar bar = new Bar();
         bar.setSomeBaz(new Baz());
         bars.add(bar);
 
-        ArrayList<Foo> foos = new ArrayList<Foo>();
+        ArrayList<Foo> foos = new ArrayList<>();
         Foo foo = new Foo();
         foo.setSomeBar(bars);
 
@@ -241,7 +259,9 @@ public class TailDelimiterTest extends AbstractTest
         assertTrue(parsedFoos.size() == foos.size());
         int i = 0;
         for (Foo f : parsedFoos)
+        {
             SerializableObjects.assertEquals(foos.get(i++), f);
+        }
     }
 
 }

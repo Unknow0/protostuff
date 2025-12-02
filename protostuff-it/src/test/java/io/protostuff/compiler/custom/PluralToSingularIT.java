@@ -15,14 +15,12 @@ import io.protostuff.compiler.it.custom.PluralToSingularTestMessage;
  *
  * @author Kostiantyn Shchepanovskyi
  */
-public class PluralToSingularIT
-{
-    @Test
-    public void testGeneratedClass() throws Exception
-    {
-        PluralToSingularTestMessage message = new PluralToSingularTestMessage();
-        message.addError(E.A);
-        assertEquals(1, message.getErrorCount());
-        assertEquals(singletonList(E.A), message.getErrorList());
-    }
+public class PluralToSingularIT {
+	@Test
+	public void testGeneratedClass() throws Exception {
+		PluralToSingularTestMessage message = new PluralToSingularTestMessage();
+		message.addError(E.A);
+		assertEquals(1, message.getErrorCount());
+		assertEquals(singletonList(E.A), message.getErrorList());
+	}
 }

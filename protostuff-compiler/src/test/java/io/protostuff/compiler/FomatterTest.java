@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link Formatter}.
- * 
+ *
  * @author David Yu
  * @author Kostiantyn Shchepanovskyi
  */
@@ -118,7 +118,8 @@ public class FomatterTest
     }
 
     @Test
-    public void testPluralize(){
+    public void testPluralize()
+    {
         assertEquals("octopi", PLURAL.format("octopus"));
         assertEquals("vertices", PLURAL.format("vertex"));
         assertEquals("oxen", PLURAL.format("ox"));
@@ -131,7 +132,8 @@ public class FomatterTest
     }
 
     @Test
-    public void testSingularize(){
+    public void testSingularize()
+    {
         assertEquals("prognosis", SINGULAR.format("prognoses"));
         assertEquals("Analysis", SINGULAR.format("Analyses"));
         assertEquals("book", SINGULAR.format("books"));
@@ -184,20 +186,23 @@ public class FomatterTest
     }
 
     @Test
-    public void testTrim() throws Exception {
+    public void testTrim() throws Exception
+    {
         final Formatter f = Formatter.BUILTIN.TRIM;
         Assert.assertEquals("Some Foo", f.format("\n\n   Some Foo\n"));
     }
 
     @Test
-    public void testCutL() throws Exception {
+    public void testCutL() throws Exception
+    {
         final Formatter f = Formatter.BUILTIN.CUT_L;
         Assert.assertEquals("oo", f.format("foo"));
         Assert.assertEquals("", f.format(""));
     }
 
     @Test
-    public void testCutR() throws Exception {
+    public void testCutR() throws Exception
+    {
         final Formatter f = Formatter.BUILTIN.CUT_R;
         Assert.assertEquals("fo", f.format("foo"));
         Assert.assertEquals("", f.format(""));

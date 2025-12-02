@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,14 +22,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import junit.framework.TestCase;
 import io.protostuff.CompareOutputsTest.Serializer;
 import io.protostuff.Foo.EnumSample;
 import io.protostuff.StringSerializer.STRING;
+import junit.framework.TestCase;
 
 /**
  * Compare the outputs of different json impls.
- * 
+ *
  * @author David Yu
  * @created Jul 2, 2010
  */
@@ -178,12 +178,14 @@ public class JsonCompareOutputsTest extends TestCase
     public void testBenchmark() throws Exception
     {
         if (!"false".equals(System.getProperty("benchmark.skip")))
+        {
             return;
+        }
 
         String dir = System.getProperty("benchmark.output_dir");
 
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
+        PrintStream out = dir == null ? System.out
+                : new PrintStream(new FileOutputStream(new File(new File(dir),
                         "protostuff-json-" + System.currentTimeMillis() + ".txt"), true));
 
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
@@ -196,15 +198,17 @@ public class JsonCompareOutputsTest extends TestCase
         start(foo, JSON_SERIALIZERS, out, warmups, loops);
 
         if (System.out != out)
+        {
             out.close();
+        }
     }
 
     public static void main(String[] args) throws Exception
     {
         String dir = System.getProperty("benchmark.output_dir");
 
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
+        PrintStream out = dir == null ? System.out
+                : new PrintStream(new FileOutputStream(new File(new File(dir),
                         "protostuff-json-" + System.currentTimeMillis() + ".txt"), true));
 
         int warmups = Integer.getInteger("benchmark.warmups", 100000);
@@ -217,7 +221,9 @@ public class JsonCompareOutputsTest extends TestCase
         start(foo, JSON_SERIALIZERS, out, warmups, loops);
 
         if (System.out != out)
+        {
             out.close();
+        }
     }
 
     public static final Serializer JSON_OUTPUT = new Serializer()

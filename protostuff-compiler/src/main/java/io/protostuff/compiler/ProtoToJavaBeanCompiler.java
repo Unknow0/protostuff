@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,7 @@ import io.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to protobuf java messages (pojos).
- * 
+ *
  * @author David Yu
  * @created Jan 4, 2010
  */
@@ -48,8 +48,7 @@ public class ProtoToJavaBeanCompiler extends STCodeGenerator
     public void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
-        String template = module.getOption("separate_schema") == null ?
-                "java_bean" : "java_bean_separate_schema";
+        String template = module.getOption("separate_schema") == null ? "java_bean" : "java_bean_separate_schema";
         StringTemplateGroup group = getSTG(template);
 
         writeEnums(module, proto, javaPackageName, group);

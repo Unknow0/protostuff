@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ import io.protostuff.parser.Proto;
  * <li>Schemas have a lot of Annotation/Options to configure compiler output</li>
  * <li>@Transient support for Messages/Enumerations</li>
  * </ul>
- * 
+ *
  * @author Ivan Prisyazhniy
  * @created Mar 9, 2012
  */
@@ -58,7 +58,9 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         for (EnumGroup eg : proto.getEnumGroups())
         {
             if (eg.getAnnotation("Transient") != null)
+            {
                 continue;
+            }
 
             Writer writer = CompilerUtil.newWriter(module, javaPackageName, eg.getName() + ".java");
             AutoIndentWriter out = new AutoIndentWriter(writer);
@@ -76,7 +78,9 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         for (Message m : proto.getMessages())
         {
             if (m.getAnnotation("Transient") != null)
+            {
                 continue;
+            }
 
             // Generate model
             boolean generateModel = shouldGenerateModel(module, proto, m);
@@ -131,46 +135,40 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator
         if (module.getOptions().containsKey("models"))
         {
             String optGenerateModel = module.getOption("models");
-            generateModel =
-                    optGenerateModel.equalsIgnoreCase("true") ||
-                            optGenerateModel.equals("1");
+            generateModel = optGenerateModel.equalsIgnoreCase("true") ||
+                    optGenerateModel.equals("1");
         }
         else if (module.getOptions().containsKey("no_models"))
         {
             String optGenerateModel = module.getOption("no_models");
-            generateModel =
-                    !optGenerateModel.equalsIgnoreCase("true") &&
-                            !optGenerateModel.equals("1");
+            generateModel = !optGenerateModel.equalsIgnoreCase("true") &&
+                    !optGenerateModel.equals("1");
         }
 
         if (proto.getOptions().containsKey("models"))
         {
             String optGenerateModel = proto.getExtraOption("models").toString();
-            generateModel =
-                    optGenerateModel.equalsIgnoreCase("true") ||
-                            optGenerateModel.equals("1");
+            generateModel = optGenerateModel.equalsIgnoreCase("true") ||
+                    optGenerateModel.equals("1");
         }
         else if (proto.getOptions().containsKey("no_models"))
         {
             String optGenerateModel = proto.getExtraOption("no_models");
-            generateModel =
-                    !optGenerateModel.equalsIgnoreCase("true") &&
-                            !optGenerateModel.equals("1");
+            generateModel = !optGenerateModel.equalsIgnoreCase("true") &&
+                    !optGenerateModel.equals("1");
         }
 
         if (m.getOptions().containsKey("model"))
         {
             String optGenerateModel = m.getExtraOption("model").toString();
-            generateModel =
-                    optGenerateModel.equalsIgnoreCase("true") ||
-                            optGenerateModel.equals("1");
+            generateModel = optGenerateModel.equalsIgnoreCase("true") ||
+                    optGenerateModel.equals("1");
         }
         else if (m.getOptions().containsKey("no_model"))
         {
             String optGenerateModel = m.getExtraOption("no_model");
-            generateModel =
-                    !optGenerateModel.equalsIgnoreCase("true") &&
-                            !optGenerateModel.equals("1");
+            generateModel = !optGenerateModel.equalsIgnoreCase("true") &&
+                    !optGenerateModel.equals("1");
         }
 
         return generateModel;

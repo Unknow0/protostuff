@@ -264,34 +264,54 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
     public void writeTo(Output output, PojoWithInts message) throws IOException
     {
         if (message.someInt32 != 0)
+        {
             output.writeInt32(1, message.someInt32, false);
+        }
 
         if (message.someUint32 != 0)
+        {
             output.writeUInt32(2, message.someUint32, false);
+        }
 
         if (message.someSint32 != 0)
+        {
             output.writeSInt32(3, message.someSint32, false);
+        }
 
         if (message.someFixed32 != 0)
+        {
             output.writeFixed32(4, message.someFixed32, false);
+        }
 
         if (message.someSfixed32 != 0)
+        {
             output.writeSFixed32(5, message.someSfixed32, false);
+        }
 
         if (message.someInt64 != 0)
+        {
             output.writeInt64(11, message.someInt64, false);
+        }
 
         if (message.someUint64 != 0)
+        {
             output.writeUInt64(12, message.someUint64, false);
+        }
 
         if (message.someSint64 != 0)
+        {
             output.writeSInt64(13, message.someSint64, false);
+        }
 
         if (message.someFixed64 != 0)
+        {
             output.writeFixed64(14, message.someFixed64, false);
+        }
 
         if (message.someSfixed64 != 0)
+        {
             output.writeSFixed64(15, message.someSfixed64, false);
+        }
     }
 
     @Override
@@ -328,32 +348,54 @@ public final class PojoWithInts implements Externalizable, Message<PojoWithInts>
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
-        if (obj == null)
+        }
+        if ((obj == null) || (getClass() != obj.getClass()))
+        {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         PojoWithInts other = (PojoWithInts) obj;
         if (someFixed32 != other.someFixed32)
+        {
             return false;
+        }
         if (someFixed64 != other.someFixed64)
+        {
             return false;
+        }
         if (someInt32 != other.someInt32)
+        {
             return false;
+        }
         if (someInt64 != other.someInt64)
+        {
             return false;
+        }
         if (someSfixed32 != other.someSfixed32)
+        {
             return false;
+        }
         if (someSfixed64 != other.someSfixed64)
+        {
             return false;
+        }
         if (someSint32 != other.someSint32)
+        {
             return false;
+        }
         if (someSint64 != other.someSint64)
+        {
             return false;
+        }
         if (someUint32 != other.someUint32)
+        {
             return false;
+        }
         if (someUint64 != other.someUint64)
+        {
             return false;
+        }
         return true;
     }
 

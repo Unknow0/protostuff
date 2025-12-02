@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 
 /**
  * Test for Map impls that returns non-unique entries across iterator calls.
- * 
+ *
  * @author David Yu
  * @created Oct 22, 2011
  */
@@ -56,7 +56,7 @@ public class UniqueMapEntryTest extends TestCase
             verify(map, "key1", "value1", "key2", "value2");
         }
 
-        EnumMap<Gender, String> map = new EnumMap<Gender, String>(Gender.class);
+        EnumMap<Gender, String> map = new EnumMap<>(Gender.class);
         verify(map, Gender.MALE, "m", Gender.FEMALE, "f");
 
     }

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,7 @@ import io.protostuff.WireFormat.FieldType;
 
 /**
  * CodedOutput test for the size of the bytes written.
- * 
+ *
  * @author David Yu
  * @created Nov 11, 2009
  */
@@ -101,9 +101,8 @@ public class CodedOutputTest extends AbstractTest
         {
             int[] inner = int32values[i++];
             int num = i;
-            for (int j = 0; j < inner.length; j++)
+            for (int value : inner)
             {
-                int value = inner[j];
                 int valueSize = CodedOutput.computeRawVarint32Size(value);
                 int tag = WireFormat.makeTag(num, FieldType.INT32.wireType);
                 int tagSize = CodedOutput.computeRawVarint32Size(tag);
@@ -123,9 +122,8 @@ public class CodedOutputTest extends AbstractTest
         {
             long[] inner = int64values[i++];
             int num = i;
-            for (int j = 0; j < inner.length; j++)
+            for (long value : inner)
             {
-                long value = inner[j];
                 int valueSize = CodedOutput.computeRawVarint64Size(value);
                 int tag = WireFormat.makeTag(num, FieldType.INT64.wireType);
                 int tagSize = CodedOutput.computeRawVarint32Size(tag);
@@ -144,15 +142,15 @@ public class CodedOutputTest extends AbstractTest
         {
             float[] inner = floatValues[i++];
             int num = i;
-            for (int j = 0; j < inner.length; j++)
+            for (float element : inner)
             {
-                int value = Float.floatToRawIntBits(inner[j]);
+                int value = Float.floatToRawIntBits(element);
                 int valueSize = CodedOutput.LITTLE_ENDIAN_32_SIZE;
                 int tag = WireFormat.makeTag(num, FieldType.FLOAT.wireType);
                 int tagSize = CodedOutput.computeRawVarint32Size(tag);
                 int expect = tagSize + valueSize;
 
-                assertSize(n1, CodedOutput.computeFloatSize(num, inner[j]), expect);
+                assertSize(n1, CodedOutput.computeFloatSize(num, element), expect);
                 assertSize(n2, CodedOutput.getTagAndRawLittleEndian32Bytes(tag, value).length, expect);
             }
         }
@@ -165,19 +163,20 @@ public class CodedOutputTest extends AbstractTest
         {
             double[] inner = doubleValues[i++];
             int num = i;
-            for (int j = 0; j < inner.length; j++)
+            for (double element : inner)
             {
-                long value = Double.doubleToRawLongBits(inner[j]);
+                long value = Double.doubleToRawLongBits(element);
                 int tag = WireFormat.makeTag(num, FieldType.DOUBLE.wireType);
                 int tagSize = CodedOutput.computeRawVarint32Size(tag);
                 int expect = tagSize + CodedOutput.LITTLE_ENDIAN_64_SIZE;
 
-                assertSize(n1, CodedOutput.computeDoubleSize(num, inner[j]), expect);
+                assertSize(n1, CodedOutput.computeDoubleSize(num, element), expect);
                 assertSize(n2, CodedOutput.getTagAndRawLittleEndian64Bytes(tag, value).length, expect);
             }
         }
     }
 
+    @SuppressWarnings("unused")
     static void assertSize(String name, int size1, int size2)
     {
         // System.err.println(size1 + " == " + size2 + " " + name);

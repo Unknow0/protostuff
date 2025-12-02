@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import io.protostuff.CompareOutputsTest.Serializer;
 
 /**
  * Benchmark to compare the deserialization speed of 2 types. CodedInput and ByteArrayInput.
- * 
+ *
  * @author David Yu
  * @created Jun 22, 2010
  */
@@ -35,12 +35,15 @@ public class CompareInputsTest extends AbstractTest
     public void testBenchmark() throws Exception
     {
         if (!"false".equals(System.getProperty("benchmark.skip")))
+        {
             return;
+        }
 
         String dir = System.getProperty("benchmark.output_dir");
 
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
+        @SuppressWarnings("resource")
+        PrintStream out = dir == null ? System.out
+                : new PrintStream(new FileOutputStream(new File(new File(dir),
                         "protostuff-core-" + System.currentTimeMillis() + ".txt"), true));
 
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
@@ -53,13 +56,17 @@ public class CompareInputsTest extends AbstractTest
         start(out, warmups, loops);
 
         if (System.out != out)
+        {
             out.close();
+        }
     }
 
     public static void start(PrintStream out, int warmups, int loops) throws Exception
     {
         for (Deserializer s : DESERIALIZERS)
+        {
             deser(out, s, s.getName(), warmups, loops);
+        }
     }
 
     static void deser(PrintStream out, Deserializer deserializer, String name, int warmups,
@@ -72,12 +79,16 @@ public class CompareInputsTest extends AbstractTest
         SerializableObjects.assertEquals(foo, f);
 
         for (int i = 0; i < warmups; i++)
+        {
             deserializer.mergeFrom(data, new Foo());
+        }
 
         long start = System.currentTimeMillis();
 
         for (int i = 0; i < loops; i++)
+        {
             deserializer.mergeFrom(data, new Foo());
+        }
 
         long finish = System.currentTimeMillis();
         long elapsed = finish - start;
@@ -88,8 +99,9 @@ public class CompareInputsTest extends AbstractTest
     {
         String dir = System.getProperty("benchmark.output_dir");
 
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
+        @SuppressWarnings("resource")
+        PrintStream out = dir == null ? System.out
+                : new PrintStream(new FileOutputStream(new File(new File(dir),
                         "protostuff-core-" + System.currentTimeMillis() + ".txt"), true));
 
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
@@ -102,7 +114,9 @@ public class CompareInputsTest extends AbstractTest
         start(out, warmups, loops);
 
         if (System.out != out)
+        {
             out.close();
+        }
     }
 
     public interface Deserializer

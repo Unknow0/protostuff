@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,7 @@ import io.protostuff.parser.Proto;
 
 /**
  * Compiles proto files to gwt overlays source (java) files.
- * 
+ *
  * @author David Yu
  * @created Jan 13, 2010
  */
@@ -43,8 +43,7 @@ public class ProtoToGwtOverlayCompiler extends STCodeGenerator
     protected void compile(ProtoModule module, Proto proto) throws IOException
     {
         String javaPackageName = proto.getJavaPackageName();
-        String template = module.getOption("emulation_mode") == null ?
-                "gwt_overlay" : "gwt_overlay_emulation_mode";
+        String template = module.getOption("emulation_mode") == null ? "gwt_overlay" : "gwt_overlay_emulation_mode";
         StringTemplateGroup group = getSTG(template);
 
         for (EnumGroup eg : proto.getEnumGroups())

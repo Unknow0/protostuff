@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,8 +38,7 @@ public final class CompilerMain
 
     public static final Pattern COMMA = Pattern.compile(",");
 
-    static final HashMap<String, ProtoCompiler> __compilers =
-            new HashMap<String, ProtoCompiler>();
+    static final HashMap<String, ProtoCompiler> __compilers = new HashMap<>();
     private static CompilerResolver __compilerResolver = null;
     static
     {
@@ -67,12 +66,12 @@ public final class CompilerMain
         return __compilers.get(output) != null;
     }
 
-    static Properties propsFrom(File file) throws IOException
+    static Properties propsFrom(File file)
     {
         Properties props = new Properties();
-        try
+        try (FileInputStream fis = new FileInputStream(file))
         {
-            props.load(new FileInputStream(file));
+            props.load(fis);
         }
         catch (IOException e)
         {
@@ -82,7 +81,7 @@ public final class CompilerMain
         return props;
     }
 
-    static Properties propsFrom(String resource) throws IOException
+    static Properties propsFrom(String resource)
     {
         File file = new File(resource);
         return file.exists() ? propsFrom(file) : null;
@@ -92,9 +91,9 @@ public final class CompilerMain
             File baseDirForOutput)
     {
         Properties props = new Properties();
-        try
+        try (FileInputStream fis = new FileInputStream(file))
         {
-            props.load(new FileInputStream(file));
+            props.load(fis);
         }
         catch (IOException e)
         {
@@ -133,12 +132,11 @@ public final class CompilerMain
             propsErr();
             return null;
         }
-        CachingProtoLoader loader = "true".equals(props.getProperty("cache_protos")) ?
-                new CachingProtoLoader() : null;
+        CachingProtoLoader loader = "true".equals(props.getProperty("cache_protos")) ? new CachingProtoLoader() : null;
 
         Properties globalOptions = newGlobalOptions(props);
 
-        ArrayList<ProtoModule> modules = new ArrayList<ProtoModule>();
+        ArrayList<ProtoModule> modules = new ArrayList<>();
         for (String m : COMMA.split(moduleString))
         {
             modules.add(loadModule(props, m.trim(), loader,
@@ -157,15 +155,21 @@ public final class CompilerMain
     {
         String source = props.getProperty(name + ".source");
         if (source == null)
+        {
             throw new IllegalStateException(name + " must have a source");
+        }
 
         String output = props.getProperty(name + ".output");
         if (output == null)
+        {
             throw new IllegalStateException(name + " must have an output");
+        }
 
         String outputDir = props.getProperty(name + ".outputDir");
         if (outputDir == null)
+        {
             throw new IllegalStateException(name + " must have an outputDir");
+        }
 
         String encoding = props.getProperty(name + ".encoding");
 
@@ -180,14 +184,20 @@ public final class CompilerMain
         module.config = props;
 
         if (options != null)
+        {
             addOptionsTo(module.getOptions(), COMMA.split(options), props);
+        }
 
         // can override previous options
         if (profileOptions != null)
+        {
             addOptionsTo(module.getOptions(), profileOptions, props);
+        }
 
         if (rootProfileOptions != null)
+        {
             addOptionsTo(module.getOptions(), rootProfileOptions, props);
+        }
 
         return module;
     }
@@ -319,7 +329,9 @@ public final class CompilerMain
                 if (compiler == null)
                 {
                     if (__compilerResolver != null)
+                    {
                         compiler = __compilerResolver.resolve(module);
+                    }
                     else if (output.endsWith(".stg"))
                     {
                         // custom code generator
@@ -328,7 +340,9 @@ public final class CompilerMain
                         compiler = new PluginProtoCompiler(module, output);
                     }
                     else
+                    {
                         throw new IllegalStateException("unknown output: " + output);
+                    }
                 }
 
                 compiler.compile(module);
@@ -343,10 +357,14 @@ public final class CompilerMain
 
                     // lazy
                     if (strOptions == null)
+                    {
                         strOptions = module.getOptions().toString();
+                    }
 
                     if (strOptions.length() > 2)
+                    {
                         buffer.append(' ').append(strOptions);
+                    }
 
                     System.out.println(buffer.toString());
                 }
@@ -397,7 +415,9 @@ public final class CompilerMain
     public static void compile(List<ProtoModule> modules) throws Exception
     {
         for (ProtoModule m : modules)
+        {
             compile(m);
+        }
     }
 
     static void compileProfile(Properties props, String profile,
@@ -420,8 +440,7 @@ public final class CompilerMain
         final long start = System.nanoTime();
 
         String profileOptionsParam = props.getProperty(profile + ".options");
-        String[] profileOptions = profileOptionsParam == null ? null :
-                COMMA.split(profileOptionsParam);
+        String[] profileOptions = profileOptionsParam == null ? null : COMMA.split(profileOptionsParam);
 
         for (String m : COMMA.split(moduleString))
         {
@@ -477,9 +496,13 @@ public final class CompilerMain
             {
                 int idx = o.indexOf(':');
                 if (idx == -1)
+                {
                     module.setOption(o.trim(), "");
+                }
                 else
+                {
                     module.setOption(o.substring(0, idx).trim(), o.substring(idx + 1).trim());
+                }
             }
         }
 
@@ -499,10 +522,8 @@ public final class CompilerMain
 
         Properties globalOptions = newGlobalOptions(props);
 
-        final CachingProtoLoader loader =
-                ("true".equals(props.getProperty("cache_protos")) ||
-                "true".equals(System.getProperty("cache_protos"))) ?
-                        new CachingProtoLoader() : null;
+        final CachingProtoLoader loader = ("true".equals(props.getProperty("cache_protos")) ||
+                "true".equals(System.getProperty("cache_protos"))) ? new CachingProtoLoader() : null;
 
         boolean selectedProfileOrModule = false;
         for (String arg = propsResource;;)
@@ -534,7 +555,9 @@ public final class CompilerMain
             if (selectedProfileOrModule)
             {
                 if (offset == limit)
+                {
                     return;
+                }
 
                 selectedProfileOrModule = false;
 
@@ -575,7 +598,9 @@ public final class CompilerMain
             }
 
             if (offset == limit)
+            {
                 return;
+            }
 
             if ((props = propsFrom((arg = args[offset++]))) == null)
             {
@@ -592,24 +617,21 @@ public final class CompilerMain
     {
         String includes = props.getProperty("includes");
         if (includes == null)
+        {
             return props;
+        }
 
         for (String include : COMMA.split(includes))
         {
             final Properties p;
-            try
-            {
-                p = propsFrom(include.trim());
-            }
-            catch (IOException e)
-            {
-                throw new RuntimeException(e);
-            }
+            p = propsFrom(include.trim());
 
             for (Object key : p.keySet())
             {
                 if (!props.containsKey(key))
+                {
                     props.put(key, p.get(key));
+                }
             }
         }
 
@@ -630,7 +652,9 @@ public final class CompilerMain
 
         String csv = props.getProperty(key);
         if (csv != null)
+        {
             addOptionsTo(options, COMMA.split(csv), props);
+        }
 
         return options;
     }
@@ -638,9 +662,13 @@ public final class CompilerMain
     public static void main(String[] args) throws Exception
     {
         if (args.length == 0)
+        {
             compileWithNoArgs();
+        }
         else
+        {
             compileWithArgs(args, 0, args.length);
+        }
     }
 
     /**

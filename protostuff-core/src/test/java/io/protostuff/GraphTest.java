@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 /**
  * Test ser/deser of graph objects (references and cyclic dependencies).
- * 
+ *
  * @author David Yu
  * @created Dec 10, 2010
  */
@@ -30,13 +30,13 @@ public class GraphTest extends AbstractTest
 
     static final int INITIAL_CAPACITY = 32;
 
-    public static <T> byte[] toByteArray(T message, Schema<T> schema) throws IOException
+    public static <T> byte[] toByteArray(T message, Schema<T> schema)
     {
         return GraphIOUtil.toByteArray(message, schema, buf());
     }
 
     public static <T> void mergeFrom(byte[] data, int offset, int length,
-            T message, Schema<T> schema) throws IOException
+            T message, Schema<T> schema)
     {
         GraphIOUtil.mergeFrom(data, offset, length, message, schema);
     }
@@ -96,7 +96,7 @@ public class GraphTest extends AbstractTest
         bar2.setSomeInt(2);
         bar2.setSomeBaz(baz);
 
-        ArrayList<Bar> bars = new ArrayList<Bar>();
+        ArrayList<Bar> bars = new ArrayList<>();
         bars.add(bar1);
         bars.add(bar2);
 
@@ -122,27 +122,27 @@ public class GraphTest extends AbstractTest
 
     /*
      * message ClubFounder { optional string name = 1; optional Club club = 2; }
-     * 
+     *
      * message Club { optional string name = 1; repeated Student student = 2; repeated Club partner_club = 3; }
-     * 
+     *
      * message Student { optional string name = 1; repeated Club club = 2; }
-     * 
+     *
      * ClubFounders: some_glee_club_founder
-     * 
+     *
      * Clubs: glee private_club_of_jake_partner_of_glee
-     * 
+     *
      * Students: jake john jane
-     * 
+     *
      * Links: (clubfounder-club) some_glee_club_founder -> glee
-     * 
+     *
      * (student-club) jake <- glee
-     * 
+     *
      * jake <-> private_club_of_jake_partner_of_glee
-     * 
+     *
      * john <-> glee
-     * 
+     *
      * jane <-> glee
-     * 
+     *
      * (club-club) glee <-> private_club_of_jake_partner_of_glee
      */
     public void testCyclic() throws Exception

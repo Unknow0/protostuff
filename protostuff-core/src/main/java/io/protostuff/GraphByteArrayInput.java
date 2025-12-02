@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 /**
  * A ByteArrayInput w/c can handle cyclic dependencies when deserializing objects with graph transformations.
- * 
+ *
  * @author David Yu
  * @created Dec 10, 2010
  */
@@ -42,7 +42,7 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         // protostuff format only.
         assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<Object>();
+        references = new ArrayList<>();
     }
 
     public GraphByteArrayInput(ByteArrayInput input, int initialCapacity)
@@ -52,7 +52,7 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         // protostuff format only.
         assert input.decodeNestedMessageAsGroup;
 
-        references = new ArrayList<Object>(initialCapacity);
+        references = new ArrayList<>(initialCapacity);
     }
 
     @Override
@@ -104,7 +104,9 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         lastSchema = (Schema<Object>) schema;
 
         if (value == null)
+        {
             value = schema.newMessage();
+        }
 
         references.add(value);
 
@@ -112,12 +114,14 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
 
         return value;
     }
-    
+
     @Override
     public <T> void handleUnknownField(int fieldNumber, Schema<T> schema) throws IOException
     {
         if (!messageReference)
+        {
             input.skipField(input.getLastTag());
+        }
     }
 
     @Override
@@ -170,7 +174,9 @@ public final class GraphByteArrayInput extends FilterInput<ByteArrayInput>
         // merge using this input.
         schema.mergeFrom(this, message);
         if (!schema.isInitialized(message))
+        {
             throw new UninitializedMessageException(message, schema);
+        }
 
         // restore
         lastSchema = schema;

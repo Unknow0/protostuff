@@ -34,63 +34,55 @@ import io.protostuff.Schema;
 /**
  * Used when the type is either polymorphic or too complex. Unlike DerivativeSchema, this is designed to have no concept
  * of merging.
- * 
+ *
  * @author David Yu
  * @created Apr 30, 2012
  */
-public abstract class PolymorphicSchema implements Schema<Object>
-{
+public abstract class PolymorphicSchema implements Schema<Object> {
 
-    /**
-     * The handler who's job is to set the value to the owner.
-     */
-    public interface Handler
-    {
-        public void setValue(Object value, Object owner);
-    }
+	/**
+	 * The handler who's job is to set the value to the owner.
+	 */
+	public interface Handler {
+		public void setValue(Object value, Object owner);
+	}
 
-    /**
-     * A factory which creates a schema with the handler connected to it.
-     */
-    public interface Factory
-    {
-        public PolymorphicSchema newSchema(Class<?> typeClass,
-                IdStrategy strategy, Handler handler);
-    }
+	/**
+	 * A factory which creates a schema with the handler connected to it.
+	 */
+	public interface Factory {
+		public PolymorphicSchema newSchema(Class<?> typeClass, IdStrategy strategy, Handler handler);
+	}
 
-    public final IdStrategy strategy;
+	public final IdStrategy strategy;
 
-    public PolymorphicSchema(IdStrategy strategy)
-    {
-        this.strategy = strategy;
-    }
+	public PolymorphicSchema(IdStrategy strategy) {
+		this.strategy = strategy;
+	}
 
-    @Override
-    public boolean isInitialized(Object message)
-    {
-        return true;
-    }
+	@Override
+	public boolean isInitialized(Object message) {
+		return true;
+	}
 
-    @Override
-    public Object newMessage()
-    {
-        // cannot instantiate because the type is dynamic.
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Object newMessage() {
+		// cannot instantiate because the type is dynamic.
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public Class<? super Object> typeClass()
-    {
-        return Object.class;
-    }
+	@Override
+	public Class<? super Object> typeClass() {
+		return Object.class;
+	}
 
-    /**
-     * The pipe schema associated with this schema.
-     */
-    public abstract Pipe.Schema<Object> getPipeSchema();
+	/**
+	 * The pipe schema associated with this schema.
+	 */
+	public abstract Pipe.Schema<Object> getPipeSchema();
 
-    /**
-     * Set the value to the owner.
-     */
-    protected abstract void setValue(Object value, Object owner);
+	/**
+	 * Set the value to the owner.
+	 */
+	protected abstract void setValue(Object value, Object owner);
 }

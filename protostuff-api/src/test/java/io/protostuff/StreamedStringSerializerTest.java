@@ -331,7 +331,7 @@ public class StreamedStringSerializerTest extends TestCase
             // using our first method?
             assertEquals(surrogatePairs, STRING.deserCustomOnly(nativeSurrogatePairsSerialized));
         }
-        catch (RuntimeException ex)
+        catch (@SuppressWarnings("unused") RuntimeException ex)
         {
             // No? Fallback should catch this.
             assertEquals(surrogatePairs, STRING.deser(nativeSurrogatePairsSerialized));
@@ -355,7 +355,7 @@ public class StreamedStringSerializerTest extends TestCase
         WriteSession session = new WriteSession(lb, out);
         StreamedStringSerializer.writeUTF8(partial, session, lb);
 
-        byte[] buffered = session.toByteArray();
+        session.toByteArray();
     }
 
     static void checkVarDelimited(CharSequence str, int size, int stringLen) throws Exception
@@ -604,6 +604,6 @@ public class StreamedStringSerializerTest extends TestCase
 
     static void print(CharSequence msg)
     {
-        // System.err.println(msg);
+        System.err.println(msg);
     }
 }

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * A ProtostuffOutput w/c can handle cyclic dependencies when serializing objects with graph transformations.
- * 
+ *
  * @author David Yu
  * @created Dec 10, 2010
  */
@@ -102,7 +102,7 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
 
         /**
          * The number of key-value mappings contained in this identity hash map.
-         * 
+         *
          * @serial
          */
         private int size;
@@ -129,7 +129,7 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
          * Constructs a new, empty map with the specified expected maximum size. Putting more than the expected number
          * of key-value mappings into the map may cause the internal data structure to grow, which may be somewhat
          * time-consuming.
-         * 
+         *
          * @param expectedMaxSize
          *            the expected maximum size of the map
          * @throws IllegalArgumentException
@@ -138,7 +138,9 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
         public IdentityMap(int expectedMaxSize)
         {
             if (expectedMaxSize < 0)
+            {
                 throw new IllegalArgumentException("expectedMaxSize is negative: " + expectedMaxSize);
+            }
             init(capacity(expectedMaxSize));
         }
 
@@ -163,7 +165,9 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
             {
                 result = MINIMUM_CAPACITY;
                 while (result < minCapacity)
+                {
                     result <<= 1;
+                }
             }
             return result;
         }
@@ -203,44 +207,44 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
         /*
          * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for
          * the key.
-         * 
+         *
          * <p> More formally, if this map contains a mapping from a key {@code k} to a value {@code v} such that {@code
          * (key == k)}, then this method returns {@code v}; otherwise it returns {@code null}. (There can be at most one
          * such mapping.)
-         * 
+         *
          * <p> A return value of {@code null} does not <i>necessarily</i> indicate that the map contains no mapping for
          * the key; it's also possible that the map explicitly maps the key to {@code null}. The {@link #containsKey
          * containsKey} operation may be used to distinguish these two cases.
-         * 
+         *
          * @see #put(Object, Object)
-         * 
+         *
          * public Integer get(Object k) { Object[] tab = table; int len = tab.length; int i = hash(k, len); while (true)
          * { Object item = tab[i]; if (item == k) return (Integer)tab[i + 1]; if (item == null) return null; i =
          * nextKeyIndex(i, len); } }
-         * 
+         *
          * /* Associates the specified value with the specified key in this identity hash map. If the map previously
          * contained a mapping for the key, the old value is replaced.
-         * 
+         *
          * @param key the key with which the specified value is to be associated
-         * 
+         *
          * @param value the value to be associated with the specified key
-         * 
+         *
          * @return the previous value associated with <tt>key</tt>, or <tt>null</tt> if there was no mapping for
          * <tt>key</tt>. (A <tt>null</tt> return can also indicate that the map previously associated <tt>null</tt> with
          * <tt>key</tt>.)
-         * 
+         *
          * @see Object#equals(Object)
-         * 
+         *
          * @see #get(Object)
-         * 
+         *
          * @see #containsKey(Object)
-         * 
+         *
          * public Integer put(Object k, Integer value) { Object[] tab = table; int len = tab.length; int i = hash(k,
          * len);
-         * 
+         *
          * Object item; while ((item = tab[i]) != null) { if (item == k) { Integer oldValue = (Integer)tab[i + 1]; tab[i
          * + 1] = value; return oldValue; } i = nextKeyIndex(i, len); }
-         * 
+         *
          * // modCount++; tab[i] = k; tab[i + 1] = value; if (++size >= threshold) resize(len); // len == 2 * current
          * capacity. return null; }
          */
@@ -286,13 +290,15 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
             tab[i] = k;
             tab[i + 1] = Integer.valueOf(value);
             if (++size >= threshold)
+            {
                 resize(len); // len == 2 * current capacity.
+            }
             return true;
         }
 
         /**
          * Resize the table to hold given capacity.
-         * 
+         *
          * @param newCapacity
          *            the new capacity, must be a power of two.
          */
@@ -306,12 +312,16 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
             if (oldLength == 2 * MAXIMUM_CAPACITY)
             { // can't expand any further
                 if (threshold == MAXIMUM_CAPACITY - 1)
+                {
                     throw new IllegalStateException("Capacity exhausted.");
+                }
                 threshold = MAXIMUM_CAPACITY - 1; // Gigantic map!
                 return;
             }
             if (oldLength >= newLength)
+            {
                 return;
+            }
 
             Object[] newTable = new Object[newLength];
             threshold = newLength / 3;
@@ -326,7 +336,9 @@ public final class GraphProtostuffOutput extends FilterOutput<ProtostuffOutput>
                     oldTable[j + 1] = null;
                     int i = hash(key, newLength);
                     while (newTable[i] != null)
+                    {
                         i = nextKeyIndex(i, newLength);
+                    }
                     newTable[i] = key;
                     newTable[i + 1] = value;
                 }

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import io.protostuff.Foo.EnumSample;
 
 /**
  * Benchmark to compare the serialization speed of 3 types. CodedOutput, BufferedOutput and DeferredOutput.
- * 
+ *
  * @author David Yu
  * @created Nov 13, 2009
  */
@@ -51,9 +51,11 @@ public class CompareOutputsTest extends AbstractTest
                             ByteString.copyFromUtf8("gh"),
                             // two 350-byte bytestring.
                             ByteString
-                                    .copyFromUtf8("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"),
+                                    .copyFromUtf8(
+                                            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"),
                             ByteString
-                                    .copyFromUtf8("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890") },
+                                    .copyFromUtf8(
+                                            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890") },
                     new Boolean[] { true, false },
                     new Float[] { 1234.4321f, -1234.4321f, 0f },
                     new Double[] { 12345678.87654321d, -12345678.87654321d, 0d },
@@ -93,15 +95,18 @@ public class CompareOutputsTest extends AbstractTest
         assertEquals(strComputed, new String(streamed, "UTF-8"));
     }
 
+    @SuppressWarnings("resource")
     public void testBenchmark() throws Exception
     {
         if (!"false".equals(System.getProperty("benchmark.skip")))
+        {
             return;
+        }
 
         String dir = System.getProperty("benchmark.output_dir");
 
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
+        PrintStream out = dir == null ? System.out
+                : new PrintStream(new FileOutputStream(new File(new File(dir),
                         "protostuff-core-" + System.currentTimeMillis() + ".txt"), true));
 
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
@@ -114,15 +119,18 @@ public class CompareOutputsTest extends AbstractTest
         start(foo, SERIALIZERS, out, warmups, loops);
 
         if (System.out != out)
+        {
             out.close();
+        }
     }
 
+    @SuppressWarnings("resource")
     public static void main(String[] args) throws Exception
     {
         String dir = System.getProperty("benchmark.output_dir");
 
-        PrintStream out = dir == null ? System.out :
-                new PrintStream(new FileOutputStream(new File(new File(dir),
+        PrintStream out = dir == null ? System.out
+                : new PrintStream(new FileOutputStream(new File(new File(dir),
                         "protostuff-core-" + System.currentTimeMillis() + ".txt"), true));
 
         int warmups = Integer.getInteger("benchmark.warmups", 200000);
@@ -135,14 +143,18 @@ public class CompareOutputsTest extends AbstractTest
         start(foo, SERIALIZERS, out, warmups, loops);
 
         if (System.out != out)
+        {
             out.close();
+        }
     }
 
     public static <T extends Message<T>> void start(T message, Serializer[] serializers,
             PrintStream out, int warmups, int loops) throws Exception
     {
         for (Serializer s : serializers)
+        {
             ser(message, s, out, s.getName(), warmups, loops);
+        }
     }
 
     static <T extends Message<T>> void ser(T message, Serializer serializer, PrintStream out,
@@ -150,10 +162,14 @@ public class CompareOutputsTest extends AbstractTest
     {
         int len = serializer.serialize(message).length;
         for (int i = 0; i < warmups; i++)
+        {
             serializer.serialize(message);
+        }
         long start = System.currentTimeMillis();
         for (int i = 0; i < loops; i++)
+        {
             serializer.serialize(message);
+        }
         long finish = System.currentTimeMillis();
         long elapsed = finish - start;
         out.println(elapsed + " ms elapsed with " + len + " bytes for " + name);

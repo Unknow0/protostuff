@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@ import io.protostuff.Foo.EnumSample;
 /**
  * Test writing/reading to/from streams using writeDelimitedTo, mergeDelimitedFrom, optWriteDelimitedTo and
  * optMergeDelimitedFrom.
- * 
+ *
  * @author David Yu
  * @created Aug 29, 2012
  */
@@ -59,6 +59,7 @@ public abstract class DelimiterTest extends AbstractTest
     protected abstract <T> boolean optMergeDelimitedFrom(InputStream in, T message,
             Schema<T> schema, LinkedBuffer buffer) throws IOException;
 
+    @SuppressWarnings("unused")
     <T> void verifyOptData(byte[] optData, T message, Schema<T> schema,
             LinkedBuffer buffer) throws IOException
     {
@@ -75,9 +76,9 @@ public abstract class DelimiterTest extends AbstractTest
 
         /*
          * StringBuilder s1 = new StringBuilder(); for(int b : optData) s1.append(b).append(' ');
-         * 
+         *
          * StringBuilder s2 = new StringBuilder(); for(int b : data) s2.append(b).append(' ');
-         * 
+         *
          * assertEquals(s1.unsignedIntToString(), s2.unsignedIntToString());
          */
 

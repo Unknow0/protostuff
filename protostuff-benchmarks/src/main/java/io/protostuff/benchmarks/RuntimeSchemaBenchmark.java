@@ -34,6 +34,7 @@ import io.protostuff.runtime.RuntimeSchema;
 @Measurement(iterations = 10)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
+@SuppressWarnings("unused")
 public class RuntimeSchemaBenchmark
 {
 

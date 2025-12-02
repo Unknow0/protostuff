@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at 
+//You may obtain a copy of the License at
 //http://www.apache.org/licenses/LICENSE-2.0
 //Unless required by applicable law or agreed to in writing, software
 //distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,91 +16,83 @@ package io.protostuff.parser;
 
 /**
  * Represents a message field defined in a {@code Proto}.
- * 
+ *
  * @author David Yu
  * @created Dec 19, 2009
  */
-public class MessageField extends Field<Message>
-{
+public class MessageField extends Field<Message> {
 
-    // java.lang.String javaType;
-    Message message;
+	// java.lang.String javaType;
+	Message message;
 
-    public MessageField()
-    {
-        super(false);
-    }
+	public MessageField() {
+		super(false);
+	}
 
-    public MessageField(Message message)
-    {
-        this();
-        this.message = message;
-    }
+	public MessageField(Message message) {
+		this();
+		this.message = message;
+	}
 
-    public Message getMessage()
-    {
-        return message;
-    }
+	public Message getMessage() {
+		return message;
+	}
 
-    @Override
-    public java.lang.String getJavaType()
-    {
-        // if(javaType!=null)
-        // return javaType;
+	@Override
+	public java.lang.String getJavaType() {
+		// if(javaType!=null)
+		// return javaType;
 
-        StringBuilder buffer = new StringBuilder();
-        Message.computeName(message, owner, buffer);
+		StringBuilder buffer = new StringBuilder();
+		Message.computeName(message, owner, buffer);
 
-        return buffer.toString();
-        // return (javaType=buffer.toString());
-    }
+		return buffer.toString();
+		// return (javaType=buffer.toString());
+	}
 
-    public java.lang.String getRegularType()
-    {
-        java.lang.String javaType = getJavaType();
-        Proto messageProto = message.getProto();
-        java.lang.String javaPackage = messageProto.getJavaPackageName();
-        java.lang.String protoPackage = messageProto.getPackageName();
-        if (javaType.startsWith(javaPackage) && !javaPackage.equals(protoPackage))
-            return javaType.replace(javaPackage, protoPackage);
+	public java.lang.String getRegularType() {
+		java.lang.String javaType = getJavaType();
+		Proto messageProto = message.getProto();
+		java.lang.String javaPackage = messageProto.getJavaPackageName();
+		java.lang.String protoPackage = messageProto.getPackageName();
+		if (javaType.startsWith(javaPackage) && !javaPackage.equals(protoPackage)) {
+			return javaType.replace(javaPackage, protoPackage);
+		}
 
-        return javaType;
-    }
+		return javaType;
+	}
 
-    @Override
-    public java.lang.String getDefaultValueAsString()
-    {
-        return "null";
-    }
+	@Override
+	public java.lang.String getDefaultValueAsString() {
+		return "null";
+	}
 
-    @Override
-    public boolean isDelimited()
-    {
-        return true;
-    }
+	@Override
+	public boolean isDelimited() {
+		return true;
+	}
 
-    public boolean isSamePackage()
-    {
-        return getOwner().getProto() == getMessage().getProto();
-    }
+	public boolean isSamePackage() {
+		return getOwner().getProto() == getMessage().getProto();
+	}
 
-    public java.lang.String getRelativePath()
-    {
-        if (isSamePackage())
-            return "";
+	public java.lang.String getRelativePath() {
+		if (isSamePackage()) {
+			return "";
+		}
 
-        java.lang.String currentPackage = getOwner().getProto().getPackageName();
-        java.lang.String targetPackage = getMessage().getProto().getPackageName();
-        java.lang.String path = "../";
-        for (int idx = currentPackage.indexOf('.'); idx != -1; idx = currentPackage.indexOf('.', idx + 1))
-            path += "../";
+		java.lang.String currentPackage = getOwner().getProto().getPackageName();
+		java.lang.String targetPackage = getMessage().getProto().getPackageName();
+		java.lang.String path = "../";
+		for (int idx = currentPackage.indexOf('.'); idx != -1; idx = currentPackage.indexOf('.', idx + 1)) {
+			path += "../";
+		}
 
-        return path + targetPackage.replace('.', '/') + "/";
-    }
+		return path + targetPackage.replace('.', '/') + "/";
+	}
 
-    @Override
-    public java.lang.String getProtoType()
-    {
-        return getRegularType();
-    }
+	@Override
+	public java.lang.String getProtoType() {
+		return getRegularType();
+	}
 }

@@ -54,11 +54,6 @@ public final class UnsignedNumberUtil
     {
     }
 
-    private static int flip(int value)
-    {
-        return value ^ Integer.MIN_VALUE;
-    }
-
     /**
      * A (self-inverse) bijection which converts the ordering on unsigned longs to the ordering on longs, that is,
      * {@code a <= b} as unsigned longs if and only if {@code flip(a) <= flip(b)} as signed longs.
@@ -66,14 +61,6 @@ public final class UnsignedNumberUtil
     private static long flip(long a)
     {
         return a ^ Long.MIN_VALUE;
-    }
-
-    /**
-     * Returns the value of the given {@code int} as a {@code long}, when treated as unsigned.
-     */
-    private static long toLong(int value)
-    {
-        return value & INT_MASK;
     }
 
     /**
@@ -188,13 +175,8 @@ public final class UnsignedNumberUtil
         if (divisor < 0)
         { // i.e., divisor >= 2^63:
             if (compareUnsigned(dividend, divisor) < 0)
-            {
                 return 0; // dividend < divisor
-            }
-            else
-            {
-                return 1; // dividend >= divisor
-            }
+            return 1; // dividend >= divisor
         }
 
         // Optimization - use signed division if dividend < 2^63
@@ -229,13 +211,8 @@ public final class UnsignedNumberUtil
         if (divisor < 0)
         { // i.e., divisor >= 2^63:
             if (compareUnsigned(dividend, divisor) < 0)
-            {
                 return dividend; // dividend < divisor
-            }
-            else
-            {
-                return dividend - divisor; // dividend >= divisor
-            }
+            return dividend - divisor; // dividend >= divisor
         }
 
         // Optimization - use signed modulus if dividend < 2^63
@@ -254,17 +231,18 @@ public final class UnsignedNumberUtil
         return rem - (compareUnsigned(rem, divisor) >= 0 ? divisor : 0);
     }
 
-	/**
-	 * Returns the unsigned {@code long} value represented by the given decimal string.
-	 *
-	 * @throws NumberFormatException if the string does not contain a valid unsigned {@code long}
-	 *         value
-	 * @throws NullPointerException if {@code s} is null
-	 *         (in contrast to {@link Long#parseLong(String)})
-	 */
-	public static long parseUnsignedLong(String s) {
-		return parseUnsignedLong(s, 10);
-	}
+    /**
+     * Returns the unsigned {@code long} value represented by the given decimal string.
+     *
+     * @throws NumberFormatException
+     *             if the string does not contain a valid unsigned {@code long} value
+     * @throws NullPointerException
+     *             if {@code s} is null (in contrast to {@link Long#parseLong(String)})
+     */
+    public static long parseUnsignedLong(String s)
+    {
+        return parseUnsignedLong(s, 10);
+    }
 
     /**
      * Returns the unsigned {@code long} value represented by a string with the given radix.
@@ -358,32 +336,26 @@ public final class UnsignedNumberUtil
         {
             throw new IllegalArgumentException("Invalid radix: " + radix);
         }
-        if (x == 0)
-        {
-            // Simply return "0"
+        if (x == 0) // Simply return "0"
             return "0";
-        }
-        else
+        char[] buf = new char[64];
+        int i = buf.length;
+        if (x < 0)
         {
-            char[] buf = new char[64];
-            int i = buf.length;
-            if (x < 0)
-            {
-                // Separate off the last digit using unsigned division. That will leave
-                // a number that is nonnegative as a signed integer.
-                long quotient = divide(x, radix);
-                long rem = x - quotient * radix;
-                buf[--i] = Character.forDigit((int) rem, radix);
-                x = quotient;
-            }
-            // Simple modulo/division approach
-            while (x > 0)
-            {
-                buf[--i] = Character.forDigit((int) (x % radix), radix);
-                x /= radix;
-            }
-            // Generate string
-            return new String(buf, i, buf.length - i);
+            // Separate off the last digit using unsigned division. That will leave
+            // a number that is nonnegative as a signed integer.
+            long quotient = divide(x, radix);
+            long rem = x - quotient * radix;
+            buf[--i] = Character.forDigit((int) rem, radix);
+            x = quotient;
         }
+        // Simple modulo/division approach
+        while (x > 0)
+        {
+            buf[--i] = Character.forDigit((int) (x % radix), radix);
+            x /= radix;
+        }
+        // Generate string
+        return new String(buf, i, buf.length - i);
     }
 }

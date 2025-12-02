@@ -23,7 +23,7 @@ public class CodedDataInputTest extends TestCase
         {
 
             SampleClass _clazz = new SampleClass();
-            List<String> testStrings = new ArrayList<String>();
+            List<String> testStrings = new ArrayList<>();
             for (int i = 0; i < 1800; i++)
             {
                 String test = new String("TestingString" + i);
@@ -38,7 +38,7 @@ public class CodedDataInputTest extends TestCase
                     System.out.println(deserialize.getTestStringList().get(i));
 
                 }
-                catch (Exception ex)
+                catch (@SuppressWarnings("unused") Exception ex)
                 {
                     System.out.println("Failed");
                 }
@@ -54,7 +54,7 @@ public class CodedDataInputTest extends TestCase
     public void testIt() throws Exception
     {
         SampleClass _clazz = new SampleClass();
-        List<String> testStrings = new ArrayList<String>();
+        List<String> testStrings = new ArrayList<>();
         for (int i = 0; i < 1800; i++)
         {
             String test = new String("TestingString" + i);
