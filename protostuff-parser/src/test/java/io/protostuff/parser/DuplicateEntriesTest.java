@@ -30,10 +30,8 @@ public class DuplicateEntriesTest extends TestCase {
 		File f = ProtoParserTest.getFile(source);
 		assertTrue(f.exists());
 
-		Proto proto = new Proto(f);
-
 		try {
-			ProtoUtil.loadFrom(f, proto);
+			ProtoUtil.parseProto(f);
 		} catch (@SuppressWarnings("unused") IllegalStateException e) {
 			// expected
 

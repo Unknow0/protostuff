@@ -14,15 +14,12 @@
 
 package io.protostuff.parser;
 
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import org.antlr.runtime.ANTLRInputStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.TokenStream;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.TokenStream;
+
+import io.protostuff.parser.Proto2Parser.LoadContext;
 
 /**
  * Base parser
@@ -38,54 +35,7 @@ public abstract class AbstractParser extends Parser {
 		super(input);
 	}
 
-	/**
-	 * Create a new parser instance, pre-supplying the input token stream and the shared state.
-	 * <p>
-	 * This is only used when a grammar is imported into another grammar, but we must supply this constructor to satisfy
-	 * the super class contract.
-	 *
-	 * @param input
-	 *            The stream of tokesn that will be pulled from the lexer
-	 * @param state
-	 *            The shared state object created by an interconnectd grammar
-	 */
-	protected AbstractParser(TokenStream input, RecognizerSharedState state) {
-		super(input, state);
-	}
-
-	/**
-	 * Creates the error/warning message that we need to show users/IDEs when ANTLR has found a parsing error, has
-	 * recovered from it and is now telling us that a parsing exception occurred.
-	 *
-	 * @param tokenNames
-	 *            token names as known by ANTLR (which we ignore)
-	 * @param e
-	 *            The exception that was thrown
-	 */
-	@Override
-	public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-
-		// This is just a place holder that shows how to override this method
-		//
-		super.displayRecognitionError(tokenNames, e);
-	}
-
-	public static void load(InputStream in, Proto proto) throws Exception {
-		// Create an input character stream from standard in
-		ANTLRInputStream input = new ANTLRInputStream(in);
-		// Create an ExprLexer that feeds from that stream
-		ProtoLexer lexer = new ProtoLexer(input);
-		// Create a stream of tokens fed by the lexer
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		// Create a parser that feeds off the token stream
-		ProtoParser parser = new ProtoParser(tokens);
-		// Begin parsing at rule prog
-		parser.parse(proto);
-	}
-
-	static String getStringFromStringLiteral(String literal) {
-		return getString(literal.substring(1, literal.length() - 1));
-	}
+	public abstract LoadContext load();
 
 	static String getString(String value) {
 		return TextFormat.unescapeText(value);
@@ -96,7 +46,7 @@ public abstract class AbstractParser extends Parser {
 	}
 
 	static byte[] getBytes(String value) {
-		ByteBuffer buffer = TextFormat.unescapeBytes(value);
+		ByteBuffer buffer = TextFormat.unescapeBytes(value, 0, value.length());
 		byte[] buf = new byte[buffer.limit()];
 		buffer.get(buf);
 		return buf;

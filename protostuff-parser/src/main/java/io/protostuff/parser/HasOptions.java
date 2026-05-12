@@ -38,9 +38,10 @@ import java.util.Map;
  */
 public interface HasOptions {
 
-	void putStandardOption(String key, Object value);
-
-	void putExtraOption(String key, Object value);
-
 	Map<String, Object> getOptions();
+
+	@SuppressWarnings("unchecked")
+	default <T> T getOption(String key) {
+		return (T) getOptions().get(key);
+	}
 }

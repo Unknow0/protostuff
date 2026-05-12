@@ -861,7 +861,7 @@ public final class RuntimeReflectionFieldFactory {
 		@Override
 		public <T> Field<T> create(int number, java.lang.String name, final java.lang.reflect.Field f, final IdStrategy strategy) {
 			final EnumIO<? extends Enum<?>> eio = strategy.getEnumIO(f.getType());
-			return new Field<T>(FieldType.ENUM, number, name, f.getAnnotation(Tag.class)) {
+			return new Field<T>(FieldType.forEnum(f.getType().getName()), number, name, f.getAnnotation(Tag.class)) {
 				{
 					f.setAccessible(true);
 				}
@@ -933,7 +933,8 @@ public final class RuntimeReflectionFieldFactory {
 		@SuppressWarnings("unchecked")
 		public <T> Field<T> create(int number, java.lang.String name, final java.lang.reflect.Field f, IdStrategy strategy) {
 			Class<Object> type = (Class<Object>) f.getType();
-			return new RuntimeMessageField<T, Object>(type, strategy.getSchemaWrapper(type, true), FieldType.MESSAGE, number, name, false, f.getAnnotation(Tag.class)) {
+			return new RuntimeMessageField<T, Object>(type, strategy.getSchemaWrapper(type, true), FieldType.forMessage(f.getType().getName()), number, name, false,
+					f.getAnnotation(Tag.class)) {
 				{
 					f.setAccessible(true);
 				}
@@ -1011,7 +1012,8 @@ public final class RuntimeReflectionFieldFactory {
 				return POJO.create(number, name, f, strategy);
 			}
 
-			return new RuntimeDerivativeField<T>((Class<Object>) f.getType(), FieldType.MESSAGE, number, name, false, f.getAnnotation(Tag.class), strategy) {
+			return new RuntimeDerivativeField<T>((Class<Object>) f.getType(), FieldType.forMessage(f.getType().getName()), number, name, false, f.getAnnotation(Tag.class),
+					strategy) {
 				{
 					f.setAccessible(true);
 				}
@@ -1110,7 +1112,7 @@ public final class RuntimeReflectionFieldFactory {
 	static final RuntimeFieldFactory<Object> OBJECT = new RuntimeFieldFactory<Object>(ID_OBJECT) {
 		@Override
 		public <T> Field<T> create(int number, java.lang.String name, final java.lang.reflect.Field f, IdStrategy strategy) {
-			return new RuntimeObjectField<T>(f.getType(), FieldType.MESSAGE, number, name, false, f.getAnnotation(Tag.class),
+			return new RuntimeObjectField<T>(f.getType(), FieldType.forMessage(f.getType().getName()), number, name, false, f.getAnnotation(Tag.class),
 					PolymorphicSchemaFactories.getFactoryFromField(f, strategy), strategy) {
 				{
 					f.setAccessible(true);
@@ -1187,7 +1189,7 @@ public final class RuntimeReflectionFieldFactory {
 
 		@Override
 		public FieldType getFieldType() {
-			return FieldType.MESSAGE;
+			return FieldType.forMessage(Object.class.getName());
 		}
 
 		@Override

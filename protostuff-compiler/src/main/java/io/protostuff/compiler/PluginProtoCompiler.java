@@ -305,10 +305,18 @@ public class PluginProtoCompiler extends STCodeGenerator {
 	}
 
 	public void compileProtoBlock(ProtoModule module, Proto proto, String packageName, StringTemplate protoBlockTemplate) throws IOException {
-		String name = ProtoUtil.toPascalCase(proto.getFile().getName().replace(".proto", "")).toString();
+		String name = proto.getSourcePath();
+		int i = name.lastIndexOf('/');
+		if (i > 0)
+			name = name.substring(i + 1);
+		i = name.lastIndexOf('\\');
+		if (i > 0)
+			name = name.substring(i + 1);
+
+		name = ProtoUtil.toPascalCase(name.replace(".proto", "")).toString();
 
 		if (javaOutput) {
-			String outerClassname = proto.getExtraOption("java_outer_classname");
+			String outerClassname = proto.getOption("java_outer_classname");
 			if (outerClassname != null) {
 				name = outerClassname;
 			}

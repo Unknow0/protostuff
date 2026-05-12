@@ -723,7 +723,7 @@ public final class RuntimeUnsafeFieldFactory {
 		public <T> Field<T> create(int number, java.lang.String name, final java.lang.reflect.Field f, final IdStrategy strategy) {
 			final EnumIO<? extends Enum<?>> eio = strategy.getEnumIO(f.getType());
 			final long offset = us.objectFieldOffset(f);
-			return new Field<T>(FieldType.ENUM, number, name, f.getAnnotation(Tag.class)) {
+			return new Field<T>(FieldType.forEnum(f.getType().getName()), number, name, f.getAnnotation(Tag.class)) {
 				@Override
 				public void mergeFrom(Input input, T message) throws IOException {
 					us.putObject(message, offset, eio.readFrom(input));
@@ -778,7 +778,8 @@ public final class RuntimeUnsafeFieldFactory {
 		public <T> Field<T> create(int number, java.lang.String name, final java.lang.reflect.Field f, IdStrategy strategy) {
 			Class<Object> type = (Class<Object>) f.getType();
 			final long offset = us.objectFieldOffset(f);
-			return new RuntimeMessageField<T, Object>(type, strategy.getSchemaWrapper(type, true), FieldType.MESSAGE, number, name, false, f.getAnnotation(Tag.class)) {
+			return new RuntimeMessageField<T, Object>(type, strategy.getSchemaWrapper(type, true), FieldType.forMessage(f.getType().getName()), number, name, false,
+					f.getAnnotation(Tag.class)) {
 				@Override
 				public void mergeFrom(Input input, T message) throws IOException {
 					us.putObject(message, offset, input.mergeObject(us.getObject(message, offset), getSchema()));
@@ -839,7 +840,8 @@ public final class RuntimeUnsafeFieldFactory {
 			}
 
 			final long offset = us.objectFieldOffset(f);
-			return new RuntimeDerivativeField<T>((Class<Object>) f.getType(), FieldType.MESSAGE, number, name, false, f.getAnnotation(Tag.class), strategy) {
+			return new RuntimeDerivativeField<T>((Class<Object>) f.getType(), FieldType.forMessage(f.getType().getName()), number, name, false, f.getAnnotation(Tag.class),
+					strategy) {
 				@Override
 				public void mergeFrom(Input input, T message) throws IOException {
 					final Object value = input.mergeObject(message, schema);
@@ -916,7 +918,7 @@ public final class RuntimeUnsafeFieldFactory {
 		@Override
 		public <T> Field<T> create(int number, java.lang.String name, final java.lang.reflect.Field f, IdStrategy strategy) {
 			final long offset = us.objectFieldOffset(f);
-			return new RuntimeObjectField<T>(f.getType(), FieldType.MESSAGE, number, name, false, f.getAnnotation(Tag.class),
+			return new RuntimeObjectField<T>(f.getType(), FieldType.forMessage(f.getType().getName()), number, name, false, f.getAnnotation(Tag.class),
 					PolymorphicSchemaFactories.getFactoryFromField(f, strategy), strategy) {
 				@Override
 				public void mergeFrom(Input input, T message) throws IOException {
@@ -969,7 +971,7 @@ public final class RuntimeUnsafeFieldFactory {
 
 		@Override
 		public FieldType getFieldType() {
-			return FieldType.MESSAGE;
+			return FieldType.forMessage(Object.class.getName());
 		}
 
 		@Override

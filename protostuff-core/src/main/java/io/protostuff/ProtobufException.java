@@ -97,12 +97,15 @@ public class ProtobufException extends ProtostuffException {
 		return new ProtobufException("Protocol message tag had invalid wire type.");
 	}
 
+	static ProtobufException invalidWireType(int type) {
+		return new ProtobufException("Protocol message tag had invalid wire type " + Integer.toHexString(type));
+	}
+
 	static ProtobufException recursionLimitExceeded() {
-		return new ProtobufException(
-				"Protocol message had too many levels of nesting.  May be malicious.  " + "Use CodedInput.setRecursionLimit() to increase the depth limit.");
+		return new ProtobufException("Protocol message had too many levels of nesting.  May be malicious. Use CodedInput.setRecursionLimit() to increase the depth limit.");
 	}
 
 	static ProtobufException sizeLimitExceeded() {
-		return new ProtobufException("Protocol message was too large.  May be malicious.  " + "Use CodedInput.setSizeLimit() to increase the size limit.");
+		return new ProtobufException("Protocol message was too large.  May be malicious. Use CodedInput.setSizeLimit() to increase the size limit.");
 	}
 }

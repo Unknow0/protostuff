@@ -18,11 +18,11 @@
 		<msgpack.version>0.8.11</msgpack.version>
 		<woodstox-version>4.1.3</woodstox-version>
 		<velocity-version>1.6.3</velocity-version>
-		<antlr3-version>3.5.2</antlr3-version>
+		<antlr4-version>4.13.2</antlr4-version>
 		<stringtemplate-version>3.2.1</stringtemplate-version>
 		<mavenVersion>3.2.3</mavenVersion>
 		<jmh.version>1.23</jmh.version>
-		<javac.target>1.8</javac.target>
+		<javac.target>8</javac.target>
 		<javadoc.source>8</javadoc.source>
 	</properties>
 
@@ -385,8 +385,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.antlr</groupId>
-				<artifactId>antlr-runtime</artifactId>
-				<version>${antlr3-version}</version>
+				<artifactId>antlr4-runtime</artifactId>
+				<version>${antlr4-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>

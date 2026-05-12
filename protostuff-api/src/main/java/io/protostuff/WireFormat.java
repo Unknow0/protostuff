@@ -115,55 +115,46 @@ public final class WireFormat {
 	/**
 	 * This is here to support runtime schemas.
 	 */
-	public enum FieldType {
-		DOUBLE(JavaType.DOUBLE, WIRETYPE_FIXED64),
-		FLOAT(JavaType.FLOAT, WIRETYPE_FIXED32),
-		INT64(JavaType.LONG, WIRETYPE_VARINT),
-		UINT64(JavaType.LONG, WIRETYPE_VARINT),
-		INT32(JavaType.INT, WIRETYPE_VARINT),
-		FIXED64(JavaType.LONG, WIRETYPE_FIXED64),
-		FIXED32(JavaType.INT, WIRETYPE_FIXED32),
-		BOOL(JavaType.BOOLEAN, WIRETYPE_VARINT),
-		STRING(JavaType.STRING, WIRETYPE_LENGTH_DELIMITED) {
-			@Override
-			public boolean isPackable() {
-				return false;
-			}
-		},
-		GROUP(JavaType.MESSAGE, WIRETYPE_START_GROUP) {
-			@Override
-			public boolean isPackable() {
-				return false;
-			}
-		},
-		MESSAGE(JavaType.MESSAGE, WIRETYPE_LENGTH_DELIMITED) {
-			@Override
-			public boolean isPackable() {
-				return false;
-			}
-		},
-		BYTES(JavaType.BYTE_STRING, WIRETYPE_LENGTH_DELIMITED) {
-			@Override
-			public boolean isPackable() {
-				return false;
-			}
-		},
-		UINT32(JavaType.INT, WIRETYPE_VARINT),
-		ENUM(JavaType.ENUM, WIRETYPE_VARINT),
-		SFIXED32(JavaType.INT, WIRETYPE_FIXED32),
-		SFIXED64(JavaType.LONG, WIRETYPE_FIXED64),
-		SINT32(JavaType.INT, WIRETYPE_VARINT),
-		SINT64(JavaType.LONG, WIRETYPE_VARINT);
+	public static final class FieldType {
+		public static final FieldType DOUBLE = new FieldType("double", WIRETYPE_FIXED64, true);
+		public static final FieldType FLOAT = new FieldType("float", WIRETYPE_FIXED32, true);
+		public static final FieldType INT64 = new FieldType("long", WIRETYPE_VARINT, true);
+		public static final FieldType UINT64 = new FieldType("long", WIRETYPE_VARINT, true);
+		public static final FieldType INT32 = new FieldType("int", WIRETYPE_VARINT, true);
+		public static final FieldType FIXED64 = new FieldType("long", WIRETYPE_FIXED64, true);
+		public static final FieldType FIXED32 = new FieldType("int", WIRETYPE_FIXED32, true);
+		public static final FieldType BOOL = new FieldType("boolean", WIRETYPE_VARINT, true);
+		public static final FieldType STRING = new FieldType("java.lang.String", WIRETYPE_LENGTH_DELIMITED, false);
+		public static final FieldType BYTES = new FieldType("byte[]", WIRETYPE_LENGTH_DELIMITED, false);
+		public static final FieldType UINT32 = new FieldType("int", WIRETYPE_VARINT, true);
+		public static final FieldType SFIXED32 = new FieldType("int", WIRETYPE_FIXED32, true);
+		public static final FieldType SFIXED64 = new FieldType("long", WIRETYPE_FIXED64, true);
+		public static final FieldType SINT32 = new FieldType("int", WIRETYPE_VARINT, true);
+		public static final FieldType SINT64 = new FieldType("long", WIRETYPE_VARINT, true);
 
-		FieldType(final JavaType javaType, final int wireType) {
-			this.javaType = javaType;
-			this.wireType = wireType;
+		public static FieldType forEnum(String javaType) {
+			return new FieldType(javaType, WIRETYPE_VARINT, true);
 		}
 
-		public final JavaType javaType;
-		public final int wireType;
+		public static FieldType forMessage(String javaType) {
+			return new FieldType(javaType, WIRETYPE_LENGTH_DELIMITED, false);
+		}
 
-		public JavaType getJavaType() {
+		public static FieldType forGroup(String javaType) {
+			return new FieldType(javaType, WIRETYPE_START_GROUP, false);
+		}
+
+		private final String javaType;
+		private final int wireType;
+		private final boolean packable;
+
+		public FieldType(final String javaType, final int wireType, final boolean packable) {
+			this.javaType = javaType;
+			this.wireType = wireType;
+			this.packable = packable;
+		}
+
+		public String getJavaType() {
 			return javaType;
 		}
 
@@ -172,7 +163,7 @@ public final class WireFormat {
 		}
 
 		public boolean isPackable() {
-			return true;
+			return packable;
 		}
 	}
 

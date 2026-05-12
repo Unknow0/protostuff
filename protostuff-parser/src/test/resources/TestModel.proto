@@ -36,7 +36,7 @@ message Bar {
   optional bytes some_bytes = 5[default = "\0\001\a\b\f\n\r\t\v\\\'\"\xfe"];
   optional bool some_boolean = 6;
   optional float some_float = 7[default=0x7f];
-  optional double some_double = 8[default = 45.123f];
+  optional double some_double = 8[default = 45.123];
   optional int64 some_long = 9;
   
 }

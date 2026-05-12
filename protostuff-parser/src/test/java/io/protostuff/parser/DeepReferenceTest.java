@@ -30,10 +30,9 @@ public class DeepReferenceTest extends TestCase {
 		File f = ProtoParserTest.getFile("test_deep_reference.proto");
 		assertTrue(f.exists());
 
-		Proto proto = new Proto(f);
-		ProtoUtil.loadFrom(f, proto);
+		Proto proto = ProtoUtil.parseProto(f);
 
-		assertTrue(proto.getImportedProtos().size() == 2);
+		assertEquals(proto.getImportedProtos().size(), 2);
 
 		Proto importedProto = proto.getImportedProto(ProtoParserTest.getFile("test_imported_inner.proto"));
 		assertNotNull(importedProto);
@@ -95,81 +94,81 @@ public class DeepReferenceTest extends TestCase {
 		Message jpBarDeeper = jpBarInner.getNestedMessage("Deeper");
 		assertNotNull(jpBarDeeper);
 
-		assertTrue(getMessageField("foo1", request) == foo);
-		assertTrue(getMessageField("foo2", request) == foo);
-		assertTrue(getMessageField("foo3", request) == jpFoo);
+		assertEquals(getMessageField("foo1", request), foo.getJavaFullName());
+		assertEquals(getMessageField("foo2", request), foo.getJavaFullName());
+		assertEquals(getMessageField("foo3", request), jpFoo.getJavaFullName());
 
-		assertTrue(getMessageField("inner1", request) == fooInner);
-		assertTrue(getMessageField("inner2", request) == fooInner);
-		assertTrue(getMessageField("inner3", request) == jpFooInner);
+		assertEquals(getMessageField("inner1", request), fooInner.getJavaFullName());
+		assertEquals(getMessageField("inner2", request), fooInner.getJavaFullName());
+		assertEquals(getMessageField("inner3", request), jpFooInner.getJavaFullName());
 
-		assertTrue(getMessageField("deeper1", request) == fooDeeper);
-		assertTrue(getMessageField("deeper2", request) == fooDeeper);
-		assertTrue(getMessageField("deeper3", request) == jpFooDeeper);
+		assertEquals(getMessageField("deeper1", request), fooDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper2", request), fooDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper3", request), jpFooDeeper.getJavaFullName());
 
-		assertTrue(getMessageField("foo1", requestInner) == foo);
-		assertTrue(getMessageField("foo2", requestInner) == foo);
-		assertTrue(getMessageField("foo3", requestInner) == jpFoo);
+		assertEquals(getMessageField("foo1", requestInner), foo.getJavaFullName());
+		assertEquals(getMessageField("foo2", requestInner), foo.getJavaFullName());
+		assertEquals(getMessageField("foo3", requestInner), jpFoo.getJavaFullName());
 
-		assertTrue(getMessageField("inner1", requestInner) == fooInner);
-		assertTrue(getMessageField("inner2", requestInner) == fooInner);
-		assertTrue(getMessageField("inner3", requestInner) == jpFooInner);
+		assertEquals(getMessageField("inner1", requestInner), fooInner.getJavaFullName());
+		assertEquals(getMessageField("inner2", requestInner), fooInner.getJavaFullName());
+		assertEquals(getMessageField("inner3", requestInner), jpFooInner.getJavaFullName());
 
-		assertTrue(getMessageField("deeper1", requestInner) == fooDeeper);
-		assertTrue(getMessageField("deeper2", requestInner) == fooDeeper);
-		assertTrue(getMessageField("deeper3", requestInner) == jpFooDeeper);
+		assertEquals(getMessageField("deeper1", requestInner), fooDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper2", requestInner), fooDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper3", requestInner), jpFooDeeper.getJavaFullName());
 
-		assertTrue(getMessageField("foo1", requestDeeper) == foo);
-		assertTrue(getMessageField("foo2", requestDeeper) == foo);
-		assertTrue(getMessageField("foo3", requestDeeper) == jpFoo);
+		assertEquals(getMessageField("foo1", requestDeeper), foo.getJavaFullName());
+		assertEquals(getMessageField("foo2", requestDeeper), foo.getJavaFullName());
+		assertEquals(getMessageField("foo3", requestDeeper), jpFoo.getJavaFullName());
 
-		assertTrue(getMessageField("inner1", requestDeeper) == fooInner);
-		assertTrue(getMessageField("inner2", requestDeeper) == fooInner);
-		assertTrue(getMessageField("inner3", requestDeeper) == jpFooInner);
+		assertEquals(getMessageField("inner1", requestDeeper), fooInner.getJavaFullName());
+		assertEquals(getMessageField("inner2", requestDeeper), fooInner.getJavaFullName());
+		assertEquals(getMessageField("inner3", requestDeeper), jpFooInner.getJavaFullName());
 
-		assertTrue(getMessageField("deeper1", requestDeeper) == fooDeeper);
-		assertTrue(getMessageField("deeper2", requestDeeper) == fooDeeper);
-		assertTrue(getMessageField("deeper3", requestDeeper) == jpFooDeeper);
+		assertEquals(getMessageField("deeper1", requestDeeper), fooDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper2", requestDeeper), fooDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper3", requestDeeper), jpFooDeeper.getJavaFullName());
 
-		assertTrue(getMessageField("bar1", response) == bar);
-		assertTrue(getMessageField("bar2", response) == bar);
-		assertTrue(getMessageField("bar3", response) == jpBar);
+		assertEquals(getMessageField("bar1", response), bar.getJavaFullName());
+		assertEquals(getMessageField("bar2", response), bar.getJavaFullName());
+		assertEquals(getMessageField("bar3", response), jpBar.getJavaFullName());
 
-		assertTrue(getMessageField("inner1", response) == barInner);
-		assertTrue(getMessageField("inner2", response) == barInner);
-		assertTrue(getMessageField("inner3", response) == jpBarInner);
+		assertEquals(getMessageField("inner1", response), barInner.getJavaFullName());
+		assertEquals(getMessageField("inner2", response), barInner.getJavaFullName());
+		assertEquals(getMessageField("inner3", response), jpBarInner.getJavaFullName());
 
-		assertTrue(getMessageField("deeper1", response) == barDeeper);
-		assertTrue(getMessageField("deeper2", response) == barDeeper);
-		assertTrue(getMessageField("deeper3", response) == jpBarDeeper);
+		assertEquals(getMessageField("deeper1", response), barDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper2", response), barDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper3", response), jpBarDeeper.getJavaFullName());
 
-		assertTrue(getMessageField("bar1", responseInner) == bar);
-		assertTrue(getMessageField("bar2", responseInner) == bar);
-		assertTrue(getMessageField("bar3", responseInner) == jpBar);
+		assertEquals(getMessageField("bar1", responseInner), bar.getJavaFullName());
+		assertEquals(getMessageField("bar2", responseInner), bar.getJavaFullName());
+		assertEquals(getMessageField("bar3", responseInner), jpBar.getJavaFullName());
 
-		assertTrue(getMessageField("inner1", responseInner) == barInner);
-		assertTrue(getMessageField("inner2", responseInner) == barInner);
-		assertTrue(getMessageField("inner3", responseInner) == jpBarInner);
+		assertEquals(getMessageField("inner1", responseInner), barInner.getJavaFullName());
+		assertEquals(getMessageField("inner2", responseInner), barInner.getJavaFullName());
+		assertEquals(getMessageField("inner3", responseInner), jpBarInner.getJavaFullName());
 
-		assertTrue(getMessageField("deeper1", responseInner) == barDeeper);
-		assertTrue(getMessageField("deeper2", responseInner) == barDeeper);
-		assertTrue(getMessageField("deeper3", responseInner) == jpBarDeeper);
+		assertEquals(getMessageField("deeper1", responseInner), barDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper2", responseInner), barDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper3", responseInner), jpBarDeeper.getJavaFullName());
 
-		assertTrue(getMessageField("bar1", responseDeeper) == bar);
-		assertTrue(getMessageField("bar2", responseDeeper) == bar);
-		assertTrue(getMessageField("bar3", responseDeeper) == jpBar);
+		assertEquals(getMessageField("bar1", responseDeeper), bar.getJavaFullName());
+		assertEquals(getMessageField("bar2", responseDeeper), bar.getJavaFullName());
+		assertEquals(getMessageField("bar3", responseDeeper), jpBar.getJavaFullName());
 
-		assertTrue(getMessageField("inner1", responseDeeper) == barInner);
-		assertTrue(getMessageField("inner2", responseDeeper) == barInner);
-		assertTrue(getMessageField("inner3", responseDeeper) == jpBarInner);
+		assertEquals(getMessageField("inner1", responseDeeper), barInner.getJavaFullName());
+		assertEquals(getMessageField("inner2", responseDeeper), barInner.getJavaFullName());
+		assertEquals(getMessageField("inner3", responseDeeper), jpBarInner.getJavaFullName());
 
-		assertTrue(getMessageField("deeper1", responseDeeper) == barDeeper);
-		assertTrue(getMessageField("deeper2", responseDeeper) == barDeeper);
-		assertTrue(getMessageField("deeper3", responseDeeper) == jpBarDeeper);
+		assertEquals(getMessageField("deeper1", responseDeeper), barDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper2", responseDeeper), barDeeper.getJavaFullName());
+		assertEquals(getMessageField("deeper3", responseDeeper), jpBarDeeper.getJavaFullName());
 	}
 
-	static Message getMessageField(String name, Message msg) {
-		return ((MessageField) msg.getField(name)).getMessage();
+	static String getMessageField(String name, Message msg) {
+		return msg.getField(name).type.getJavaType();
 	}
 
 }

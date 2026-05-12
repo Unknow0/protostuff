@@ -211,7 +211,7 @@ public abstract class STCodeGenerator implements ProtoCompiler {
 		}
 
 		try {
-			return loader.loadFrom(file, null);
+			return loader.load(file.toURI().toString(), null);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -257,20 +257,20 @@ public abstract class STCodeGenerator implements ProtoCompiler {
 		String opkg = module.getOption(pkg);
 		String ojpkg = module.getOption(jpkg);
 		boolean override = false;
-		if (opkg != null && opkg.length() != 0) {
-			proto.getMutablePackageName().override(opkg);
-			override = true;
-		}
-		if (ojpkg != null && ojpkg.length() != 0) {
-			proto.getMutableJavaPackageName().override(ojpkg);
-			override = true;
-		}
+//		if (opkg != null && opkg.length() != 0) {
+//			proto.getMutablePackageName().override(opkg);
+//			override = true;
+//		}
+//		if (ojpkg != null && ojpkg.length() != 0) {
+//			proto.getMutableJavaPackageName().override(ojpkg);
+//			override = true;
+//		}
 		return override;
 	}
 
 	protected static void postCompile(Proto proto) {
-		proto.getMutableJavaPackageName().reset();
-		proto.getMutablePackageName().reset();
+//		proto.getMutableJavaPackageName().reset();
+//		proto.getMutablePackageName().reset();
 	}
 
 	protected abstract void compile(ProtoModule module, Proto proto) throws IOException;

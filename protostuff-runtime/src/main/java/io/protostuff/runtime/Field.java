@@ -54,4 +54,9 @@ public abstract class Field<T> {
 	 * Transfer the input field to the output field.
 	 */
 	protected abstract void transfer(Pipe pipe, Input input, Output output, boolean repeated) throws IOException;
+
+	@Override
+	public String toString() {
+		return getClass().getName() + " " + name + " = " + number;
+	}
 }

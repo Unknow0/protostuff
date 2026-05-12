@@ -13,15 +13,14 @@
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<plugins>
-
 			<plugin>
 				<groupId>org.antlr</groupId>
-				<artifactId>antlr3-maven-plugin</artifactId>
-				<version>${antlr3-version}</version>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>${antlr4-version}</version>
 				<executions>
 					<execution>
 						<goals>
-							<goal>antlr</goal>
+							<goal>antlr4</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -31,15 +30,18 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>io.protostuff</groupId>
+			<artifactId>protostuff-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr-runtime</artifactId>
+			<artifactId>antlr4-runtime</artifactId>
 		</dependency>
 	</dependencies>
-
-
 </project>

@@ -40,7 +40,7 @@ public class CodedOutputTest extends AbstractTest {
 		int num = 1;
 		boolean value = true;
 		int valueSize = 1;
-		int tag = WireFormat.makeTag(num, FieldType.BOOL.wireType);
+		int tag = WireFormat.makeTag(num, FieldType.BOOL.getWireType());
 		int tagSize = CodedOutput.computeRawVarint32Size(tag);
 		int expect = tagSize + valueSize;
 
@@ -55,7 +55,7 @@ public class CodedOutputTest extends AbstractTest {
 			int num = i;
 			for (int value : inner) {
 				int valueSize = CodedOutput.computeRawVarint32Size(value);
-				int tag = WireFormat.makeTag(num, FieldType.INT32.wireType);
+				int tag = WireFormat.makeTag(num, FieldType.INT32.getWireType());
 				int tagSize = CodedOutput.computeRawVarint32Size(tag);
 				int expect = tagSize + valueSize;
 
@@ -73,7 +73,7 @@ public class CodedOutputTest extends AbstractTest {
 			int num = i;
 			for (long value : inner) {
 				int valueSize = CodedOutput.computeRawVarint64Size(value);
-				int tag = WireFormat.makeTag(num, FieldType.INT64.wireType);
+				int tag = WireFormat.makeTag(num, FieldType.INT64.getWireType());
 				int tagSize = CodedOutput.computeRawVarint32Size(tag);
 				int expect = tagSize + valueSize;
 
@@ -91,7 +91,7 @@ public class CodedOutputTest extends AbstractTest {
 			for (float element : inner) {
 				int value = Float.floatToRawIntBits(element);
 				int valueSize = CodedOutput.LITTLE_ENDIAN_32_SIZE;
-				int tag = WireFormat.makeTag(num, FieldType.FLOAT.wireType);
+				int tag = WireFormat.makeTag(num, FieldType.FLOAT.getWireType());
 				int tagSize = CodedOutput.computeRawVarint32Size(tag);
 				int expect = tagSize + valueSize;
 
@@ -108,7 +108,7 @@ public class CodedOutputTest extends AbstractTest {
 			int num = i;
 			for (double element : inner) {
 				long value = Double.doubleToRawLongBits(element);
-				int tag = WireFormat.makeTag(num, FieldType.DOUBLE.wireType);
+				int tag = WireFormat.makeTag(num, FieldType.DOUBLE.getWireType());
 				int tagSize = CodedOutput.computeRawVarint32Size(tag);
 				int expect = tagSize + CodedOutput.LITTLE_ENDIAN_64_SIZE;
 

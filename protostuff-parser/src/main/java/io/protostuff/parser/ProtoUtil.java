@@ -16,13 +16,26 @@ package io.protostuff.parser;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import org.antlr.runtime.ANTLRInputStream;
-import org.antlr.runtime.ANTLRReaderStream;
-import org.antlr.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenFactory;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.UnbufferedCharStream;
+import org.antlr.v4.runtime.UnbufferedTokenStream;
+import org.antlr.v4.runtime.atn.PredictionMode;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+
+import io.protostuff.parser.Proto.Loader;
+import io.protostuff.parser.builder.ProtoBuilder;
 
 /**
  * Utility for loading protos from various input.
@@ -35,59 +48,96 @@ public final class ProtoUtil {
 	private ProtoUtil() {
 	}
 
-	/**
-	 * Loads the proto from an {@link ANTLRReaderStream}.
-	 */
-	public static void loadFrom(ANTLRReaderStream input, Proto target) throws Exception {
-		// Create an ExprLexer that feeds from that stream
+	private static <T extends Parser> T setup(T parser) {
+		parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
+		parser.setErrorHandler(new BailErrorStrategy());
+		parser.setBuildParseTree(false);
+		return parser;
+	}
+
+	public static Proto loadFrom(CharStream input, ProtoBuilder target) {
+		try {
+			int marker = input.mark();
+			ProtoHeaderLexer hlexer = new ProtoHeaderLexer(input);
+			UnbufferedTokenStream<Token> htokens = new UnbufferedTokenStream<>(hlexer);
+			ProtoHeaderParser hparser = setup(new ProtoHeaderParser(htokens));
+			try {
+				hparser.file();
+			} catch (@SuppressWarnings("unused") ParseCancellationException e) { // ok
+			}
+			input.release(marker);
+			Proto2Listener listener = new Proto2Listener(target);
+			AbstractParser setup = setup(getParser(hparser.version, input, hlexer.getLine()));
+			setup.addParseListener(listener);
+			setup.load();
+			return target.build();
+		} catch (IllegalStateException e) {
+			throw e;
+		} catch (Exception e) {
+			throw ProtoParserException.build(target, e);
+		}
+	}
+
+	private static AbstractParser getParser(String version, CharStream input, int line) {
 		ProtoLexer lexer = new ProtoLexer(input);
-		// Create a stream of tokens fed by the lexer
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		// Create a parser that feeds off the token stream
-		ProtoParser parser = new ProtoParser(tokens);
-		// Begin parsing at rule parse
-		parser.parse(target);
+		lexer.setTokenFactory(new CommonTokenFactory(true));
+		lexer.getInterpreter().setLine(line);
+		UnbufferedTokenStream<Token> htokens = new UnbufferedTokenStream<>(lexer);
+		if ("proto2".equals(version))
+			return new Proto2Parser(htokens);
+		throw new IllegalStateException("Invalid version " + version);
 	}
 
 	/**
-	 * Loads the proto from an {@link InputStream}.
+	 * Loads the proto from a {@link InputStream}.
 	 */
-	public static void loadFrom(InputStream in, Proto target) throws Exception {
-		loadFrom(new ANTLRInputStream(in), target);
+	public static Proto loadFrom(InputStream in, ProtoBuilder target) {
+		UnbufferedCharStream input = new UnbufferedCharStream(in);
+		input.name = target.getSource().toString();
+		return loadFrom(input, target);
 	}
 
 	/**
 	 * Loads the proto from a {@link Reader}.
 	 */
-	public static void loadFrom(Reader reader, Proto target) throws Exception {
-		loadFrom(new ANTLRReaderStream(reader), target);
+	public static Proto loadFrom(Reader reader, ProtoBuilder target) {
+		UnbufferedCharStream input = new UnbufferedCharStream(reader);
+		input.name = target.getSource().toString();
+		return loadFrom(input, target);
+	}
+
+	public static Proto parseProto(Path file) {
+		ProtoBuilder proto = new ProtoBuilder(file.toUri());
+		try (InputStream in = Files.newInputStream(file)) {
+			return loadFrom(in, proto);
+		} catch (IOException e) {
+			throw ProtoParserException.build(proto, e);
+		}
 	}
 
 	public static Proto parseProto(File file) {
-		Proto proto = new Proto(file);
-		try {
-			loadFrom(file, proto);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return proto;
+		return parseProto(file, DefaultProtoLoader.DEFAULT_INSTANCE);
 	}
 
-	public static void loadFrom(File file, Proto target) throws Exception {
-		FileInputStream in = new FileInputStream(file);
-		try {
-			loadFrom(in, target);
-		} finally {
-			in.close();
+	public static Proto parseProto(File file, Loader loader) {
+		ProtoBuilder proto = new ProtoBuilder(file.toURI(), loader);
+		try (InputStream in = new FileInputStream(file)) {
+			return loadFrom(in, proto);
+		} catch (IOException e) {
+			throw ProtoParserException.build(proto, e);
 		}
 	}
 
-	public static void loadFrom(URL resource, Proto target) throws Exception {
-		InputStream in = resource.openStream();
-		try {
-			loadFrom(in, target);
-		} finally {
-			in.close();
+	public static Proto parseProto(URL resource) {
+		return parseProto(resource, DefaultProtoLoader.DEFAULT_INSTANCE);
+	}
+
+	public static Proto parseProto(URL resource, Loader loader) {
+		try (InputStream in = resource.openStream()) {
+			ProtoBuilder proto = new ProtoBuilder(resource.toURI(), loader);
+			return loadFrom(in, proto);
+		} catch (IOException | URISyntaxException e) {
+			throw new ProtoParserException("Failed to parse " + resource, e);
 		}
 	}
 
@@ -181,4 +231,11 @@ public final class ProtoUtil {
 		return buffer;
 	}
 
+	public static IllegalStateException err(String msg, Proto proto) {
+		if (proto == null) {
+			return new IllegalStateException(msg);
+		}
+
+		return new IllegalStateException(msg + " [" + proto.getSourcePath() + "]");
+	}
 }

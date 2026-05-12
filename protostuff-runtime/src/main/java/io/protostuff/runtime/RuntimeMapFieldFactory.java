@@ -70,7 +70,7 @@ final class RuntimeMapFieldFactory {
 			final Class<Object> clazzV, final IdStrategy strategy) {
 		final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
 
-		return new RuntimeMapField<T, Object, Enum<?>>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Enum<?>>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -127,7 +127,7 @@ final class RuntimeMapFieldFactory {
 
 	private static <T> Field<T> createMapInlineKInlineV(int number, String name, final java.lang.reflect.Field f, MessageFactory messageFactory,
 			final Delegate<Object> inlineK, final Delegate<Object> inlineV) {
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -186,7 +186,7 @@ final class RuntimeMapFieldFactory {
 			final Delegate<Object> inlineK, final Class<Object> clazzV, IdStrategy strategy) {
 		final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
 
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -252,7 +252,7 @@ final class RuntimeMapFieldFactory {
 
 	private static <T> Field<T> createMapInlineKPolymorphicV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			final Delegate<Object> inlineK, final Class<Object> clazzV, final IdStrategy strategy) {
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 
@@ -332,7 +332,7 @@ final class RuntimeMapFieldFactory {
 
 	private static <T> Field<T> createMapInlineKObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			final Delegate<Object> inlineK, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema) {
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 
@@ -411,7 +411,7 @@ final class RuntimeMapFieldFactory {
 		final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 		final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
 
-		return new RuntimeMapField<T, Enum<?>, Enum<?>>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Enum<?>, Enum<?>>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -470,7 +470,7 @@ final class RuntimeMapFieldFactory {
 			final Delegate<Object> inlineV, final IdStrategy strategy) {
 		final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 
-		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -530,7 +530,7 @@ final class RuntimeMapFieldFactory {
 		final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 		final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
 
-		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -598,7 +598,7 @@ final class RuntimeMapFieldFactory {
 			final Class<Object> clazzK, final Class<Object> clazzV, final IdStrategy strategy) {
 		final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 
-		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 
@@ -680,7 +680,7 @@ final class RuntimeMapFieldFactory {
 			final Class<Object> clazzK, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy) {
 		final EnumIO<?> eioK = strategy.getEnumIO(clazzK);
 
-		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Enum<?>, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 
@@ -759,7 +759,7 @@ final class RuntimeMapFieldFactory {
 		final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
 		final EnumIO<?> eioV = strategy.getEnumIO(clazzV);
 
-		return new RuntimeMapField<T, Object, Enum<?>>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Enum<?>>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -827,7 +827,7 @@ final class RuntimeMapFieldFactory {
 			final Class<Object> clazzK, final Delegate<Object> inlineV, IdStrategy strategy) {
 		final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
 
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -896,7 +896,7 @@ final class RuntimeMapFieldFactory {
 		final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
 		final HasSchema<Object> schemaV = strategy.getSchemaWrapper(clazzV, true);
 
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 			final Accessor accessor = AF.create(f);
 
 			@Override
@@ -968,7 +968,7 @@ final class RuntimeMapFieldFactory {
 			final Class<Object> clazzK, final Class<Object> clazzV, final IdStrategy strategy) {
 		final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
 
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 
@@ -1054,7 +1054,7 @@ final class RuntimeMapFieldFactory {
 			final Class<Object> clazzK, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema, final IdStrategy strategy) {
 		final HasSchema<Object> schemaK = strategy.getSchemaWrapper(clazzK, true);
 
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 
@@ -1134,7 +1134,7 @@ final class RuntimeMapFieldFactory {
 
 	private static <T> Field<T> createMapObjectKObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			final Schema<Object> keySchema, final Pipe.Schema<Object> keyPipeSchema, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema) {
-		return new RuntimeMapField<T, Object, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory) {
+		return new RuntimeMapField<T, Object, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory) {
 
 			final Accessor accessor = AF.create(f);
 

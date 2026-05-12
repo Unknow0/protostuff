@@ -15,9 +15,12 @@
 package io.protostuff.parser;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import io.protostuff.parser.builder.ProtoBuilder;
 
 /**
  * Default proto loader for imported protos.
@@ -83,7 +86,7 @@ public class DefaultProtoLoader implements Proto.Loader {
 	}
 
 	@Override
-	public Proto load(String path, Proto importer) throws Exception {
+	public Proto load(String path, ProtoBuilder importer) throws ProtoParserException {
 		switch (protoSearchStrategy) {
 			case ALL:
 				return searchFromAll(path, importer);
@@ -108,16 +111,16 @@ public class DefaultProtoLoader implements Proto.Loader {
 	 * -Dproto_path=$path -Dproto_search_strategy=1
 	 * </pre>
 	 */
-	protected Proto searchFromProtoPathOnly(String path, Proto importer) throws Exception {
+	protected Proto searchFromProtoPathOnly(String path, ProtoBuilder importer) throws ProtoParserException {
 		// proto_path
 		File protoFile;
 		for (File dir : __protoLoadDirs) {
 			if ((protoFile = new File(dir, path)).exists()) {
-				return loadFrom(protoFile, importer);
+				return ProtoUtil.parseProto(protoFile, this);
 			}
 		}
 
-		throw new IllegalStateException("Imported proto " + path + " not found. (" + importer.getSourcePath() + ")");
+		throw new IllegalStateException("Imported proto " + path + " not found. (" + importer.getSource() + ")");
 	}
 
 	/**
@@ -129,19 +132,19 @@ public class DefaultProtoLoader implements Proto.Loader {
 	 * -Dproto_path=$path -Dproto_search_strategy=2
 	 * </pre>
 	 */
-	protected Proto searchFromProtoPathAndClasspath(String path, Proto importer) throws Exception {
+	protected Proto searchFromProtoPathAndClasspath(String path, ProtoBuilder importer) throws ProtoParserException {
 		// proto_path
 		File protoFile;
 		for (File dir : __protoLoadDirs) {
 			if ((protoFile = new File(dir, path)).exists()) {
-				return loadFrom(protoFile, importer);
+				return ProtoUtil.parseProto(protoFile, this);
 			}
 		}
 
 		// classpath
-		Proto protoFromOtherResource = loadFromOtherResource(path, importer);
+		Proto protoFromOtherResource = loadFromOtherResource(path);
 		if (protoFromOtherResource == null) {
-			throw new IllegalStateException("Imported proto " + path + " not found. (" + importer.getSourcePath() + ")");
+			throw new IllegalStateException("Imported proto " + path + " not found. (" + importer.getSource() + ")");
 		}
 
 		return protoFromOtherResource;
@@ -158,58 +161,58 @@ public class DefaultProtoLoader implements Proto.Loader {
 	 * 3. classpath
 	 * </pre>
 	 */
-	protected Proto searchFromAll(String path, Proto importer) throws Exception {
+	protected Proto searchFromAll(String path, ProtoBuilder importer) throws ProtoParserException {
 		if (path.startsWith("http://")) {
-			URL url = new URL(path);
-			return loadFrom(url, importer);
+			try {
+				URL url = new URL(path);
+				return ProtoUtil.parseProto(url, this);
+			} catch (MalformedURLException e) {
+				throw new ProtoParserException("Failed to parse " + importer.getSource(), e);
+			}
 		}
 
-		File protoFile, importerFile = importer.getFile();
-		if (importerFile == null) {
-			protoFile = new File(path);
-		} else {
-			// check if its relative to its importer's dir.
-			protoFile = new File(importerFile.getAbsoluteFile().getParentFile(), path);
-			if (!protoFile.exists() && !(protoFile = new File(path)).exists()) {
-				// check if its relative to its importer's package base dir.
-				File baseDir = getBaseDirFromPackagePath(importer);
-				if (baseDir != null) {
-					protoFile = new File(baseDir, path);
-				}
+		File protoFile, importerFile = new File(importer.getSource());
+		// check if its relative to its importer's dir.
+		protoFile = new File(importerFile.getAbsoluteFile().getParentFile(), path);
+		if (!protoFile.exists() && !(protoFile = new File(path)).exists()) {
+			// check if its relative to its importer's package base dir.
+			File baseDir = getBaseDirFromPackagePath(importer);
+			if (baseDir != null) {
+				protoFile = new File(baseDir, path);
 			}
+		}
 
-			if (!protoFile.exists() && !__protoLoadDirs.isEmpty()) {
-				// check from the "proto_path" provided as a system property
-				for (File dir : __protoLoadDirs) {
-					if ((protoFile = new File(dir, path)).exists()) {
-						// found
-						break;
-					}
+		if (!protoFile.exists() && !__protoLoadDirs.isEmpty()) {
+			// check from the "proto_path" provided as a system property
+			for (File dir : __protoLoadDirs) {
+				if ((protoFile = new File(dir, path)).exists()) {
+					// found
+					break;
 				}
 			}
 		}
 
 		if (protoFile.exists()) {
-			return loadFrom(protoFile, importer);
+			return ProtoUtil.parseProto(protoFile, this);
 		}
 
 		// last resort (defaults to classpath lookup).
-		Proto protoFromOtherResource = loadFromOtherResource(path, importer);
+		Proto protoFromOtherResource = loadFromOtherResource(path);
 		if (protoFromOtherResource == null) {
-			throw new IllegalStateException("Imported proto " + path + " not found. (" + importer.getSourcePath() + ")");
+			throw new IllegalStateException("Imported proto " + path + " not found. (" + importer.getSource() + ")");
 		}
 
 		return protoFromOtherResource;
 	}
 
-	static File getBaseDirFromPackagePath(Proto importer) {
+	static File getBaseDirFromPackagePath(ProtoBuilder importer) {
 		String importerPkg = importer.getPackageName();
 		// the imports are declared before the package
 		if (importerPkg == null) {
 			return null;
 		}
 
-		File baseDir = importer.getFile().getAbsoluteFile().getParentFile();
+		File baseDir = new File(importer.getSource()).getAbsoluteFile().getParentFile();
 
 		// up one level if package contains a dot.
 		for (int i = 0; (i = importerPkg.indexOf('.', i)) != -1; i++) {
@@ -219,36 +222,22 @@ public class DefaultProtoLoader implements Proto.Loader {
 		return baseDir;
 	}
 
-	protected Proto loadFromOtherResource(String path, Proto importer) throws Exception {
+	protected Proto loadFromOtherResource(String path) {
 		// defaults to lookup from classpath.
 		URL resource = getResource(path, DefaultProtoLoader.class);
-		return resource == null ? null : loadFrom(resource, importer);
-	}
-
-	protected Proto loadFrom(File file, Proto importer) throws Exception {
-		Proto proto = new Proto(file, this, importer);
-		ProtoUtil.loadFrom(file, proto);
-		return proto;
-	}
-
-	protected Proto loadFrom(URL resource, Proto importer) throws Exception {
-		Proto proto = new Proto(resource, this, importer);
-		ProtoUtil.loadFrom(resource, proto);
-		return proto;
+		return resource == null ? null : ProtoUtil.parseProto(resource, this);
 	}
 
 	/**
 	 * Loads a proto from the classpath.
 	 */
-	public static Proto loadFromClasspath(String path, Proto importer) throws Exception {
+	public static Proto loadFromClasspath(String path) {
 		URL resource = getResource(path, DefaultProtoLoader.class);
 		if (resource == null) {
 			return null;
 		}
 
-		Proto proto = new Proto(resource, DEFAULT_INSTANCE, importer);
-		ProtoUtil.loadFrom(resource, proto);
-		return proto;
+		return ProtoUtil.parseProto(resource);
 	}
 
 	/**

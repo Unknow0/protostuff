@@ -23,4 +23,8 @@ package io.protostuff.parser;
 public interface HasProto {
 
 	public Proto getProto();
+
+	public default IllegalStateException err(String msg, Proto proto) {
+		return ProtoUtil.err(msg, proto);
+	}
 }

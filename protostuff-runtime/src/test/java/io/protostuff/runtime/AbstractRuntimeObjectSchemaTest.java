@@ -3461,7 +3461,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest {
 
 		@Override
 		public WireFormat.FieldType getFieldType() {
-			return WireFormat.FieldType.MESSAGE;
+			return WireFormat.FieldType.forMessage("");
 		}
 
 		@SuppressWarnings("unchecked")
@@ -3732,7 +3732,7 @@ public abstract class AbstractRuntimeObjectSchemaTest extends AbstractTest {
 
 		@Override
 		public WireFormat.FieldType getFieldType() {
-			return WireFormat.FieldType.MESSAGE;
+			return WireFormat.FieldType.forMessage("");
 		}
 
 		@Override

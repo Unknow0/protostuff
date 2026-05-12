@@ -44,7 +44,6 @@ import io.protostuff.Tag;
  * @author David Yu
  * @created Mar 30, 2012
  */
-@SuppressWarnings("deprecation")
 public class AnnotatedFieldsTest {
 
 	public static class EntityFullyAnnotated {

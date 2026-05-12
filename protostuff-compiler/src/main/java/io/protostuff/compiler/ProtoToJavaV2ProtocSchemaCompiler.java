@@ -37,8 +37,18 @@ public class ProtoToJavaV2ProtocSchemaCompiler extends STCodeGenerator {
 	}
 
 	static String resolveFileName(Proto proto) {
-		String outerClassname = proto.getExtraOption("java_outer_classname");
-		return outerClassname == null ? ProtoUtil.toPascalCase(proto.getFile().getName().replaceAll(".proto", "")).toString() : outerClassname;
+		String outerClassname = proto.getOption("java_outer_classname");
+		if (outerClassname != null)
+			return outerClassname;
+		String name = proto.getSourcePath();
+		int i = name.lastIndexOf('/');
+		if (i > 0)
+			name = name.substring(i + 1);
+		i = name.lastIndexOf('\\');
+		if (i > 0)
+			name = name.substring(i + 1);
+
+		return ProtoUtil.toPascalCase(name.replace(".proto", "")).toString();
 	}
 
 	@Override

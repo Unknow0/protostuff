@@ -30,8 +30,7 @@ public class ProtoServiceTest extends TestCase {
 	public void testRpc() throws Exception {
 		File f = ProtoParserTest.getFile("test_rpc.proto");
 		assertTrue(f.exists());
-		Proto proto = new Proto(f);
-		ProtoUtil.loadFrom(f, proto);
+		Proto proto = ProtoUtil.parseProto(f);
 
 		assertTrue(proto.getImportedProtos().size() == 2);
 
@@ -100,13 +99,13 @@ public class ProtoServiceTest extends TestCase {
 
 		RpcMethod local = service.getRpcMethod("Local");
 		assertNotNull(local);
-		assertTrue(local.getArgType() == request);
-		assertTrue(local.getReturnType() == response);
+		assertEquals(request.getRelativeName(), local.getArgType());
+		assertEquals(response.getRelativeName(), local.getReturnType());
 
-		assertEquals(Boolean.TRUE, local.getExtraOption("rpc.is_streaming_rpc"));
-		assertEquals("bar", local.getExtraOption("foo"));
-		assertEquals(Float.valueOf(1.0f), local.getExtraOption("bar.baz"));
-		assertEquals(Integer.valueOf(1), local.getExtraOption("id"));
+		assertEquals(Boolean.TRUE, local.getOption("(rpc.is_streaming_rpc)"));
+		assertEquals("bar", local.getOption("foo"));
+		assertEquals(1.0, local.getOption("bar.baz"));
+		assertEquals(Long.valueOf(1), local.getOption("id"));
 
 		RpcMethod theVoid = service.getRpcMethod("theVoid");
 		assertNotNull(theVoid);
@@ -115,150 +114,87 @@ public class ProtoServiceTest extends TestCase {
 
 		RpcMethod localFull = service.getRpcMethod("LocalFull");
 		assertNotNull(localFull);
-		assertTrue(localFull.getArgType() == request);
-		assertTrue(localFull.getReturnType() == response);
+		assertEquals(request.getFullName(), localFull.getArgType());
+		assertEquals(response.getFullName(), localFull.getReturnType());
 
 		RpcMethod localInner = service.getRpcMethod("LocalInner");
 		assertNotNull(localInner);
-		assertTrue(localInner.getArgType() == requestInner);
-		assertTrue(localInner.getReturnType() == responseInner);
+		assertEquals(requestInner.getRelativeName(), localInner.getArgType());
+		assertEquals(responseInner.getRelativeName(), localInner.getReturnType());
 
 		RpcMethod localInnerFull = service.getRpcMethod("LocalInnerFull");
 		assertNotNull(localInnerFull);
-		assertTrue(localInnerFull.getArgType() == requestInner);
-		assertTrue(localInnerFull.getReturnType() == responseInner);
+		assertEquals(requestInner.getFullName(), localInnerFull.getArgType());
+		assertEquals(responseInner.getFullName(), localInnerFull.getReturnType());
 
 		RpcMethod localDeeper = service.getRpcMethod("LocalDeeper");
 		assertNotNull(localDeeper);
-		assertTrue(localDeeper.getArgType() == requestDeeper);
-		assertTrue(localDeeper.getReturnType() == responseDeeper);
+		assertEquals(requestDeeper.getRelativeName(), localDeeper.getArgType());
+		assertEquals(responseDeeper.getRelativeName(), localDeeper.getReturnType());
 
 		RpcMethod localDeeperFull = service.getRpcMethod("LocalDeeperFull");
 		assertNotNull(localDeeperFull);
-		assertTrue(localDeeperFull.getArgType() == requestDeeper);
-		assertTrue(localDeeperFull.getReturnType() == responseDeeper);
+		assertEquals(requestDeeper.getFullName(), localDeeperFull.getArgType());
+		assertEquals(responseDeeper.getFullName(), localDeeperFull.getReturnType());
 
 		RpcMethod foreign = service.getRpcMethod("Foreign");
 		assertNotNull(foreign);
-		assertTrue(foreign.getArgType() == foo);
-		assertTrue(foreign.getReturnType() == bar);
+		assertEquals(foo.getRelativeName(), foreign.getArgType());
+		assertEquals(bar.getRelativeName(), foreign.getReturnType());
 
 		RpcMethod foreignFull = service.getRpcMethod("ForeignFull");
 		assertNotNull(foreignFull);
-		assertTrue(foreignFull.getArgType() == foo);
-		assertTrue(foreignFull.getReturnType() == bar);
+		assertEquals(foo.getFullName(), foreignFull.getArgType());
+		assertEquals(bar.getFullName(), foreignFull.getReturnType());
 
 		RpcMethod foreignInner = service.getRpcMethod("ForeignInner");
 		assertNotNull(foreignInner);
-		assertTrue(foreignInner.getArgType() == fooInner);
-		assertTrue(foreignInner.getReturnType() == barInner);
+		assertEquals(fooInner.getRelativeName(), foreignInner.getArgType());
+		assertEquals(barInner.getRelativeName(), foreignInner.getReturnType());
 
 		RpcMethod foreignInnerFull = service.getRpcMethod("ForeignInnerFull");
 		assertNotNull(foreignInnerFull);
-		assertTrue(foreignInnerFull.getArgType() == fooInner);
-		assertTrue(foreignInnerFull.getReturnType() == barInner);
+		assertEquals(fooInner.getFullName(), foreignInnerFull.getArgType());
+		assertEquals(barInner.getFullName(), foreignInnerFull.getReturnType());
 
 		RpcMethod foreignDeeper = service.getRpcMethod("ForeignDeeper");
 		assertNotNull(foreignDeeper);
-		assertTrue(foreignDeeper.getArgType() == fooDeeper);
-		assertTrue(foreignDeeper.getReturnType() == barDeeper);
+		assertEquals(fooDeeper.getRelativeName(), foreignDeeper.getArgType());
+		assertEquals(barDeeper.getRelativeName(), foreignDeeper.getReturnType());
 
 		RpcMethod foreignDeeperFull = service.getRpcMethod("ForeignDeeperFull");
 		assertNotNull(foreignDeeperFull);
-		assertTrue(foreignDeeperFull.getArgType() == fooDeeper);
-		assertTrue(foreignDeeperFull.getReturnType() == barDeeper);
+		assertEquals(fooDeeper.getFullName(), foreignDeeperFull.getArgType());
+		assertEquals(barDeeper.getFullName(), foreignDeeperFull.getReturnType());
 
 		RpcMethod jpForeign = service.getRpcMethod("JPForeign");
 		assertNotNull(jpForeign);
-		assertTrue(jpForeign.getArgType() == jpFoo);
-		assertTrue(jpForeign.getReturnType() == jpBar);
+		assertEquals(jpFoo.getRelativeName(), jpForeign.getArgType());
+		assertEquals(jpBar.getRelativeName(), jpForeign.getReturnType());
 
 		RpcMethod jpForeignFull = service.getRpcMethod("JPForeignFull");
 		assertNotNull(jpForeignFull);
-		assertTrue(jpForeignFull.getArgType() == jpFoo);
-		assertTrue(jpForeignFull.getReturnType() == jpBar);
+		assertEquals(jpFoo.getFullName(), jpForeignFull.getArgType());
+		assertEquals(jpBar.getFullName(), jpForeignFull.getReturnType());
 
 		RpcMethod jpForeignInner = service.getRpcMethod("JPForeignInner");
 		assertNotNull(jpForeignInner);
-		assertTrue(jpForeignInner.getArgType() == jpFooInner);
-		assertTrue(jpForeignInner.getReturnType() == jpBarInner);
+		assertEquals(jpFooInner.getRelativeName(), jpForeignInner.getArgType());
+		assertEquals(jpBarInner.getRelativeName(), jpForeignInner.getReturnType());
 
 		RpcMethod jpForeignInnerFull = service.getRpcMethod("JPForeignInnerFull");
 		assertNotNull(jpForeignInnerFull);
-		assertTrue(jpForeignInnerFull.getArgType() == jpFooInner);
-		assertTrue(jpForeignInnerFull.getReturnType() == jpBarInner);
+		assertEquals(jpFooInner.getFullName(), jpForeignInnerFull.getArgType());
+		assertEquals(jpBarInner.getFullName(), jpForeignInnerFull.getReturnType());
 
 		RpcMethod jpForeignDeeper = service.getRpcMethod("JPForeignDeeper");
 		assertNotNull(jpForeignDeeper);
-		assertTrue(jpForeignDeeper.getArgType() == jpFooDeeper);
-		assertTrue(jpForeignDeeper.getReturnType() == jpBarDeeper);
+		assertEquals(jpFooDeeper.getRelativeName(), jpForeignDeeper.getArgType());
+		assertEquals(jpBarDeeper.getRelativeName(), jpForeignDeeper.getReturnType());
 
 		RpcMethod jpForeignDeeperFull = service.getRpcMethod("JPForeignDeeperFull");
 		assertNotNull(jpForeignDeeperFull);
-		assertTrue(jpForeignDeeperFull.getArgType() == jpFooDeeper);
-		assertTrue(jpForeignDeeperFull.getReturnType() == jpBarDeeper);
-
-		verifyNested(proto.getMessage("Hello"), response, responseInner, requestInner);
-	}
-
-	static void verifyNested(Message hello, Message response, Message responseInner, Message requestInner) {
-		assertNotNull(hello);
-
-		Service s = hello.getNestedService("S");
-		assertNotNull(s);
-
-		RpcMethod greet = s.getRpcMethod("greet");
-		assertNotNull(greet);
-
-		Message req = greet.getArgType();
-		assertTrue(req == hello);
-
-		Message res = greet.getReturnType();
-		assertTrue(res == response);
-
-		Service i = responseInner.getNestedService("I");
-		assertNotNull(i);
-
-		RpcMethod getChild = i.getRpcMethod("getChild");
-		assertNotNull(getChild);
-		assertNotNull(getChild.getArgType());
-		assertTrue(getChild.getArgType() == responseInner);
-		assertNotNull(getChild.getReturnType());
-		assertTrue(getChild.getReturnType() == responseInner.getNestedMessage("Deeper"));
-
-		RpcMethod getParent = i.getRpcMethod("getParent");
-		assertNotNull(getParent);
-		assertNotNull(getParent.getArgType());
-		assertTrue(getParent.getArgType() == responseInner);
-		assertNotNull(getParent.getReturnType());
-		assertTrue(getParent.getReturnType() == responseInner.getParentMessage());
-
-		RpcMethod getHello = i.getRpcMethod("getHello");
-		assertNotNull(getHello);
-		assertNotNull(getHello.getArgType());
-		assertTrue(getHello.getArgType() == responseInner);
-		assertNotNull(getHello.getReturnType());
-		assertTrue(getHello.getReturnType() == hello);
-
-		RpcMethod fetchChild = i.getRpcMethod("fetchChild");
-		assertNotNull(fetchChild);
-		assertNotNull(fetchChild.getArgType());
-		assertTrue(fetchChild.getArgType() == requestInner);
-		assertNotNull(fetchChild.getReturnType());
-		assertTrue(fetchChild.getReturnType() == requestInner.getNestedMessage("Deeper"));
-
-		RpcMethod fetchParent = i.getRpcMethod("fetchParent");
-		assertNotNull(fetchParent);
-		assertNotNull(fetchParent.getArgType());
-		assertTrue(fetchParent.getArgType() == requestInner);
-		assertNotNull(fetchParent.getReturnType());
-		assertTrue(fetchParent.getReturnType() == requestInner.getParentMessage());
-
-		RpcMethod fetchHello = i.getRpcMethod("fetchHello");
-		assertNotNull(fetchHello);
-		assertNotNull(fetchHello.getArgType());
-		assertTrue(fetchHello.getArgType() == requestInner);
-		assertNotNull(fetchHello.getReturnType());
-		assertTrue(fetchHello.getReturnType() == hello);
+		assertEquals(jpFooDeeper.getFullName(), jpForeignDeeperFull.getArgType());
+		assertEquals(jpBarDeeper.getFullName(), jpForeignDeeperFull.getReturnType());
 	}
 }

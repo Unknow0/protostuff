@@ -15,10 +15,12 @@
 package io.protostuff.compiler;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +29,6 @@ import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import io.protostuff.parser.Annotation;
 import io.protostuff.parser.Message;
 import io.protostuff.parser.Proto;
 
@@ -50,12 +51,13 @@ public class ProtoToProtoCompiler extends STCodeGenerator {
 
 		// Prepare writer
 		String src = module.getSource().getAbsolutePath();
-		String path = proto.getFile().getAbsolutePath().replace(src, "").replace(proto.getFile().getName(), "");
+		File protoFile = new File(URI.create(proto.getSourcePath()));
+		String path = protoFile.getAbsolutePath().replace(src, "").replace(protoFile.getName(), "");
 
-		try (Writer writer = CompilerUtil.newWriter(module, path, proto.getFile().getName())) {
+		try (Writer writer = CompilerUtil.newWriter(module, path, protoFile.getName())) {
 			// Read proto file in a buffer
 			StringBuilder builder = new StringBuilder();
-			try (BufferedReader reader = new BufferedReader(new FileReader(proto.getFile()))) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(protoFile))) {
 				String line = reader.readLine();
 				while (line != null) {
 					builder.append(line);
@@ -67,25 +69,7 @@ public class ProtoToProtoCompiler extends STCodeGenerator {
 			String data = builder.toString();
 
 			for (Message message : proto.getMessages()) {
-				Annotation annotation = message.getAnnotation("Extend");
-				if (annotation != null) {
-					Object byMessageRef = annotation.getValue("by");
-					if (byMessageRef == null) {
-						throw new IllegalArgumentException("By parameter of attribute @Extend is not specified");
-					}
-
-					if (!(byMessageRef instanceof Message)) {
-						throw new IllegalArgumentException("By parameter have a non Message reference in your @Extend annotation");
-					}
-
-					Message base = (Message) byMessageRef;
-					String result = extendBy(group, message, base);
-					if (result != null && result.length() > 0) {
-						data = injectAfterAnnotation(message, base, data, result);
-					}
-				}
-
-				Object extOpt = message.getExtraOption("extends");
+				Object extOpt = message.getOption("extends");
 				if (extOpt != null) {
 					if (!(extOpt instanceof Message)) {
 						throw new IllegalArgumentException("Option extends specified not a message reference");

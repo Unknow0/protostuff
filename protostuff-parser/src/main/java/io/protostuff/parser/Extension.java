@@ -15,29 +15,28 @@
 package io.protostuff.parser;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents an extend block declared in either the {@link Proto} or nested in a {@link Message}.
  *
  * @author Philippe Laflamme
  */
-public class Extension extends AnnotationContainer implements HasFields {
+public class Extension implements HasFields, HasProto {
+	final Proto proto;
 	final Message parentMessage;
-	final String packageName;
 	final String type;
-	Proto proto;
-	final LinkedHashMap<String, Field<?>> fields = new LinkedHashMap<>();
-	final LinkedHashMap<String, Object> standardOptions = new LinkedHashMap<>();
-	final LinkedHashMap<String, Object> extraOptions = new LinkedHashMap<>();
 
-	Message extendedMessage;
+	final List<Field> fields;
+	final Map<String, Object> options;
 
-	public Extension(Proto proto, Message parentMessage, String packageName, String type) {
+	public Extension(Proto proto, Message parentMessage, String type, List<Field> fields, Map<String, Object> options) {
 		this.proto = proto;
 		this.parentMessage = parentMessage;
-		this.packageName = packageName;
 		this.type = type;
+		this.fields = fields;
+		this.options = options;
 	}
 
 	public Message getParentMessage() {
@@ -50,97 +49,30 @@ public class Extension extends AnnotationContainer implements HasFields {
 
 	@Override
 	public Proto getProto() {
-		Proto p = proto;
-		if (p == null) {
-			proto = p = parentMessage.getProto();
-		}
-		return p;
+		return proto;
 	}
 
 	@Override
-	public Collection<Field<?>> getFields() {
-		return fields.values();
+	public Collection<Field> getFields() {
+		return fields;
 	}
 
 	@Override
-	public Field<?> getField(String name) {
-		return fields.get(name);
-	}
-
-	@Override
-	public void addField(Field<?> field) {
-		if (fields.put(field.name, field) != null) {
-			throw err("Duplicate extension field: " + field.name, getProto());
-		}
-	}
-
-	@Override
-	public void putStandardOption(String key, Object value) {
-		putExtraOption(key, value);
-		standardOptions.put(key, value);
-	}
-
-	public LinkedHashMap<String, Object> getStandardOptions() {
-		return standardOptions;
-	}
-
-	public Object getStandardOption(String key) {
-		return standardOptions.get(key);
-	}
-
-	@Override
-	public void putExtraOption(String key, Object value) {
-		if (extraOptions.put(key, value) != null) {
-			throw err("Duplicate extension option: " + key, getProto());
-		}
-	}
-
-	public LinkedHashMap<String, Object> getExtraOptions() {
-		return extraOptions;
-	}
-
-	public Object getExtraOption(String key) {
-		return extraOptions.get(key);
-	}
-
-	public LinkedHashMap<String, Object> getO() {
-		return getOptions();
-	}
-
-	@Override
-	public LinkedHashMap<String, Object> getOptions() {
-		return extraOptions;
-	}
-
-	public Message getExtendedMessage() {
-		return extendedMessage;
-	}
-
-	void resolveReferences() {
-		extendedMessage = getProto().findMessageReference(getExtendedMessageFullName(), getEnclosingNamespace());
-		if (extendedMessage == null) {
-			throw err("The message " + getExtendedMessageFullName() + " is not defined", getProto());
-		}
-		extendedMessage.extend(this);
-
-		if (!standardOptions.isEmpty()) {
-			proto.references.add(new ConfiguredReference(standardOptions, extraOptions, getExtendedMessageFullName()));
-		}
+	public Map<String, Object> getOptions() {
+		return options;
 	}
 
 	public String getExtendedMessageFullName() {
-		return this.packageName == null ? this.type : this.packageName + "." + this.type;
+		return type;
 	}
 
-	@Override
 	public String getEnclosingNamespace() {
 		return isNested() ? getParentMessage().getFullName() : getProto().getPackageName();
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append('{').append("extend:").append(getExtendedMessageFullName()).append(',').append("fields:").append(fields.values()).append('}')
-				.toString();
+		return new StringBuilder().append('{').append("extend:").append(getExtendedMessageFullName()).append(',').append("fields:").append(fields).append('}').toString();
 	}
 
 }

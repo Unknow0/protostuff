@@ -18,11 +18,9 @@ import java.util.Collection;
 
 public interface HasFields extends HasOptions {
 
-	Collection<Field<?>> getFields();
+	Collection<Field> getFields();
 
-	Field<?> getField(String name);
-
-	void addField(Field<?> field);
-
-	String getEnclosingNamespace();
+	default Field getField(String name) {
+		return getFields().stream().filter(f -> name.equals(f.getName())).findAny().orElse(null);
+	}
 }

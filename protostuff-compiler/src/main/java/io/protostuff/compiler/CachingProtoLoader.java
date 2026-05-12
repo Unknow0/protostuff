@@ -28,14 +28,14 @@
 
 package io.protostuff.compiler;
 
-import java.io.File;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import io.protostuff.parser.DefaultProtoLoader;
 import io.protostuff.parser.Proto;
+import io.protostuff.parser.ProtoParserException;
+import io.protostuff.parser.builder.ProtoBuilder;
 
 /**
  * A proto loader that caches the protos for re-use.
@@ -59,24 +59,13 @@ public class CachingProtoLoader extends DefaultProtoLoader {
 	}
 
 	@Override
-	public Proto loadFrom(File file, Proto importer) throws Exception {
-		String key = file.getCanonicalPath();
-		Proto proto = loadedProtos.get(key);
+	public Proto load(String path, ProtoBuilder importer) throws ProtoParserException {
+		Proto proto = loadedProtos.get(path);
 		if (proto == null) {
-			loadedProtos.put(key, proto = super.loadFrom(file, null));
+			loadedProtos.put(path, proto = super.load(path, importer));
 		}
 
 		return proto;
 	}
 
-	@Override
-	public Proto loadFrom(URL resource, Proto importer) throws Exception {
-		String key = resource.toExternalForm();
-		Proto proto = loadedProtos.get(key);
-		if (proto == null) {
-			loadedProtos.put(key, proto = super.loadFrom(resource, null));
-		}
-
-		return proto;
-	}
 }

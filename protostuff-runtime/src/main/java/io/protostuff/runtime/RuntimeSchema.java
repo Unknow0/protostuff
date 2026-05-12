@@ -239,7 +239,6 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T> {
 				fields.add(field);
 			}
 		}
-
 		return new RuntimeSchema<>(typeClass, fields, RuntimeEnv.newInstantiator(typeClass));
 	}
 
@@ -301,6 +300,7 @@ public final class RuntimeSchema<T> implements Schema<T>, FieldMap<T> {
 		this.pipeSchema = new RuntimePipeSchema<>(this, fieldMap);
 		this.instantiator = instantiator;
 		this.typeClass = typeClass;
+		System.out.println("Created runtime schema " + typeClass + " " + fieldMap);
 	}
 
 	private FieldMap<T> createFieldMap(Collection<Field<T>> fields) {

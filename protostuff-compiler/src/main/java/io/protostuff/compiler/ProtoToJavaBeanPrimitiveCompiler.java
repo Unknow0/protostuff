@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.antlr.stringtemplate.StringTemplateGroup;
 
+import io.protostuff.ByteString;
 import io.protostuff.parser.Field;
 import io.protostuff.parser.Message;
 import io.protostuff.parser.Proto;
@@ -17,9 +18,9 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler {
 	}
 
 	void setByteBuffer(Message m) {
-		for (Field<?> f : m.getFields()) {
-			if (f.isBytesField()) {
-				f.putExtraOption("ByteBuffer", true);
+		for (Field f : m.getFields()) {
+			if (ByteString.class.getName().equals(f.getType().getJavaType())) {
+				f.getOptions().put("ByteBuffer", true);
 			}
 		}
 
@@ -39,8 +40,6 @@ public class ProtoToJavaBeanPrimitiveCompiler extends ProtoToJavaBeanCompiler {
 		// TODO find a way to push this up to the parsing step
 		if (module.getOption("ByteBuffer") != null) {
 			for (Message m : proto.getMessages()) {
-				m.setByteBufferFieldPresent(true);
-
 				setByteBuffer(m);
 			}
 		}

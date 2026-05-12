@@ -34,6 +34,10 @@ import io.protostuff.SerializableObjects;
  */
 public class ProtostuffRuntimeObjectSchemaTest extends AbstractRuntimeObjectSchemaTest {
 
+	public static void main(String[] arg) throws Exception {
+		new ProtostuffRuntimeObjectSchemaTest().testPojoWithThrowableArray();
+	}
+
 	@Override
 	protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
 		ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);

@@ -73,4 +73,9 @@ final class ArrayFieldMap<T> implements FieldMap<T> {
 	public List<Field<T>> getFields() {
 		return fields;
 	}
+
+	@Override
+	public String toString() {
+		return fields.toString();
+	}
 }

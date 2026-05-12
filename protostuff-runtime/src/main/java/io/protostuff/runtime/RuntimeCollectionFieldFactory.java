@@ -114,7 +114,7 @@ final class RuntimeCollectionFieldFactory {
 			Class<Object> genericType, final IdStrategy strategy) {
 		final EnumIO<?> eio = strategy.getEnumIO(genericType);
 		final Accessor accessor = AF.create(f);
-		return new RuntimeCollectionField<T, Enum<?>>(FieldType.ENUM, number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
+		return new RuntimeCollectionField<T, Enum<?>>(FieldType.forEnum(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				accessor.set(message, input.mergeObject(accessor.<Collection<Enum<?>>>get(message), schema));
@@ -154,7 +154,7 @@ final class RuntimeCollectionFieldFactory {
 			final Class<Object> genericType, IdStrategy strategy) {
 		final HasSchema<Object> schemaV = strategy.getSchemaWrapper(genericType, true);
 		final Accessor accessor = AF.create(f);
-		return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
+		return new RuntimeCollectionField<T, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				accessor.set(message, input.mergeObject(accessor.<Collection<Object>>get(message), schema));
@@ -202,7 +202,7 @@ final class RuntimeCollectionFieldFactory {
 	private static <T> Field<T> createCollectionPolymorphicV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			boolean allowNullElement, final Class<Object> genericType, final IdStrategy strategy) {
 		final Accessor accessor = AF.create(f);
-		return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
+		return new RuntimeCollectionField<T, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				accessor.set(message, input.mergeObject(accessor.<Collection<Object>>get(message), schema));
@@ -254,7 +254,7 @@ final class RuntimeCollectionFieldFactory {
 	private static <T> Field<T> createCollectionObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			boolean allowNullElement, final Schema<Object> valueSchema, final Pipe.Schema<Object> valuePipeSchema) {
 		final Accessor accessor = AF.create(f);
-		return new RuntimeCollectionField<T, Object>(FieldType.MESSAGE, number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
+		return new RuntimeCollectionField<T, Object>(FieldType.forMessage(f.getType().getName()), number, name, f.getAnnotation(Tag.class), messageFactory, allowNullElement) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				accessor.set(message, input.mergeObject(accessor.<Collection<Object>>get(message), schema));

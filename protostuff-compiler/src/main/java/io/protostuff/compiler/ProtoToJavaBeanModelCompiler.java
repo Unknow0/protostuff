@@ -53,10 +53,6 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator {
 
 		// Enum blocks as is
 		for (EnumGroup eg : proto.getEnumGroups()) {
-			if (eg.getAnnotation("Transient") != null) {
-				continue;
-			}
-
 			Writer writer = CompilerUtil.newWriter(module, javaPackageName, eg.getName() + ".java");
 			AutoIndentWriter out = new AutoIndentWriter(writer);
 
@@ -71,10 +67,6 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator {
 
 		// Messages and Schemas
 		for (Message m : proto.getMessages()) {
-			if (m.getAnnotation("Transient") != null) {
-				continue;
-			}
-
 			// Generate model
 			boolean generateModel = shouldGenerateModel(module, proto, m);
 			if (generateModel) {
@@ -130,18 +122,18 @@ public class ProtoToJavaBeanModelCompiler extends STCodeGenerator {
 		}
 
 		if (proto.getOptions().containsKey("models")) {
-			String optGenerateModel = proto.getExtraOption("models").toString();
+			String optGenerateModel = proto.getOption("models").toString();
 			generateModel = optGenerateModel.equalsIgnoreCase("true") || optGenerateModel.equals("1");
 		} else if (proto.getOptions().containsKey("no_models")) {
-			String optGenerateModel = proto.getExtraOption("no_models");
+			String optGenerateModel = proto.getOption("no_models");
 			generateModel = !optGenerateModel.equalsIgnoreCase("true") && !optGenerateModel.equals("1");
 		}
 
 		if (m.getOptions().containsKey("model")) {
-			String optGenerateModel = m.getExtraOption("model").toString();
+			String optGenerateModel = m.getOption("model").toString();
 			generateModel = optGenerateModel.equalsIgnoreCase("true") || optGenerateModel.equals("1");
 		} else if (m.getOptions().containsKey("no_model")) {
-			String optGenerateModel = m.getExtraOption("no_model");
+			String optGenerateModel = m.getOption("no_model");
 			generateModel = !optGenerateModel.equalsIgnoreCase("true") && !optGenerateModel.equals("1");
 		}
 

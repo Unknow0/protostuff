@@ -88,7 +88,7 @@ final class RuntimeRepeatedFieldFactory {
 			final IdStrategy strategy) {
 		final EnumIO<?> eio = strategy.getEnumIO(genericType);
 		final Accessor accessor = AF.create(f);
-		return new Field<T>(FieldType.ENUM, number, name, true, f.getAnnotation(Tag.class)) {
+		return new Field<T>(FieldType.forEnum(f.getType().getName()), number, name, true, f.getAnnotation(Tag.class)) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				final Enum<?> value = eio.readFrom(input);
@@ -122,7 +122,7 @@ final class RuntimeRepeatedFieldFactory {
 	private static <T> Field<T> createCollectionPojoV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			final Class<Object> genericType, IdStrategy strategy) {
 		final Accessor accessor = AF.create(f);
-		return new RuntimeMessageField<T, Object>(genericType, strategy.getSchemaWrapper(genericType, true), FieldType.MESSAGE, number, name, true,
+		return new RuntimeMessageField<T, Object>(genericType, strategy.getSchemaWrapper(genericType, true), FieldType.forMessage(f.getType().getName()), number, name, true,
 				f.getAnnotation(Tag.class)) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
@@ -168,7 +168,7 @@ final class RuntimeRepeatedFieldFactory {
 	private static <T> Field<T> createCollectionPolymorphicV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			final Class<Object> genericType, IdStrategy strategy) {
 		final Accessor accessor = AF.create(f);
-		return new RuntimeDerivativeField<T>(genericType, FieldType.MESSAGE, number, name, true, f.getAnnotation(Tag.class), strategy) {
+		return new RuntimeDerivativeField<T>(genericType, FieldType.forMessage(f.getType().getName()), number, name, true, f.getAnnotation(Tag.class), strategy) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				final Object value = input.mergeObject(message, schema);
@@ -231,7 +231,7 @@ final class RuntimeRepeatedFieldFactory {
 	private static <T> Field<T> createCollectionObjectV(int number, String name, final java.lang.reflect.Field f, final MessageFactory messageFactory,
 			final Class<Object> genericType, final PolymorphicSchema.Factory factory, IdStrategy strategy) {
 		final Accessor accessor = AF.create(f);
-		return new RuntimeObjectField<T>(genericType, FieldType.MESSAGE, number, name, true, f.getAnnotation(Tag.class), factory, strategy) {
+		return new RuntimeObjectField<T>(genericType, FieldType.forMessage(f.getType().getName()), number, name, true, f.getAnnotation(Tag.class), factory, strategy) {
 			@Override
 			protected void mergeFrom(Input input, T message) throws IOException {
 				final Object value = input.mergeObject(message, schema);
