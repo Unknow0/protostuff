@@ -132,7 +132,7 @@ public final class Baz implements Schema<Baz>, Externalizable {
 					return;
 				case ID_TAG:
 				case ID_PACK:
-					message.id = input.readInt32();
+					message.id = input.readUInt32();
 					break;
 				case NAME_TAG:
 					message.name = input.readString();

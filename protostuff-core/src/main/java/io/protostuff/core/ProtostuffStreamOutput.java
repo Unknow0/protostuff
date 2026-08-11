@@ -7,28 +7,28 @@ import io.protostuff.api.LinkedBuffer;
 import io.protostuff.api.Output;
 
 /**
- * Output for protobuf format into stream
+ * Output for protostuff format into an OutputStream
  */
-public final class ProtobufStreamOutput extends ProtobufOutput implements Output {
+public final class ProtostuffStreamOutput extends ProtostuffOutput implements Output {
 
 	private final OutputStream out;
 
 	/**
-	 * new ProtobufStreamOutput
+	 * new protostuffStreamOutput
 	 * @param out output to write to
 	 * @param bufSize size of buffers
 	 */
-	public ProtobufStreamOutput(OutputStream out, int bufSize) {
+	public ProtostuffStreamOutput(OutputStream out, int bufSize) {
 		this(out, LinkedBuffer.allocate(bufSize), bufSize);
 	}
 
 	/**
-	 * new ProtobufStreamOutput
+	 * new protostuffStreamOutput
 	 * @param out output to write to
 	 * @param head temp buffer to use
-	 * @param bufSize size of next buffers
+	 * @param bufSize size of next buffer
 	 */
-	public ProtobufStreamOutput(OutputStream out, LinkedBuffer head, int bufSize) {
+	public ProtostuffStreamOutput(OutputStream out, LinkedBuffer head, int bufSize) {
 		super(head, bufSize);
 		this.out = out;
 	}

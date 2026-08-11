@@ -8,9 +8,15 @@ import java.util.Map;
 import io.protostuff.api.Schema;
 import io.protostuff.api.WireFormat;
 
+/**
+ * Output for graph format
+ */
 public class GraphOutput extends ProtobufOutput {
 	private final Map<Object, Integer> identity;
 
+	/**
+	 * new GraphOutput
+	 */
 	public GraphOutput() {
 		this.identity = new IdentityHashMap<>();
 	}
@@ -31,11 +37,9 @@ public class GraphOutput extends ProtobufOutput {
 	public <T> void writeGroup(int tag, String name, T t, Schema<T> schema) throws IOException {
 		Integer i = identity.get(t);
 		if (i == null) {
-			System.out.println("write " + identity.size() + " " + t.getClass());
 			identity.put(t, identity.size());
 			super.writeGroup(tag, name, t, schema);
 		} else {
-			System.out.println("write ref " + i);
 			writeVarInt32((tag & ~0x7) | WireFormat.WIRETYPE_REFERENCE);
 			writeVarInt32(i);
 		}

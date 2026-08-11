@@ -16,6 +16,8 @@ package io.protostuff.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import io.protostuff.api.WireFormat;
 
@@ -33,12 +35,12 @@ public class ProtobufInputTest extends AbstractTest {
 		int anotherTag = WireFormat.makeTag(2, WireFormat.WIRETYPE_LENGTH_DELIMITED);
 		int msgLength = 10;
 
-		ProtobufIOUtil.writeVarInt(out, tag);
-		ProtobufIOUtil.writeVarInt(out, msgLength);
+		writeVarInt(out, tag);
+		writeVarInt(out, msgLength);
 		for (int i = 1; i <= msgLength; i++) {
-			ProtobufIOUtil.writeVarInt(out, i);
+			writeVarInt(out, i);
 		}
-		ProtobufIOUtil.writeVarInt(out, anotherTag);
+		writeVarInt(out, anotherTag);
 
 		byte[] data = out.toByteArray();
 
@@ -47,6 +49,14 @@ public class ProtobufInputTest extends AbstractTest {
 		assertEquals(tag, ci.readTag());
 		ci.skipField(tag);
 		assertEquals(0, ci.readTag());
+	}
+
+	public static void writeVarInt(OutputStream out, int value) throws IOException {
+		while ((value & ~0x7F) != 0) {
+			out.write((value & 0x7F) | 0x80);
+			value >>>= 7;
+		}
+		out.write(value);
 	}
 
 }

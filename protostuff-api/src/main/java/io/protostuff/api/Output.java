@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 public interface Output {
+	int close() throws IOException;
 
 	void writeUInt32(int tag, String name, int value) throws IOException;
 

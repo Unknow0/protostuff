@@ -15,6 +15,9 @@ import io.protostuff.api.Schema;
 import io.protostuff.api.SchemaEnum;
 import io.protostuff.api.WireFormat;
 
+/**
+ * Output for protobuf format into buffers
+ */
 public class ProtobufOutput implements Output {
 	private static final VarHandle INT = MethodHandles.byteArrayViewVarHandle(int[].class, ByteOrder.LITTLE_ENDIAN);
 	private static final int INT_REPL = 0x00BDBFEF;
@@ -34,29 +37,58 @@ public class ProtobufOutput implements Output {
 	private LinkedBuffer head;
 	private LinkedBuffer tail;
 
-	protected int depth;
+	private int depth;
 
+	/**
+	 * new ProtobufOutput
+	 */
 	public ProtobufOutput() {
 		this(LinkedBuffer.allocate(), LinkedBuffer.DEFAULT_BUFFER_SIZE);
 	}
 
+	/**
+	 * new ProtobufOutput
+	 * @param bufSize buffers size
+	 */
 	public ProtobufOutput(int bufSize) {
 		this(LinkedBuffer.allocate(bufSize), bufSize);
 	}
 
+	/**
+	 * new ProtobufOutput
+	 * @param head buffer to use
+	 */
 	public ProtobufOutput(LinkedBuffer head) {
 		this(head, LinkedBuffer.DEFAULT_BUFFER_SIZE);
 	}
 
+	/**
+	 * new ProtobufOutput
+	 * @param head buffer to use
+	 * @param bufSize new buffers size
+	 */
 	public ProtobufOutput(LinkedBuffer head, int bufSize) {
 		this.bufSize = bufSize;
 		this.head = this.tail = head;
 	}
 
+	/**
+	 * ensure we have at least this space in buffers
+	 * @param len len needed
+	 * @throws IOException in case of error
+	 */
 	protected void ensureSize(int len) throws IOException {
 		int l = tail.buffer.length - tail.offset;
 		if (l < len)
 			nextBuffer(Math.max(bufSize, len));
+	}
+
+	@Override
+	public int close() throws IOException {
+		int size = size();
+		writeBuffers(head);
+		head = tail = null;
+		return size;
 	}
 
 	/**
@@ -69,6 +101,11 @@ public class ProtobufOutput implements Output {
 		return tail;
 	}
 
+	/**
+	 * get a clean buffer
+	 * @param size
+	 * @throws IOException in case of error
+	 */
 	protected void nextBuffer(int size) throws IOException {
 		this.size += tail.offset - tail.start;
 		if (depth == 0)
@@ -79,10 +116,18 @@ public class ProtobufOutput implements Output {
 			tail = LinkedBuffer.allocate(size, tail);
 	}
 
+	/**
+	 * written bytes
+	 * @return written bytes
+	 */
 	public int size() {
 		return size + tail.offset - tail.start;
 	}
 
+	/**
+	 * output the buffer as a byte array 
+	 * @return buffer content
+	 */
 	public byte[] toByteArray() {
 		LinkedBuffer node = head;
 		int offset = 0, len;
@@ -96,10 +141,18 @@ public class ProtobufOutput implements Output {
 		return buf;
 	}
 
+	/**
+	 * write buffers to output
+	 * @param out output
+	 * @throws IOException in case of error
+	 */
 	public void writeTo(DataOutput out) throws IOException {
 		LinkedBuffer.writeTo(out, head);
 	}
 
+	/**
+	 * reset state, clear buffer
+	 */
 	public void reset() {
 		depth = 0;
 		size = 0;
@@ -109,18 +162,12 @@ public class ProtobufOutput implements Output {
 			tail = head = LinkedBuffer.allocate(bufSize);
 	}
 
-	public static int writeVarInt32(int value, byte[] buffer, int off) {
-		int l = 1;
-		while ((value & ~0x7F) != 0) {
-			buffer[off++] = (byte) ((value & 0x7F) | 0x80);
-			value >>>= 7;
-			l++;
-		}
-		buffer[off] = (byte) value;
-		return l;
-	}
-
-	public void writeVarInt32(int value) throws IOException {
+	/**
+	 * write a varint
+	 * @param value value to write
+	 * @throws IOException in case of error
+	 */
+	protected void writeVarInt32(int value) throws IOException {
 		int l = computeRawVarint32Size(value);
 		ensureSize(l);
 		final byte[] b = tail.buffer;
@@ -133,7 +180,12 @@ public class ProtobufOutput implements Output {
 		b[o] = (byte) value;
 	}
 
-	public void writeVarInt64(long value) throws IOException {
+	/**
+	 * write a varint
+	 * @param value value to write
+	 * @throws IOException in case of error
+	 */
+	protected void writeVarInt64(long value) throws IOException {
 		ensureSize(10);
 		final byte[] buffer = tail.buffer;
 		int off = tail.offset;
@@ -561,6 +613,11 @@ public class ProtobufOutput implements Output {
 			writeString(tag, name, s);
 	}
 
+	/**
+	 * write a sting as utf8 with the length prefix
+	 * @param value value to write
+	 * @throws IOException in case of error
+	 */
 	public void writeDelimitedUtf8(CharSequence value) throws IOException {
 		final int len = value.length();
 		if (len == 0) {
@@ -677,6 +734,24 @@ public class ProtobufOutput implements Output {
 		}
 		lb.offset = o;
 		return off;
+	}
+
+	/**
+	 * write a varint into a buffer
+	 * @param value the value to write
+	 * @param buffer buffer to use
+	 * @param off start offset to write
+	 * @return size of the varint
+	 */
+	public static int writeVarInt32(int value, byte[] buffer, int off) {
+		int l = 1;
+		while ((value & ~0x7F) != 0) {
+			buffer[off++] = (byte) ((value & 0x7F) | 0x80);
+			value >>>= 7;
+			l++;
+		}
+		buffer[off] = (byte) value;
+		return l;
 	}
 
 	/**

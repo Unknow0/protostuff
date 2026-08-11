@@ -42,7 +42,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -58,16 +58,30 @@ import java.io.InputStream;
 public final class LimitedInputStream extends FilterInputStream {
 	private int limit;
 
+	/**
+	 * new LimitedInputStream
+	 * @param in input to read from
+	 */
 	public LimitedInputStream(InputStream in) {
 		super(in);
 	}
 
+	/**
+	 * new LimitedInputStream
+	 * @param in input to read from
+	 * @param limit the limit
+	 */
 	public LimitedInputStream(InputStream in, int limit) {
 		super(in);
 		this.limit = limit;
 	}
 
-	LimitedInputStream limit(int limit) {
+	/**
+	 * set limit
+	 * @param limit new limit
+	 * @return this
+	 */
+	public LimitedInputStream limit(int limit) {
 		this.limit = limit;
 		return this;
 	}

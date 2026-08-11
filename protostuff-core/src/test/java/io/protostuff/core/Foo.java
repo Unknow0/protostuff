@@ -372,7 +372,7 @@ public final class Foo implements Schema<Foo>, Externalizable {
 					if (message.someInt == null) {
 						message.someInt = new ArrayList<>();
 					}
-					message.someInt.add(input.readInt32());
+					message.someInt.add(input.readUInt32());
 					break;
 				case SOMESTRING_TAG:
 					if (message.someString == null) {

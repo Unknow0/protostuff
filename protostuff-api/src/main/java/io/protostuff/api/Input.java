@@ -31,13 +31,6 @@ public interface Input {
 	int readTag() throws IOException;
 
 	/**
-	 * Reads a variable int field value.
-	 * @return the value
-	 * @throws IOException in case of error
-	 */
-	int readInt32() throws IOException;
-
-	/**
 	 * Reads an unsigned int field value.
 	 * @return the value
 	 * @throws IOException in case of error
@@ -60,13 +53,6 @@ public interface Input {
 	int readFixed32() throws IOException;
 
 	/**
-	 * Reads a signed+fixed int(4 bytes) field value.
-	 * @return the value
-	 * @throws IOException in case of error
-	 */
-	int readSFixed32() throws IOException;
-
-	/**
 	 * Reads an unsigned long field value.
 	 * @throws IOException in case of error
 	 */
@@ -85,13 +71,6 @@ public interface Input {
 	 * @throws IOException in case of error
 	 */
 	long readFixed64() throws IOException;
-
-	/**
-	 * Reads a signed+fixed long(8 bytes) field value.
-	 * @return the value
-	 * @throws IOException in case of error
-	 */
-	long readSFixed64() throws IOException;
 
 	/**
 	 * Reads a float field value.

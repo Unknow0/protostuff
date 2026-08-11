@@ -12,12 +12,14 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+
+import io.protostuff.api.Schema;
 
 /**
  * Tests for various protobuf int flavors.
@@ -32,13 +34,11 @@ public class IntTest extends AbstractTest {
 		assertTrue(j >= 0);
 
 		PojoWithInts p = new PojoWithInts();
-		p.setSomeInt32(i);
 		p.setSomeUint32(i);
 		p.setSomeFixed32(i);
 		p.setSomeSint32(ni);
 		p.setSomeSfixed32(ni);
 
-		p.setSomeInt64(j);
 		p.setSomeUint64(j);
 		p.setSomeFixed64(j);
 		p.setSomeSint64(nj);

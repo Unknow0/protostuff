@@ -6,24 +6,36 @@ import java.util.ArrayList;
 import io.protostuff.api.Schema;
 import io.protostuff.api.WireFormat;
 
+/**
+ * Input for graph format
+ */
 public class GraphInput extends ProtobufArrayInput {
 	private final ArrayList<Object> refs;
 
 	private boolean wasRef;
 
+	/**
+	 * new GraphInput
+	 * @param bytes data
+	 */
 	public GraphInput(byte[] bytes) {
 		this(bytes, 0, bytes.length);
 	}
 
-	public GraphInput(byte[] buffer, int offset, int limit) {
-		super(buffer, offset, limit);
+	/**
+	 * new GraphInput
+	 * @param buffer data
+	 * @param offset offset of data
+	 * @param length length of data
+	 */
+	public GraphInput(byte[] buffer, int offset, int length) {
+		super(buffer, offset, length);
 		this.refs = new ArrayList<>();
 	}
 
 	@Override
 	public int readTag() throws IOException {
 		int tag = super.readTag();
-		System.out.println("read tag "+WireFormat.getTagFieldNumber(tag));
 		if ((wasRef = WireFormat.getTagWireType(tag) == WireFormat.WIRETYPE_REFERENCE))
 			return (tag & ~0x7) | WireFormat.WIRETYPE_START_GROUP;
 		return tag;
@@ -32,14 +44,10 @@ public class GraphInput extends ProtobufArrayInput {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T mergeGroup(T value, Schema<T> schema) throws IOException {
-		if (wasRef) {
-			int i = readInt32();
-			System.out.println("read ref " + i + " " + refs);
-			return (T) refs.get(i);
-		}
+		if (wasRef)
+			return (T) refs.get(readUInt32());
 		if (value == null)
 			value = schema.newMessage();
-		System.out.println("read " + refs.size() + " " + value.getClass());
 		refs.add(value);
 		super.mergeGroup(value, schema);
 		return value;
@@ -49,7 +57,7 @@ public class GraphInput extends ProtobufArrayInput {
 	@Override
 	public <T> T mergeObject(T value, Schema<T> schema) throws IOException {
 		if (wasRef)
-			return (T) refs.get(readInt32());
+			return (T) refs.get(readUInt32());
 		if (value == null)
 			value = schema.newMessage();
 		refs.add(value);

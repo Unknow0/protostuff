@@ -24,21 +24,21 @@ import io.protostuff.api.LinkedBuffer;
 import io.protostuff.api.Schema;
 
 /**
- * Protobuf ser/deser util for messages/objects.
+ * Protostuff ser/deser util for messages/objects.
  *
  * @author David Yu
- * @created Oct 5, 2010
+ * @created Sep 20, 2010
  */
-public final class ProtobufIOUtil {
+public final class ProtostuffIOUtil {
 
-	private ProtobufIOUtil() {
+	private ProtostuffIOUtil() {
 	}
 
 	/**
 	 * Merges the {@code message} with the byte array using the given {@code schema}.
 	 * @param <T> message type
-	 * @param data data to read
-	 * @param message the message
+	 * @param data the data
+	 * @param message message to write
 	 * @param schema the schema
 	 */
 	public static <T> void mergeFrom(byte[] data, T message, Schema<T> schema) {
@@ -48,10 +48,10 @@ public final class ProtobufIOUtil {
 	/**
 	 * Merges the {@code message} with the byte array using the given {@code schema}.
 	 * @param <T> message type
-	 * @param data data to read
-	 * @param offset start offset
-	 * @param length length of the data
-	 * @param message the message
+	 * @param data the data
+	 * @param offset start offset of data
+	 * @param length length of data
+	 * @param message message to write
 	 * @param schema the schema
 	 */
 	public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) {
@@ -67,8 +67,8 @@ public final class ProtobufIOUtil {
 	/**
 	 * Merges the {@code message} from the {@link InputStream} using the given {@code schema}.
 	 * @param <T> message type
-	 * @param in input to read from
-	 * @param message the message
+	 * @param in input
+	 * @param message message to write
 	 * @param schema the schema
 	 * @throws IOException in case of error
 	 */
@@ -81,10 +81,10 @@ public final class ProtobufIOUtil {
 	/**
 	 * Merges the {@code message} (delimited) from the {@link InputStream} using the given {@code schema}.
 	 * @param <T> message type
-	 * @param in input to read from
-	 * @param message the message
+	 * @param in input
+	 * @param message message to write
 	 * @param schema the schema
-	 * @return the size of the message
+	 * @return the message
 	 * @throws IOException in case of error
 	 */
 	public static <T> T mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) throws IOException {
@@ -95,7 +95,7 @@ public final class ProtobufIOUtil {
 	/**
 	 * Serializes the {@code message} into a byte array using the given schema.
 	 * @param <T> message type
-	 * @param message the message
+	 * @param message message to write
 	 * @param schema the schema
 	 * @param buffer temp buffer to use
 	 * @return the byte array containing the data.
@@ -105,7 +105,7 @@ public final class ProtobufIOUtil {
 			throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 		}
 
-		final ProtobufOutput output = new ProtobufOutput(buffer);
+		final ProtostuffOutput output = new ProtostuffOutput(buffer);
 		try {
 			schema.writeTo(output, message);
 		} catch (IOException e) {
@@ -119,7 +119,7 @@ public final class ProtobufIOUtil {
 	 * Writes the {@code message} into the {@link LinkedBuffer} using the given schema.
 	 * @param <T> message type
 	 * @param buffer buffer to write to
-	 * @param message the message
+	 * @param message message to write
 	 * @param schema the schema
 	 * @return the size of the message
 	 */
@@ -128,7 +128,7 @@ public final class ProtobufIOUtil {
 			throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 		}
 
-		final ProtobufOutput output = new ProtobufOutput(buffer);
+		final ProtostuffOutput output = new ProtostuffOutput(buffer);
 		try {
 			schema.writeTo(output, message);
 		} catch (IOException e) {
@@ -141,8 +141,8 @@ public final class ProtobufIOUtil {
 	/**
 	 * Serializes the {@code message} into an {@link OutputStream} using the given schema.
 	 * @param <T> message type
-	 * @param out output
-	 * @param message the message
+	 * @param out output stream
+	 * @param message message to write
 	 * @param schema the schema
 	 * @param buffer temp buffer to use
 	 * @return the size of the message
@@ -153,7 +153,7 @@ public final class ProtobufIOUtil {
 			throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 		}
 
-		final ProtobufStreamOutput output = new ProtobufStreamOutput(out, buffer, buffer.buffer.length);
+		final ProtostuffStreamOutput output = new ProtostuffStreamOutput(out, buffer, buffer.buffer.length);
 		schema.writeTo(output, message);
 		return output.close();
 	}
@@ -161,12 +161,12 @@ public final class ProtobufIOUtil {
 	/**
 	 * Serializes the {@code message}, prefixed with its length, into an {@link OutputStream}.
 	 * @param <T> message type
-	 * @param out output
+	 * @param out output stream
 	 * @param message message to write
 	 * @param schema the schema
-	 * @param buffer the buffer 
+	 * @param buffer temp buffer to use
 	 * @return the size of the message
-	 * @throws IOException e
+	 * @throws IOException in case of error
 	 */
 	public static <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
 		if (buffer.start != buffer.offset) {
@@ -175,11 +175,11 @@ public final class ProtobufIOUtil {
 
 		// leave space for size
 		final int o = buffer.offset += 5;
-		final ProtobufOutput output = new ProtobufOutput(buffer);
+		final ProtostuffOutput output = new ProtostuffOutput(buffer);
 		schema.writeTo(output, message);
 		final int size = output.size();
-		int i = o - ProtobufOutput.computeRawVarint32Size(size);
-		ProtobufOutput.writeVarInt32(size, buffer.buffer, i);
+		int i = o - ProtostuffOutput.computeRawVarint32Size(size);
+		ProtostuffOutput.writeVarInt32(size, buffer.buffer, i);
 
 		out.write(buffer.buffer, i, buffer.offset - i);
 		// flush remaining
@@ -192,10 +192,10 @@ public final class ProtobufIOUtil {
 	/**
 	 * Serializes the {@code messages} (delimited) into an {@link OutputStream} using the given schema.
 	 * @param <T> message type
-	 * @param out output
+	 * @param out output stream
 	 * @param messages messages to write
 	 * @param schema the schema
-	 * @param buffer temp buffer
+	 * @param buffer temp buffer to use
 	 * @throws IOException in case of error
 	 */
 	public static <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema, LinkedBuffer buffer) throws IOException {
@@ -204,7 +204,7 @@ public final class ProtobufIOUtil {
 		}
 
 		final int o = buffer.offset += 5;
-		final ProtobufOutput output = new ProtobufOutput(buffer);
+		final ProtostuffOutput output = new ProtostuffOutput(buffer);
 		for (T m : messages) {
 			schema.writeTo(output, m);
 			final int size = output.size();
@@ -231,7 +231,7 @@ public final class ProtobufIOUtil {
 		ProtobufStreamInput input = new ProtobufStreamInput(in);
 		List<T> list = new ArrayList<>();
 		while (!input.isAtEnd())
-			list.add(input.mergeObject(null, schema));
+			list.add(input.mergeGroup(null, schema));
 		return list;
 	}
 }

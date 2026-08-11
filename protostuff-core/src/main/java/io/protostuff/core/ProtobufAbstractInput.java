@@ -10,6 +10,9 @@ import static io.protostuff.api.WireFormat.WIRETYPE_VARINT;
 import static io.protostuff.api.WireFormat.getTagWireType;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
 import io.protostuff.api.Input;
@@ -17,9 +20,16 @@ import io.protostuff.api.Schema;
 import io.protostuff.api.SchemaEnum;
 import io.protostuff.api.Utf8Decoder;
 
+/**
+ * Base input for protobuf
+ */
 public abstract class ProtobufAbstractInput implements Input {
+	private static final VarHandle INT = MethodHandles.byteArrayViewVarHandle(int[].class, ByteOrder.LITTLE_ENDIAN);
+	private static final VarHandle LONG = MethodHandles.byteArrayViewVarHandle(long[].class, ByteOrder.LITTLE_ENDIAN);
+
 	private static final String EMPTY_STR = "";
 	private static final int DEFAULT_SIZE_LIMIT = 64 << 20; // 64MB
+	/** default buffer size */
 	protected static final int DEFAULT_BUFFER_SIZE = 4096;
 
 	private final Utf8Decoder dec = new Utf8Decoder();
@@ -46,14 +56,27 @@ public abstract class ProtobufAbstractInput implements Input {
 	 */
 	private int sizeLimit = DEFAULT_SIZE_LIMIT;
 
+	/**
+	 * new ProtobufAbstractInput
+	 */
 	protected ProtobufAbstractInput() {
 		this(new byte[DEFAULT_BUFFER_SIZE], 0, 0);
 	}
 
+	/**
+	 * new ProtobufAbstractInput
+	 * @param buffer data to use
+	 */
 	protected ProtobufAbstractInput(byte[] buffer) {
 		this(buffer, 0, buffer.length);
 	}
 
+	/**
+	 * new ProtobufAbstractInput
+	 * @param buffer buffer to use
+	 * @param off start offset of data
+	 * @param len length of data
+	 */
 	protected ProtobufAbstractInput(byte[] buffer, final int off, final int len) {
 		if (off < 0 || off + len > buffer.length)
 			throw new IllegalArgumentException();
@@ -78,7 +101,7 @@ public abstract class ProtobufAbstractInput implements Input {
 	 * <p>
 	 * If you want to read several messages from a single CodedInput, you could call {@link #resetSizeCounter()} after
 	 * each one to avoid hitting the size limit.
-	 *
+	 * @param limit the new limit
 	 * @return the old limit.
 	 */
 	public int setSizeLimit(final int limit) {
@@ -217,6 +240,9 @@ public abstract class ProtobufAbstractInput implements Input {
 		return bufferSize;
 	}
 
+	/**
+	 * @return last read tag
+	 */
 	public int lastTag() {
 		return lastTag;
 	}
@@ -464,8 +490,14 @@ public abstract class ProtobufAbstractInput implements Input {
 
 	/**
 	* Read a 32-bit little-endian integer from the stream.
+	 * @throws IOException in case of error
 	*/
 	public int readRawLittleEndian32() throws IOException {
+		if (bufferSize - bufferPos >= 4) {
+			int i = (int) INT.get(buffer, bufferPos);
+			bufferPos += 4;
+			return i;
+		}
 		final byte b1 = readRawByte();
 		final byte b2 = readRawByte();
 		final byte b3 = readRawByte();
@@ -475,8 +507,14 @@ public abstract class ProtobufAbstractInput implements Input {
 
 	/**
 	 * Read a 64-bit little-endian integer from the stream.
+	 * @throws IOException in case of error
 	 */
 	public long readRawLittleEndian64() throws IOException {
+		if (bufferSize - bufferPos >= 8) {
+			long l = (long) LONG.get(buffer, bufferPos);
+			bufferPos += 8;
+			return l;
+		}
 		final byte b1 = readRawByte();
 		final byte b2 = readRawByte();
 		final byte b3 = readRawByte();
@@ -492,6 +530,7 @@ public abstract class ProtobufAbstractInput implements Input {
 	/**
 	 * Attempt to read a field tag, returning zero if we have reached EOF. Protocol message parsers use this to read
 	 * tags, since a protocol message may legally end wherever a tag occurs, and zero is not a valid tag number.
+	 * @return a tag
 	 */
 	@Override
 	public int readTag() throws IOException {
@@ -533,10 +572,13 @@ public abstract class ProtobufAbstractInput implements Input {
 	void skipField(int tag) throws IOException {
 		switch (getTagWireType(tag)) {
 			case WIRETYPE_VARINT:
-				readInt32();
+				skipRawBytes(4);
+				return;
+			case WIRETYPE_FIXED32:
+				skipRawBytes(4);
 				return;
 			case WIRETYPE_FIXED64:
-				readRawLittleEndian64();
+				skipRawBytes(8);
 				return;
 			case WIRETYPE_LENGTH_DELIMITED:
 				skipRawBytes(readRawVarint32());
@@ -547,9 +589,6 @@ public abstract class ProtobufAbstractInput implements Input {
 				return;
 			case WIRETYPE_END_GROUP:
 				return;
-			case WIRETYPE_FIXED32:
-				readRawLittleEndian32();
-				return;
 			default:
 				throw ProtobufException.invalidWireType();
 		}
@@ -558,6 +597,7 @@ public abstract class ProtobufAbstractInput implements Input {
 	/**
 	 * Reads and discards an entire message. This will read either until EOF or until an endgroup tag, whichever comes
 	 * first.
+	 * @throws IOException in case of error
 	 */
 	public void skipGroup() throws IOException {
 		while (true) {
@@ -599,7 +639,7 @@ public abstract class ProtobufAbstractInput implements Input {
 	 * Read an {@code int32} field value from the stream.
 	 */
 	@Override
-	public int readInt32() throws IOException {
+	public int readUInt32() throws IOException {
 		checkIfPackedField();
 		return readRawVarint32();
 	}
@@ -632,15 +672,6 @@ public abstract class ProtobufAbstractInput implements Input {
 	}
 
 	/**
-	* Read a {@code uint32} field value from the stream.
-	*/
-	@Override
-	public int readUInt32() throws IOException {
-		checkIfPackedField();
-		return readRawVarint32();
-	}
-
-	/**
 	 * Read an enum field value from the stream. Caller is responsible for converting the numeric value to an actual
 	 * enum.
 	 */
@@ -648,24 +679,6 @@ public abstract class ProtobufAbstractInput implements Input {
 	public <E extends Enum<E>> E readEnum(SchemaEnum<E> schema) throws IOException {
 		checkIfPackedField();
 		return schema.fromNumber(readRawVarint32());
-	}
-
-	/**
-	 * Read an {@code sfixed32} field value from the stream.
-	 */
-	@Override
-	public int readSFixed32() throws IOException {
-		checkIfPackedField();
-		return readRawLittleEndian32();
-	}
-
-	/**
-	 * Read an {@code sfixed64} field value from the stream.
-	 */
-	@Override
-	public long readSFixed64() throws IOException {
-		checkIfPackedField();
-		return readRawLittleEndian64();
 	}
 
 	/**

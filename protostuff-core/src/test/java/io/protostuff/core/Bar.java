@@ -373,7 +373,7 @@ public final class Bar implements Schema<Bar>, Externalizable {
 					return;
 				case SOMEINT_TAG:
 				case SOMEINT_PACK:
-					message.someInt = input.readInt32();
+					message.someInt = input.readUInt32();
 					break;
 				case SOMESTRING_TAG:
 					message.someString = input.readString();

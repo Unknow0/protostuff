@@ -7,19 +7,38 @@ import io.protostuff.api.LinkedBuffer;
 import io.protostuff.api.Schema;
 import io.protostuff.api.WireFormat;
 
+/**
+ * Output for protostuff format into LinkBuffer
+ */
 public class ProtostuffOutput extends ProtobufOutput {
+	/**
+	 * new ProtosStuffOutput
+	 */
 	public ProtostuffOutput() {
 		this(LinkedBuffer.allocate(), LinkedBuffer.DEFAULT_BUFFER_SIZE);
 	}
 
+	/**
+	 * new ProtosStuffOutput
+	 * @param bufSize size of buffers
+	 */
 	public ProtostuffOutput(int bufSize) {
 		this(LinkedBuffer.allocate(bufSize), bufSize);
 	}
 
+	/**
+	 * new ProtosStuffOutput
+	 * @param head buffer to use
+	 */
 	public ProtostuffOutput(LinkedBuffer head) {
 		this(head, LinkedBuffer.DEFAULT_BUFFER_SIZE);
 	}
 
+	/**
+	 * new ProtosStuffOutput
+	 * @param head buffer to use
+	 * @param bufSize size of next buffers
+	 */
 	public ProtostuffOutput(LinkedBuffer head, int bufSize) {
 		super(head, bufSize);
 	}

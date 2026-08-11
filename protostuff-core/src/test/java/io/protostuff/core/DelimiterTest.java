@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import io.protostuff.DeferredOutput;
 import io.protostuff.api.LinkedBuffer;
 import io.protostuff.api.Schema;
 import io.protostuff.core.Foo.EnumSample;
