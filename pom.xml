@@ -20,10 +20,11 @@
 		<velocity-version>1.6.3</velocity-version>
 		<antlr4-version>4.13.2</antlr4-version>
 		<stringtemplate-version>3.2.1</stringtemplate-version>
+		<slf4j-version>2.0.18</slf4j-version>
 		<mavenVersion>3.2.3</mavenVersion>
 		<jmh.version>1.23</jmh.version>
-		<javac.target>8</javac.target>
-		<javadoc.source>8</javadoc.source>
+		<javac.target>11</javac.target>
+		<javadoc.source>11</javadoc.source>
 	</properties>
 
 	<developers>
@@ -310,35 +311,6 @@
 				</plugins>
 			</build>
 		</profile>
-		<profile>
-			<id>jdk8</id>
-			<activation>
-				<jdk>[1.8,)</jdk>
-			</activation>
-			<!-- Disable doclint under JDK 8 -->
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
-						</configuration>
-					</plugin>
-				</plugins>
-			</reporting>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
 
 	<dependencyManagement>
@@ -433,6 +405,24 @@
 				<artifactId>jmh-generator-annprocess</artifactId>
 				<version>${jmh.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.github.unknow0.maven</groupId>
+				<artifactId>unknow-maven-codegen</artifactId>
+				<version>0.2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.unknow0.model</groupId>
+				<artifactId>unknow-model-bom</artifactId>
+				<version>1.1.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -452,7 +442,6 @@
 		<module>protostuff-parser</module>
 		<module>protostuff-compiler</module>
 		<module>protostuff-maven-plugin</module>
-		<module>protostuff-uberjar</module>
 		<module>protostuff-it</module>
 		<module>protostuff-bom</module>
 		<module>protostuff-benchmarks</module>

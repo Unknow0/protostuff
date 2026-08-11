@@ -17,7 +17,7 @@ package io.protostuff.parser;
 import java.util.Collection;
 import java.util.Map;
 
-import io.protostuff.WireFormat;
+import io.protostuff.api.FieldType;
 
 /**
  * Represents a service defined in the proto (for generating rpc services).
@@ -96,11 +96,11 @@ public class Service implements HasName, HasOptions, HasProto {
 		final Service service;
 
 		final String argType;
-		final WireFormat.FieldType argWire;
+		final FieldType argWire;
 		final String retType;
-		final WireFormat.FieldType retWire;
+		final FieldType retWire;
 
-		public RpcMethod(Service service, String name, String argType, WireFormat.FieldType argWire, String retType, WireFormat.FieldType retWire,
+		public RpcMethod(Service service, String name, String argType, FieldType argWire, String retType, FieldType retWire,
 				Map<String, Object> options) {
 			this.service = service;
 			this.name = name;
@@ -145,11 +145,11 @@ public class Service implements HasName, HasOptions, HasProto {
 			return retType.equals("void");
 		}
 
-		public WireFormat.FieldType getWireArgType() {
+		public FieldType getWireArgType() {
 			return argWire;
 		}
 
-		public WireFormat.FieldType getWireReturnType() {
+		public FieldType getWireReturnType() {
 			return retWire;
 		}
 

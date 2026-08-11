@@ -16,7 +16,7 @@ package io.protostuff.parser;
 
 import java.util.Map;
 
-import io.protostuff.WireFormat;
+import io.protostuff.api.FieldType;
 
 /**
  * Base class for fields defined in a {@link Message}.
@@ -37,10 +37,10 @@ public class Field implements HasName, HasOptions {
 	final String name;
 	final int number;
 	final Modifier modifier;
-	final WireFormat.FieldType type;
+	final FieldType type;
 	final Map<String, Object> options;
 
-	public Field(String name, int number, Modifier modifier, WireFormat.FieldType type, Map<String, Object> options) {
+	public Field(String name, int number, Modifier modifier, FieldType type, Map<String, Object> options) {
 		this.name = name;
 		this.number = number;
 		this.modifier = modifier;
@@ -120,7 +120,7 @@ public class Field implements HasName, HasOptions {
 				.append(number).append(',').append("modifier:").append(modifier).append(',').append("packable:").append(isPackable()).append('}').toString();
 	}
 
-	public WireFormat.FieldType getType() {
+	public FieldType getType() {
 		return type;
 	}
 }

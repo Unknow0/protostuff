@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import io.protostuff.WireFormat;
-import io.protostuff.WireFormat.FieldType;
+import io.protostuff.api.FieldType;
 import io.protostuff.parser.DefaultProtoLoader;
 import io.protostuff.parser.EnumGroup;
 import io.protostuff.parser.Extension;
@@ -112,7 +111,7 @@ public class ProtoBuilder extends HasMessageBuilder<ProtoBuilder> {
 			js.add(javaPackage);
 	}
 
-	public WireFormat.FieldType getWireType(String fullId) {
+	public FieldType getWireType(String fullId) {
 		FieldType type = getWireType(findBuilder(fullId));
 		if (type != null)
 			return type;
@@ -128,18 +127,18 @@ public class ProtoBuilder extends HasMessageBuilder<ProtoBuilder> {
 				String localName = fullId.substring(p.getPackageName().length() + 1);
 				Message m = p.getMessage(localName);
 				if (m != null)
-					return WireFormat.FieldType.forMessage(m.getJavaFullName());
+					return FieldType.forMessage(m.getJavaFullName());
 				EnumGroup e = p.getEnumGroup(localName);
 				if (e != null)
-					return WireFormat.FieldType.forEnum(e.getJavaFullName());
+					return FieldType.forEnum(e.getJavaFullName());
 				throw new IllegalStateException("Failed to find message " + fullId);
 			}
 			Message m = p.getMessage(fullId);
 			if (m != null)
-				return WireFormat.FieldType.forMessage(m.getJavaFullName());
+				return FieldType.forMessage(m.getJavaFullName());
 			EnumGroup e = p.getEnumGroup(fullId);
 			if (e != null)
-				return WireFormat.FieldType.forEnum(e.getJavaFullName());
+				return FieldType.forEnum(e.getJavaFullName());
 		}
 		throw new IllegalStateException("Failed to find message " + fullId);
 	}

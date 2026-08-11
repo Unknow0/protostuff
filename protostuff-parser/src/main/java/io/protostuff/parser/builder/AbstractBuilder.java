@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import io.protostuff.WireFormat;
-import io.protostuff.WireFormat.FieldType;
+import io.protostuff.api.FieldType;
 
 public abstract class AbstractBuilder {
 	protected final ProtoBuilder proto;
@@ -39,38 +38,38 @@ public abstract class AbstractBuilder {
 		return m.getBuilder(split[i]);
 	}
 
-	public WireFormat.FieldType getWireType(String fullId, boolean allowVoid) {
+	public FieldType getWireType(String fullId, boolean allowVoid) {
 		switch (fullId) {
 			case "bool":
-				return WireFormat.FieldType.BOOL;
+				return FieldType.BOOL;
 			case "string":
-				return WireFormat.FieldType.STRING;
+				return FieldType.STRING;
 			case "bytes":
-				return WireFormat.FieldType.BYTES;
+				return FieldType.BYTES;
 			case "int32":
-				return WireFormat.FieldType.INT32;
+				return FieldType.INT32;
 			case "uint32":
-				return WireFormat.FieldType.UINT32;
+				return FieldType.UINT32;
 			case "sint32":
-				return WireFormat.FieldType.SINT32;
+				return FieldType.SINT32;
 			case "fixed32":
-				return WireFormat.FieldType.FIXED32;
+				return FieldType.FIXED32;
 			case "sfixed32":
-				return WireFormat.FieldType.SFIXED32;
+				return FieldType.SFIXED32;
 			case "int64":
-				return WireFormat.FieldType.INT64;
+				return FieldType.INT64;
 			case "uint64":
-				return WireFormat.FieldType.UINT64;
+				return FieldType.UINT64;
 			case "sint64":
-				return WireFormat.FieldType.SINT64;
+				return FieldType.SINT64;
 			case "fixed64":
-				return WireFormat.FieldType.FIXED64;
+				return FieldType.FIXED64;
 			case "sfixed64":
-				return WireFormat.FieldType.SFIXED64;
+				return FieldType.SFIXED64;
 			case "double":
-				return WireFormat.FieldType.DOUBLE;
+				return FieldType.DOUBLE;
 			case "float":
-				return WireFormat.FieldType.FLOAT;
+				return FieldType.FLOAT;
 			case "void":
 				if (!allowVoid)
 					throw new IllegalStateException("Void not allowed");
@@ -93,13 +92,13 @@ public abstract class AbstractBuilder {
 			sj.add(((WithName<?>) this).name());
 	}
 
-	public static WireFormat.FieldType getWireType(AbstractBuilder b) {
+	public static FieldType getWireType(AbstractBuilder b) {
 		if (b instanceof EnumBuilder)
-			return WireFormat.FieldType.forEnum(b.getFullName());
+			return FieldType.forEnum(b.getFullName());
 		if (b instanceof GroupBuilder)
-			return WireFormat.FieldType.forGroup(b.getFullName());
+			return FieldType.forGroup(b.getFullName());
 		if (b instanceof MessageBuilder)
-			return WireFormat.FieldType.forMessage(b.getFullName());
+			return FieldType.forMessage(b.getFullName());
 		return null;
 	}
 
