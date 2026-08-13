@@ -22,6 +22,7 @@ import java.util.List;
 
 import io.protostuff.api.LinkedBuffer;
 import io.protostuff.api.Schema;
+import io.protostuff.api.WireFormat;
 
 /**
  * Protostuff ser/deser util for messages/objects.
@@ -56,7 +57,7 @@ public final class ProtostuffIOUtil {
 	 */
 	public static <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) {
 		try {
-			ProtobufArrayInput input = new ProtobufArrayInput(data, offset, length);
+			ProtostuffArrayInput input = new ProtostuffArrayInput(data, offset, length);
 			schema.mergeFrom(input, message);
 			input.checkLastTagWas(0);
 		} catch (IOException e) {
@@ -73,7 +74,7 @@ public final class ProtostuffIOUtil {
 	 * @throws IOException in case of error
 	 */
 	public static <T> void mergeFrom(InputStream in, T message, Schema<T> schema) throws IOException {
-		ProtobufStreamInput input = new ProtobufStreamInput(in);
+		ProtostuffStreamInput input = new ProtostuffStreamInput(in);
 		schema.mergeFrom(input, message);
 		input.checkLastTagWas(0);
 	}
@@ -88,7 +89,7 @@ public final class ProtostuffIOUtil {
 	 * @throws IOException in case of error
 	 */
 	public static <T> T mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) throws IOException {
-		ProtobufStreamInput input = new ProtobufStreamInput(in);
+		ProtostuffStreamInput input = new ProtostuffStreamInput(in);
 		return input.mergeObject(message, schema);
 	}
 
@@ -203,20 +204,13 @@ public final class ProtostuffIOUtil {
 			throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 		}
 
-		final int o = buffer.offset += 5;
-		final ProtostuffOutput output = new ProtostuffOutput(buffer);
+		final ProtostuffOutput output = new ProtostuffStreamOutput(out, buffer, buffer.buffer.length);
+		output.writeVarInt32(messages.size());
 		for (T m : messages) {
 			schema.writeTo(output, m);
-			final int size = output.size();
-			int i = o - ProtostuffOutput.computeRawVarint32Size(size);
-			ProtostuffOutput.writeVarInt32(size, buffer.buffer, i);
-			out.write(buffer.buffer, i, buffer.offset - i);
-			// flush remaining
-			if (buffer.next != null)
-				LinkedBuffer.writeTo(out, buffer.next);
-			output.reset();
-			buffer.offset = o;
+			output.writeVarInt32(WireFormat.TAIL_DELIMITER_TAG);
 		}
+		output.close();
 	}
 
 	/**
@@ -228,10 +222,15 @@ public final class ProtostuffIOUtil {
 	 * @throws IOException in case of error
 	 */
 	public static <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
-		ProtobufStreamInput input = new ProtobufStreamInput(in);
-		List<T> list = new ArrayList<>();
-		while (!input.isAtEnd())
-			list.add(input.mergeGroup(null, schema));
+		ProtostuffStreamInput input = new ProtostuffStreamInput(in);
+		int size = input.readUInt32();
+		List<T> list = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			T m = schema.newMessage();
+			schema.mergeFrom(input, m);
+			input.checkLastTagWas(WireFormat.TAIL_DELIMITER_TAG);
+			list.add(m);
+		}
 		return list;
 	}
 }

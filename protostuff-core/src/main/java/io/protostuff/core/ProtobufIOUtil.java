@@ -203,19 +203,10 @@ public final class ProtobufIOUtil {
 			throw new IllegalArgumentException("Buffer previously used and had not been reset.");
 		}
 
-		final int o = buffer.offset += 5;
-		final ProtobufOutput output = new ProtobufOutput(buffer);
+		final ProtobufOutput output = new ProtobufStreamOutput(out, buffer, buffer.buffer.length);
 		for (T m : messages) {
-			schema.writeTo(output, m);
-			final int size = output.size();
-			int i = o - ProtostuffOutput.computeRawVarint32Size(size);
-			ProtostuffOutput.writeVarInt32(size, buffer.buffer, i);
-			out.write(buffer.buffer, i, buffer.offset - i);
-			// flush remaining
-			if (buffer.next != null)
-				LinkedBuffer.writeTo(out, buffer.next);
-			output.reset();
-			buffer.offset = o;
+			output.writeMessage(m, schema);
+			output.flush();
 		}
 	}
 

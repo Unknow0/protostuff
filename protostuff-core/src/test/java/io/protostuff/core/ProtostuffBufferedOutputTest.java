@@ -12,29 +12,40 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
+
+import io.protostuff.api.Schema;
 
 /**
- * Testcase for ser/deser of multiple messages using protobuf.
+ * Test the buffering output capability of {@link ProtostuffOutput}.
  *
  * @author David Yu
- * @created Oct 7, 2010
+ * @created Sep 19, 2010
  */
-public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest {
+public class ProtostuffBufferedOutputTest extends SerDeserTest {
 
 	@Override
-	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
-		return ProtobufIOUtil.parseListFrom(in, schema);
+	protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) throws IOException {
+		ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema);
 	}
 
 	@Override
-	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
-		ProtobufIOUtil.writeListTo(out, messages, schema, buf());
+	protected <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema) throws IOException {
+		ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buf());
+	}
+
+	@Override
+	protected <T> void mergeFrom(byte[] data, int offset, int length, T message, Schema<T> schema) throws IOException {
+		ProtostuffIOUtil.mergeFrom(data, offset, length, message, schema);
+	}
+
+	@Override
+	protected <T> byte[] toByteArray(T message, Schema<T> schema) {
+		return ProtostuffIOUtil.toByteArray(message, schema, buf());
 	}
 
 }

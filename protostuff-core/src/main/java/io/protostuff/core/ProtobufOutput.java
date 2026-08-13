@@ -84,9 +84,14 @@ public class ProtobufOutput implements Output {
 	}
 
 	@Override
+	public void flush() throws IOException {
+		tail = writeBuffers(head);
+	}
+
+	@Override
 	public int close() throws IOException {
 		int size = size();
-		writeBuffers(head);
+		flush();
 		head = tail = null;
 		return size;
 	}
@@ -352,6 +357,10 @@ public class ProtobufOutput implements Output {
 	@Override
 	public <T> void writeMessage(int tag, String name, T t, Schema<T> schema) throws IOException {
 		writeVarInt32(tag);
+		writeMessage(t, schema);
+	}
+
+	public <T> void writeMessage(T t, Schema<T> schema) throws IOException {
 		depth++;
 		ensureSize(2);
 		final LinkedBuffer lb = tail;

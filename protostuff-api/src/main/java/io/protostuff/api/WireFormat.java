@@ -73,6 +73,8 @@ public final class WireFormat {
 	public static final int TAG_TYPE_BITS = 3;
 	public static final int TAG_TYPE_MASK = (1 << TAG_TYPE_BITS) - 1;
 
+	public static final int TAIL_DELIMITER_TAG = makeTag(1, WIRETYPE_TAIL_DELIMITER);
+
 	/**
 	 * Given a tag value, determines the wire type (the lower 3 bits).
 	 */

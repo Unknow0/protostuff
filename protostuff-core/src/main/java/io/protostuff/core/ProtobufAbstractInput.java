@@ -553,9 +553,10 @@ public abstract class ProtobufAbstractInput implements Input {
 			// If we actually read zero, that's not a valid tag.
 			throw ProtobufException.invalidTag();
 		}
-		wasLen = getTagWireType(tag) == WIRETYPE_LENGTH_DELIMITED;
 		lastTag = tag;
-		return getTagWireType(tag) == WIRETYPE_END_GROUP ? 0 : tag;
+		int type = getTagWireType(tag);
+		wasLen = type == WIRETYPE_LENGTH_DELIMITED;
+		return type == WIRETYPE_END_GROUP ? 0 : tag;
 	}
 
 	/**
@@ -572,10 +573,7 @@ public abstract class ProtobufAbstractInput implements Input {
 	void skipField(int tag) throws IOException {
 		switch (getTagWireType(tag)) {
 			case WIRETYPE_VARINT:
-				skipRawBytes(4);
-				return;
-			case WIRETYPE_FIXED32:
-				skipRawBytes(4);
+				readRawVarint32();
 				return;
 			case WIRETYPE_FIXED64:
 				skipRawBytes(8);
@@ -588,6 +586,9 @@ public abstract class ProtobufAbstractInput implements Input {
 				checkLastTagWas((tag & ~0x7) | WIRETYPE_END_GROUP);
 				return;
 			case WIRETYPE_END_GROUP:
+				return;
+			case WIRETYPE_FIXED32:
+				skipRawBytes(4);
 				return;
 			default:
 				throw ProtobufException.invalidWireType();

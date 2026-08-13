@@ -12,37 +12,30 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import io.protostuff.api.Schema;
+
 /**
- * Delimiter tests for the protobuf format.
+ * Delimiter tests for the protostuff format.
  *
  * @author David Yu
  * @created Aug 29, 2012
  */
-public class ProtobufDelimiterTest extends DelimiterTest {
+public class ProtostuffDelimiterTest extends DelimiterTest {
 
 	@Override
-	protected <T> int writeDelimitedTo(OutputStream out, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
-		return ProtobufIOUtil.writeDelimitedTo(out, message, schema, buffer);
+	protected <T> void writeDelimitedTo(OutputStream out, T message, Schema<T> schema) throws IOException {
+		ProtostuffIOUtil.writeDelimitedTo(out, message, schema, buf());
 	}
 
 	@Override
-	protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
-		ProtobufIOUtil.mergeDelimitedFrom(in, message, schema, buffer);
+	protected <T> void mergeDelimitedFrom(InputStream in, T message, Schema<T> schema) throws IOException {
+		ProtostuffIOUtil.mergeDelimitedFrom(in, message, schema);
 	}
 
-	@Override
-	protected <T> int optWriteDelimitedTo(OutputStream out, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
-		return ProtobufIOUtil.optWriteDelimitedTo(out, message, schema, buffer);
-	}
-
-	@Override
-	protected <T> boolean optMergeDelimitedFrom(InputStream in, T message, Schema<T> schema, LinkedBuffer buffer) throws IOException {
-		return ProtobufIOUtil.optMergeDelimitedFrom(in, message, schema, buffer);
-	}
 }

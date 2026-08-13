@@ -1,5 +1,5 @@
 //========================================================================
-//Copyright 2007-2009 David Yu dyuproject@gmail.com
+//Copyright 2007-2010 David Yu dyuproject@gmail.com
 //------------------------------------------------------------------------
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -12,28 +12,31 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+
+import io.protostuff.api.Schema;
 
 /**
- * A node that wraps a byte array and has a reference to the next node.
- * <p>
- * This is used as a single-direction linked list of byte[] wrappers.
+ * Testcase for ser/deser of multiple messages using protostuff
  *
  * @author David Yu
- * @created Nov 12, 2009
+ * @created Oct 7, 2010
  */
-final class ByteArrayNode {
+public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest {
 
-	final byte[] bytes;
-	ByteArrayNode next;
-
-	ByteArrayNode(byte[] bytes) {
-		this.bytes = bytes;
+	@Override
+	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
+		return ProtostuffIOUtil.parseListFrom(in, schema);
 	}
 
-	ByteArrayNode(byte[] bytes, ByteArrayNode node) {
-		this.bytes = bytes;
-		node.next = this;
+	@Override
+	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
+		ProtostuffIOUtil.writeListTo(out, messages, schema, buf());
 	}
 
 }

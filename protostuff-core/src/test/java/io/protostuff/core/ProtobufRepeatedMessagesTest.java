@@ -12,29 +12,30 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import io.protostuff.api.Schema;
+
 /**
- * Testcase for ser/deser of multiple messages using protostuff
+ * Testcase for ser/deser of multiple messages using protobuf.
  *
  * @author David Yu
  * @created Oct 7, 2010
  */
-public class ProtostuffRepeatedMessagesTest extends RepeatedMessagesTest {
+public class ProtobufRepeatedMessagesTest extends RepeatedMessagesTest {
 
 	@Override
 	protected <T> List<T> parseListFrom(InputStream in, Schema<T> schema) throws IOException {
-		return ProtostuffIOUtil.parseListFrom(in, schema);
+		return ProtobufIOUtil.parseListFrom(in, schema);
 	}
 
 	@Override
 	protected <T> void writeListTo(OutputStream out, List<T> messages, Schema<T> schema) throws IOException {
-		ProtostuffIOUtil.writeListTo(out, messages, schema, buf());
+		ProtobufIOUtil.writeListTo(out, messages, schema, buf());
 	}
-
 }

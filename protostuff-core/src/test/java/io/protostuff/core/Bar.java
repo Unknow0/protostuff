@@ -315,16 +315,6 @@ public final class Bar implements Schema<Bar>, Externalizable {
 		}
 	}
 
-//	@Override
-//	public void readExternal(ObjectInput in) throws IOException {
-//		GraphIOUtil.mergeDelimitedFrom(in, this, this);
-//	}
-//
-//	@Override
-//	public void writeExternal(ObjectOutput out) throws IOException {
-//		GraphIOUtil.writeDelimitedTo(out, this, this);
-//	}
-
 	@Override
 	public void writeTo(Output output, Bar message) throws IOException {
 		if (message.someInt != 0) {

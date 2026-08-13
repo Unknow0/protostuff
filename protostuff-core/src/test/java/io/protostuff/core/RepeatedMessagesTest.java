@@ -12,7 +12,7 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.protostuff.api.Schema;
 
 /**
  * Testcase for ser/deser of multiple messages.
@@ -40,11 +42,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		bars.add(SerializableObjects.negativeBar);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+		writeListTo(out, bars, Bar.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
+		List<Bar> parsedBars = parseListFrom(in, Bar.getSchema());
 
 		assertTrue(parsedBars.size() == bars.size());
 		int i = 0;
@@ -59,11 +61,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		bars.add(new Bar());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+		writeListTo(out, bars, Bar.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
+		List<Bar> parsedBars = parseListFrom(in, Bar.getSchema());
 
 		assertTrue(parsedBars.size() == bars.size());
 		int i = 0;
@@ -77,11 +79,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		bars.add(new Bar());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+		writeListTo(out, bars, Bar.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
+		List<Bar> parsedBars = parseListFrom(in, Bar.getSchema());
 
 		assertTrue(parsedBars.size() == bars.size());
 		int i = 0;
@@ -97,11 +99,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		bars.add(bar);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, bars, SerializableObjects.bar.cachedSchema());
+		writeListTo(out, bars, Bar.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Bar> parsedBars = parseListFrom(in, SerializableObjects.bar.cachedSchema());
+		List<Bar> parsedBars = parseListFrom(in, Bar.getSchema());
 
 		assertTrue(parsedBars.size() == bars.size());
 		int i = 0;
@@ -116,11 +118,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		foos.add(SerializableObjects.foo);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+		writeListTo(out, foos, Foo.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
+		List<Foo> parsedFoos = parseListFrom(in, Foo.getSchema());
 
 		assertTrue(parsedFoos.size() == foos.size());
 		int i = 0;
@@ -135,11 +137,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		foos.add(new Foo());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+		writeListTo(out, foos, Foo.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
+		List<Foo> parsedFoos = parseListFrom(in, Foo.getSchema());
 
 		assertTrue(parsedFoos.size() == foos.size());
 		int i = 0;
@@ -153,11 +155,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		foos.add(new Foo());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+		writeListTo(out, foos, Foo.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
+		List<Foo> parsedFoos = parseListFrom(in, Foo.getSchema());
 
 		assertTrue(parsedFoos.size() == foos.size());
 		int i = 0;
@@ -177,11 +179,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		foos.add(foo);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+		writeListTo(out, foos, Foo.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
+		List<Foo> parsedFoos = parseListFrom(in, Foo.getSchema());
 
 		assertTrue(parsedFoos.size() == foos.size());
 		int i = 0;
@@ -203,11 +205,11 @@ public abstract class RepeatedMessagesTest extends AbstractTest {
 		foos.add(foo);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		writeListTo(out, foos, SerializableObjects.foo.cachedSchema());
+		writeListTo(out, foos, Foo.getSchema());
 		byte[] data = out.toByteArray();
 
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		List<Foo> parsedFoos = parseListFrom(in, SerializableObjects.foo.cachedSchema());
+		List<Foo> parsedFoos = parseListFrom(in, Foo.getSchema());
 
 		assertTrue(parsedFoos.size() == foos.size());
 		int i = 0;

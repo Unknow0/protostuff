@@ -1,7 +1,8 @@
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+
+import io.protostuff.api.LinkedBuffer;
 
 /**
  */
@@ -10,25 +11,7 @@ public class RepeatedTest extends AbstractTest {
 		final LinkedBuffer buffer = getProtobufBuffer();
 
 		PojoWithRepeated test = new PojoWithRepeated();
-		test.mergeFrom(new ByteArrayInput(buffer.buffer, 0, buffer.offset, false), test);
-
-		verify(test);
-	}
-
-	public void testPackedRepeatedByteBuffer() throws IOException {
-		final LinkedBuffer buffer = getProtobufBuffer();
-
-		PojoWithRepeated test = new PojoWithRepeated();
-		test.mergeFrom(new ByteBufferInput(ByteBuffer.wrap(buffer.buffer, 0, buffer.offset), false), test);
-
-		verify(test);
-	}
-
-	public void testPackedRepeatedCodedInput() throws IOException {
-		final LinkedBuffer buffer = getProtobufBuffer();
-
-		PojoWithRepeated test = new PojoWithRepeated();
-		test.mergeFrom(new CodedInput(buffer.buffer, 0, buffer.offset, false), test);
+		test.mergeFrom(new ProtobufArrayInput(buffer.buffer, 0, buffer.offset), test);
 
 		verify(test);
 	}
@@ -39,15 +22,15 @@ public class RepeatedTest extends AbstractTest {
 		final ProtobufOutput output = new ProtobufOutput(buffer);
 		// 03 // first element (varint 3)
 		// 8E 02 // second element (varint 270)
-		output.writeByteRange(false, 1, new byte[] { (byte) 0x03, (byte) 0x8E, (byte) 0x02 }, 0, 3, true);
+		output.writeBytes(PojoWithRepeated.SOMEINT32_PACK, "someInt32", new byte[] { (byte) 0x03, (byte) 0x8E, (byte) 0x02 });
 		// Interleave
-		output.writeFixed64(2, 8, true);
+		output.writeFixed64(PojoWithRepeated.SOMEFIXED64_TAG, "someFixed64", 8);
 		// Non packed
-		output.writeInt32(1, 1234, true);
+		output.writeUInt32(PojoWithRepeated.SOMEINT32_TAG, "someInt32", 1234);
 		// Interleave
-		output.writeByteRange(false, 2, new byte[] { 9, 0, 0, 0, 0, 0, 0, 0 }, 0, 8, true);
+		output.writeBytes(PojoWithRepeated.SOMEFIXED64_PACK, "someFixed64", new byte[] { 9, 0, 0, 0, 0, 0, 0, 0 });
 		// 9E A7 05 // third element (varint 86942)
-		output.writeByteRange(false, 1, new byte[] { (byte) 0x9E, (byte) 0xA7, (byte) 0x05 }, 0, 3, true);
+		output.writeBytes(PojoWithRepeated.SOMEINT32_PACK, "someInt32", new byte[] { (byte) 0x9E, (byte) 0xA7, (byte) 0x05 });
 
 		return buffer;
 	}

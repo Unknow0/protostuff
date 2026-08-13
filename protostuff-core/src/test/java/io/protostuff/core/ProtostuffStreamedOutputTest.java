@@ -12,12 +12,14 @@
 //limitations under the License.
 //========================================================================
 
-package io.protostuff;
+package io.protostuff.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import io.protostuff.api.Schema;
 
 /**
  * Test the streaming output capability of {@link ProtostuffOutput}.
